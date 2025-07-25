@@ -41,7 +41,14 @@ export interface UnitRegistry {
 export type Unit = keyof UnitRegistry | (string & {});
 
 /**
- * Type-safe unit constants for better developer experience
+ * All available time unit constants grouped for better autocomplete and imports.
+ * 
+ * @example
+ * import { UNITS } from '@usetemporal/core'
+ * 
+ * // Better autocomplete
+ * const months = divide(temporal, year, UNITS.month)
+ * const days = divide(temporal, month, UNITS.day)
  */
 export const UNITS = {
   year: "year",
@@ -67,6 +74,11 @@ export const MINUTE = "minute" as const;
 export const SECOND = "second" as const;
 export const STABLE_MONTH = "stableMonth" as const;
 export const CUSTOM = "custom" as const;
+
+/**
+ * Type definition for the UNITS object
+ */
+export type UnitsObject = typeof UNITS;
 
 /**
  * Minimal temporal context needed for operations

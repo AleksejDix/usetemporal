@@ -37,6 +37,7 @@ export type {
   AdapterOptions,
   Duration,
   DateOrRef,
+  UnitsObject,
 } from "./types";
 
 // Unit constants
