@@ -68,61 +68,6 @@ describe("divide", () => {
     expect(hours).toHaveLength(24);
   });
 
-  it("should throw error when dividing by stableMonth", () => {
-    const month: Period = {
-      start: testDates.jan1,
-      end: new Date(2024, 0, 31),
-      type: "month",
-      date: testDates.jan15,
-    };
-
-    expect(() => divide(temporal, month, "stableMonth")).toThrow(
-      "Cannot divide by stableMonth. Use useStableMonth() instead."
-    );
-  });
-
-  it("should handle stableMonth division by day", () => {
-    const stableMonth: Period = {
-      start: new Date(2024, 0, 29), // Monday before Feb 1
-      end: new Date(2024, 2, 10, 23, 59, 59, 999), // Sunday
-      type: "stableMonth",
-      date: testDates.feb15,
-    };
-
-    const days = divide(temporal, stableMonth, "day");
-
-    expect(days).toHaveLength(42); // 6 weeks * 7 days
-    expect(days[0].start.getDate()).toBe(29); // Jan 29
-    expect(days[41].start.getDate()).toBe(10); // Mar 10
-  });
-
-  it("should handle stableMonth division by week", () => {
-    const stableMonth: Period = {
-      start: new Date(2024, 0, 29), // Monday before Feb 1
-      end: new Date(2024, 2, 10, 23, 59, 59, 999), // Sunday
-      type: "stableMonth",
-      date: testDates.feb15,
-    };
-
-    const weeks = divide(temporal, stableMonth, "week");
-
-    expect(weeks).toHaveLength(6);
-    expect(weeks[0].start.getDate()).toBe(29); // First week starts Jan 29
-    expect(weeks[5].end.getDate()).toBe(10); // Last week ends Mar 10
-  });
-
-  it("should throw error when dividing stableMonth by invalid unit", () => {
-    const stableMonth: Period = {
-      start: new Date(2024, 0, 29),
-      end: new Date(2024, 2, 10),
-      type: "stableMonth",
-      date: testDates.feb15,
-    };
-
-    expect(() => divide(temporal, stableMonth, "month")).toThrow(
-      "stableMonth can only be divided by 'day' or 'week'"
-    );
-  });
 
   it("should respect weekStartsOn when dividing by week", () => {
     const sundayTemporal = createTemporal({

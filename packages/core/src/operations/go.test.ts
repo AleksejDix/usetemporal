@@ -167,18 +167,6 @@ describe("go", () => {
     // The exact boundaries depend on the adapter implementation
   });
 
-  it("should handle stableMonth navigation", () => {
-    const stableJan: Period = {
-      start: testDates.jan1,
-      end: new Date(2024, 1, 11, 23, 59, 59, 999),
-      type: "stableMonth",
-      date: testDates.jan15,
-    };
-
-    const stableMay = go(temporal, stableJan, 4);
-
-    expect(stableMay.date.getMonth()).toBe(4); // May
-  });
 
   describe("custom period handling", () => {
     it("should handle custom period navigation forward", () => {

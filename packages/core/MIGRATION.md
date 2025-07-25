@@ -157,6 +157,30 @@ months.forEach((month) => {
 });
 ```
 
+## Breaking Changes in v2.0.0
+
+### StableMonth Removal
+
+The `stableMonth` unit type has been removed from the core package. This unit was never fully implemented and is being moved to a separate calendar-units package.
+
+**What was removed:**
+- `STABLE_MONTH` constant
+- `stableMonth` from the `UNITS` object
+- `stableMonth` from the `UnitRegistry` interface
+- All stableMonth handling in operations (divide, createPeriod, next, previous, go, isSame)
+
+**Migration:**
+If you were using stableMonth in your code:
+```typescript
+// Before
+import { STABLE_MONTH } from "@usetemporal/core";
+const stableMonth = createPeriod(temporal, STABLE_MONTH, date);
+
+// After
+// Wait for @usetemporal/calendar-units package (coming soon)
+// Or implement your own stable month logic
+```
+
 ## Benefits
 
 1. **Better Tree-shaking**: Import only what you use

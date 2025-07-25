@@ -317,46 +317,4 @@ describe("isSame", () => {
     });
   });
 
-  describe("stableMonth comparison", () => {
-    it("should return true for dates in same stable month", () => {
-      // Stable months start from the first Monday of the month
-      const period1 = toPeriod(temporal, new Date(2024, 0, 10), "day"); // Jan 10
-      const period2 = toPeriod(temporal, new Date(2024, 0, 20), "day"); // Jan 20
-
-      expect(isSame(temporal, period1, period2, "stableMonth")).toBe(true);
-    });
-
-    it("should return false for dates in different stable months", () => {
-      // These dates might be in the same calendar month but different stable months
-      const period1 = toPeriod(temporal, new Date(2024, 0, 1), "day"); // Jan 1 (might be in Dec stable month)
-      const period2 = toPeriod(temporal, new Date(2024, 0, 31), "day"); // Jan 31 (in Jan stable month)
-
-      // First, let's check if they're actually different
-      const startA = temporal.adapter.startOf(
-        new Date(2024, 0, 1),
-        "week"
-      );
-      const startB = temporal.adapter.startOf(
-        new Date(2024, 0, 1),
-        "week"
-      );
-      
-      // If the stable months are the same, use different months
-      if (startA.getTime() === startB.getTime()) {
-        const period3 = toPeriod(temporal, new Date(2024, 0, 15), "day"); // Jan 15
-        const period4 = toPeriod(temporal, new Date(2024, 1, 15), "day"); // Feb 15
-        expect(isSame(temporal, period3, period4, "stableMonth")).toBe(false);
-      } else {
-        expect(isSame(temporal, period1, period2, "stableMonth")).toBe(false);
-      }
-    });
-
-    it("should handle stable month boundaries correctly", () => {
-      // Test dates at the beginning of different months
-      const jan1 = toPeriod(temporal, new Date(2024, 0, 1), "day");
-      const feb1 = toPeriod(temporal, new Date(2024, 1, 1), "day");
-      
-      expect(isSame(temporal, jan1, feb1, "stableMonth")).toBe(false);
-    });
-  });
 });

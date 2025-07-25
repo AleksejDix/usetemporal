@@ -76,7 +76,7 @@ describe("usePeriod", () => {
       "minute",
       "second",
       "quarter",
-      "stableMonth",
+      
     ];
 
     units.forEach((unit) => {

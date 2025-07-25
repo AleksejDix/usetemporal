@@ -51,7 +51,6 @@ export {
   HOUR,
   MINUTE,
   SECOND,
-  STABLE_MONTH,
   CUSTOM,
 } from "./types";
 

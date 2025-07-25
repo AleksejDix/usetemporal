@@ -28,21 +28,6 @@ export function go(temporal: Temporal, period: Period, steps: number): Period {
     };
   }
 
-  // Handle stableMonth specially
-  if (period.type === "stableMonth") {
-    const targetMonth = new Date(
-      period.date.getFullYear(),
-      period.date.getMonth() + steps,
-      1
-    );
-    const tempPeriod: Period = {
-      start: targetMonth,
-      end: targetMonth,
-      type: "second",
-      date: targetMonth,
-    };
-    return createPeriod(temporal, "stableMonth", tempPeriod);
-  }
 
   // Check if this is a custom unit
   const unitDef = getUnitDefinition(period.type);

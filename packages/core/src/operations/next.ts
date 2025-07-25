@@ -20,21 +20,6 @@ export function next(temporal: Temporal, period: Period): Period {
     };
   }
 
-  // Handle stableMonth specially
-  if (period.type === "stableMonth") {
-    const nextMonth = new Date(
-      period.date.getFullYear(),
-      period.date.getMonth() + 1,
-      1
-    );
-    const tempPeriod: Period = {
-      start: nextMonth,
-      end: nextMonth,
-      type: "second",
-      date: nextMonth,
-    };
-    return createPeriod(temporal, "stableMonth", tempPeriod);
-  }
 
   const nextValue = adapter.add(
     period.date,

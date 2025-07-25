@@ -30,7 +30,6 @@ export interface UnitRegistry {
   hour: true;
   minute: true;
   second: true;
-  stableMonth: true;
   custom: true;
 }
 
@@ -59,7 +58,6 @@ export const UNITS = {
   hour: "hour",
   minute: "minute",
   second: "second",
-  stableMonth: "stableMonth",
   custom: "custom",
 } as const;
 
@@ -72,7 +70,6 @@ export const DAY = "day" as const;
 export const HOUR = "hour" as const;
 export const MINUTE = "minute" as const;
 export const SECOND = "second" as const;
-export const STABLE_MONTH = "stableMonth" as const;
 export const CUSTOM = "custom" as const;
 
 /**
@@ -115,7 +112,7 @@ export interface AdapterOptions {
 /**
  * Known adapter units (units that adapters must implement)
  */
-export type AdapterUnit = Exclude<keyof UnitRegistry, "custom" | "stableMonth">;
+export type AdapterUnit = Exclude<keyof UnitRegistry, "custom">;
 
 /**
  * Simplified functional adapter interface (RFC 015)

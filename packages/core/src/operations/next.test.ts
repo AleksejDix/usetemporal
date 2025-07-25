@@ -124,19 +124,6 @@ describe("next", () => {
     expect(hour0.start.getHours()).toBe(0);
   });
 
-  it("should handle stableMonth navigation", () => {
-    const stableJanuary: Period = {
-      start: testDates.jan1, // Monday
-      end: new Date(2024, 1, 11, 23, 59, 59, 999), // Sunday
-      type: "stableMonth",
-      date: testDates.jan15,
-    };
-
-    const stableFebruary = next(temporal, stableJanuary);
-
-    expect(stableFebruary.date.getMonth()).toBe(1); // February
-    // Exact grid boundaries depend on the adapter's startOf/endOf implementation
-  });
 
   it("should handle quarter navigation", () => {
     const q1: Period = {

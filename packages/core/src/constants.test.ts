@@ -9,7 +9,6 @@ import {
   HOUR,
   MINUTE,
   SECOND,
-  STABLE_MONTH,
   CUSTOM,
   type Unit,
 } from "./types";
@@ -36,7 +35,6 @@ describe("Unit Constants", () => {
       hour: "hour",
       minute: "minute",
       second: "second",
-      stableMonth: "stableMonth",
       custom: "custom",
     });
   });
@@ -50,7 +48,6 @@ describe("Unit Constants", () => {
     expect(HOUR).toBe("hour");
     expect(MINUTE).toBe("minute");
     expect(SECOND).toBe("second");
-    expect(STABLE_MONTH).toBe("stableMonth");
     expect(CUSTOM).toBe("custom");
   });
 

@@ -20,21 +20,6 @@ export function previous(temporal: Temporal, period: Period): Period {
     };
   }
 
-  // Handle stableMonth specially
-  if (period.type === "stableMonth") {
-    const prevMonth = new Date(
-      period.date.getFullYear(),
-      period.date.getMonth() - 1,
-      1
-    );
-    const tempPeriod: Period = {
-      start: prevMonth,
-      end: prevMonth,
-      type: "second",
-      date: prevMonth,
-    };
-    return createPeriod(temporal, "stableMonth", tempPeriod);
-  }
 
   const prevValue = adapter.add(
     period.date,

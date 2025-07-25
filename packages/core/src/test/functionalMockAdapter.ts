@@ -10,7 +10,7 @@ export function createMockAdapter(options?: {
   const weekStartsOn = options?.weekStartsOn ?? 1;
 
   return {
-    startOf(date: Date, unit: Exclude<Unit, "custom" | "stableMonth">): Date {
+    startOf(date: Date, unit: Exclude<Unit, "custom">): Date {
       const result = new Date(date);
 
       switch (unit) {
@@ -53,7 +53,7 @@ export function createMockAdapter(options?: {
       return result;
     },
 
-    endOf(date: Date, unit: Exclude<Unit, "custom" | "stableMonth">): Date {
+    endOf(date: Date, unit: Exclude<Unit, "custom">): Date {
       const result = new Date(date);
 
       switch (unit) {
@@ -99,7 +99,7 @@ export function createMockAdapter(options?: {
     add(
       date: Date,
       amount: number,
-      unit: Exclude<Unit, "custom" | "stableMonth">
+      unit: Exclude<Unit, "custom">
     ): Date {
       const result = new Date(date);
 
@@ -136,7 +136,7 @@ export function createMockAdapter(options?: {
     diff(
       from: Date,
       to: Date,
-      unit: Exclude<Unit, "custom" | "stableMonth">
+      unit: Exclude<Unit, "custom">
     ): number {
       const diffMs = to.getTime() - from.getTime();
 

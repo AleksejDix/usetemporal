@@ -30,19 +30,6 @@ export function isSame(
     return dateA.getTime() === dateB.getTime();
   }
 
-  // Handle stableMonth comparison
-  if (unit === "stableMonth") {
-    // Two dates are in same stable month if their stable month starts are equal
-    const startA = temporal.adapter.startOf(
-      new Date(dateA.getFullYear(), dateA.getMonth(), 1),
-      "week"
-    );
-    const startB = temporal.adapter.startOf(
-      new Date(dateB.getFullYear(), dateB.getMonth(), 1),
-      "week"
-    );
-    return startA.getTime() === startB.getTime();
-  }
 
   // For all other units, compare by checking if startOf values are equal
   const startA = temporal.adapter.startOf(

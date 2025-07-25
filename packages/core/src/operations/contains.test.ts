@@ -217,23 +217,5 @@ describe("contains", () => {
       expect(contains(january, firstDayFeb)).toBe(false);
     });
 
-    it("should handle stableMonth contains logic", () => {
-      const stableMonth: Period = {
-        start: new Date(2024, 0, 29), // Monday before Feb 1
-        end: new Date(2024, 2, 10, 23, 59, 59, 999), // Sunday after Feb 29
-        type: "stableMonth",
-        date: new Date(2024, 1, 15),
-      };
-
-      // Note: The current implementation checks grid boundaries, not actual month
-      // This is the current behavior - may need to be adjusted if stableMonth
-      // should only contain actual month dates
-      expect(contains(stableMonth, new Date(2024, 0, 31))).toBe(true); // Jan 31 (in grid)
-      expect(contains(stableMonth, new Date(2024, 1, 1))).toBe(true); // Feb 1
-      expect(contains(stableMonth, new Date(2024, 1, 29))).toBe(true); // Feb 29
-      expect(contains(stableMonth, new Date(2024, 2, 1))).toBe(true); // Mar 1 (in grid)
-      expect(contains(stableMonth, new Date(2024, 0, 28))).toBe(false); // Before grid
-      expect(contains(stableMonth, new Date(2024, 2, 11))).toBe(false); // After grid
-    });
   });
 });
