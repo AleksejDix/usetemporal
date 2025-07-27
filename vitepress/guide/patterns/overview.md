@@ -16,7 +16,6 @@ Learn how to analyze time periods, find patterns, and aggregate temporal data.
 
 ### Calendar Applications
 - [Calendar Grid Examples](/examples/calendars/calendar-grid) - Build various calendar layouts
-- [Stable Month Calendar](/examples/stable-month-calendar) - Fixed-size calendar grids
 
 ### Business Applications
 - [Business Time Calculations](/examples/recipes/business-time) - Work with business days and hours

@@ -29,7 +29,6 @@ type Unit =
   | 'hour' 
   | 'minute' 
   | 'second'
-  | 'stableMonth'
   | 'custom'
   | (string & {}) // Extensible for custom units
 ```
@@ -100,7 +99,6 @@ interface UnitRegistry {
   hour: true
   minute: true
   second: true
-  stableMonth: true
   custom: true
   // Extended by plugins
 }
@@ -111,7 +109,7 @@ Definition for custom units.
 
 ```typescript
 interface UnitDefinition {
-  createPeriod(date: Date, adapter: Adapter): { start: Date; end: Date }
+  period(date: Date, adapter: Adapter): { start: Date; end: Date }
   validate?(period: { start: Date; end: Date; type: string }): boolean
   divisions?: string[]
   mergesTo?: string

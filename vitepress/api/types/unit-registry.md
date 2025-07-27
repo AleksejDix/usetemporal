@@ -37,7 +37,7 @@ The following units are pre-registered:
 'hour' | 'minute' | 'second'
 
 // Special units
-'stableMonth' | 'custom'
+'custom'
 ```
 
 ## Extending the Registry
@@ -167,7 +167,7 @@ import { hasUnit } from '@usetemporal/core'
 
 // Check if a unit is registered
 if (hasUnit('sprint')) {
-  const sprintPeriod = createPeriod(temporal, 'sprint', date)
+  const sprintPeriod = period(temporal, 'sprint', date)
 }
 ```
 
@@ -218,7 +218,7 @@ Custom units work seamlessly with all operations:
 
 ```typescript
 // After registering 'sprint' unit
-const sprint = createPeriod(temporal, 'sprint', date)
+const sprint = period(temporal, 'sprint', date)
 const nextSprint = next(temporal, sprint)
 const sprintDays = divide(temporal, sprint, 'day') // 14 days
 

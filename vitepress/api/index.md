@@ -4,12 +4,9 @@ The useTemporal API is organized into the following sections:
 
 ## [Factory Functions](/api/factory-functions/)
 
-Core functions for creating temporal instances and periods.
+Core functions for creating temporal instances.
 
 - [`createTemporal`](/api/factory-functions/create-temporal) - Create a temporal instance
-- [`createPeriod`](/api/factory-functions/create-period) - Create a period of specific type
-- [`createCustomPeriod`](/api/factory-functions/create-custom-period) - Create custom date ranges
-- [`toPeriod`](/api/factory-functions/to-period) - Convert date to period
 
 ## [Operations](/api/operations/)
 
@@ -21,6 +18,7 @@ Functions for manipulating and working with periods.
 - [`merge`](/api/operations/merge) - Merge periods into larger units
 
 ### Navigation
+- [`period`](/api/operations/period) - Create periods (standard or custom)
 - [`next`](/api/operations/next) - Navigate to next period
 - [`previous`](/api/operations/previous) - Navigate to previous period
 - [`go`](/api/operations/go) - Navigate by steps
@@ -62,6 +60,13 @@ Plugin system for custom units.
 - [`UNITS`](/api/unit-system/constants) - Unit constants
 - [`getUnitDefinition`](/api/unit-system/get-unit-definition) - Get unit configuration
 - [`hasUnit`](/api/unit-system/has-unit) - Check if unit is registered
+
+## [Calendar Units](/api/calendar/)
+
+Special units for consistent calendar grids.
+
+- [`stableMonth`](/api/calendar/stable-month) - 42-day grid for months
+- [`stableYear`](/api/calendar/stable-year) - 52/53-week grid for years
 
 ## Quick Start
 

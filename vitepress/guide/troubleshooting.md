@@ -249,13 +249,25 @@ console.log(days.length); // Expected 31, got 35
 **Solution:**
 
 ```javascript
-// For calendar displays, use stableMonth
-const stableMonth = temporal.periods.stableMonth(temporal);
-const days = temporal.divide(stableMonth, "day");
-console.log(days.length); // Always 42
+// For calendar displays, generate a 6-week grid
+const month = temporal.periods.month(temporal);
+const weeks = temporal.divide(month, "week");
+
+// Get all weeks that touch this month
+const firstWeek = weeks[0];
+const prevWeek = firstWeek.past();
+const allWeeks = [prevWeek, ...weeks];
+
+// Ensure 6 weeks total
+while (allWeeks.length < 6) {
+  const lastWeek = allWeeks[allWeeks.length - 1];
+  allWeeks.push(lastWeek.future());
+}
+
+const calendarDays = allWeeks.flatMap(week => temporal.divide(week, "day"));
+console.log(calendarDays.length); // Always 42
 
 // For exact month days
-const month = temporal.periods.month(temporal);
 const monthDays = temporal
   .divide(month, "day")
   .filter((day) => day.month === month.number);

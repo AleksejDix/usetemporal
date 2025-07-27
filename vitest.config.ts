@@ -8,6 +8,7 @@ export default defineConfig({
         singleFork: true,
       },
     },
+    setupFiles: ["./vitest.setup.ts"],
     projects: [
       {
         name: "unit",
@@ -23,7 +24,10 @@ export default defineConfig({
         "packages/*/src/**/*.spec.ts",
         "packages/*/src/**/*.d.ts",
         "packages/*/dist/**",
+        "packages/*/src/test/**",
       ],
+      // Collect coverage from all packages, not just the one being tested
+      all: true,
     },
   },
 });

@@ -2,6 +2,36 @@
 
 All operations in useTemporal are pure functions that work with Period objects.
 
+## Using the UNITS Constant
+
+For better type safety and autocomplete support, use the UNITS constant instead of string literals:
+
+```typescript
+import { UNITS, divide, period, isSame } from 'usetemporal'
+
+// ✅ Recommended - with autocomplete and type safety
+const year = period(temporal, UNITS.YEAR, date)
+const months = divide(temporal, year, UNITS.MONTH)
+const isSameDay = isSame(temporal, date1, date2, UNITS.DAY)
+
+// ❌ Still works but less ideal
+const year = period(temporal, 'year', date)
+const months = divide(temporal, year, 'month')
+```
+
+### Benefits of UNITS
+
+1. **Autocomplete Support**: IDEs will suggest available units when you type `UNITS.`
+2. **Type Safety**: Typos are caught at compile time
+3. **Consistency**: Ensures consistent unit references across your codebase
+4. **Refactoring**: Easier to rename units if needed
+
+```typescript
+// See all available units with autocomplete
+const period = period(temporal, UNITS.█)
+// IDE shows: YEAR, QUARTER, MONTH, WEEK, DAY, HOUR, MINUTE, SECOND
+```
+
 ## Navigation Operations
 
 Move through time periods:
@@ -11,9 +41,9 @@ Move through time periods:
 Move to the next period of the same type:
 
 ```typescript
-import { next } from 'usetemporal'
+import { next, UNITS } from 'usetemporal'
 
-const month = usePeriod(temporal, 'month')
+const month = usePeriod(temporal, UNITS.MONTH)
 const nextMonth = next(temporal, month.value)
 
 // Update browsing to navigate
@@ -72,14 +102,14 @@ if (contains(month.value, day.value)) {
 Check if two dates fall within the same period:
 
 ```typescript
-import { isSame } from 'usetemporal'
+import { isSame, UNITS } from 'usetemporal'
 
 const date1 = new Date('2024-01-15')
 const date2 = new Date('2024-01-20')
 
-console.log(isSame(temporal, date1, date2, 'day'))   // false
-console.log(isSame(temporal, date1, date2, 'month')) // true
-console.log(isSame(temporal, date1, date2, 'year'))  // true
+console.log(isSame(temporal, date1, date2, UNITS.DAY))   // false
+console.log(isSame(temporal, date1, date2, UNITS.MONTH)) // true
+console.log(isSame(temporal, date1, date2, UNITS.YEAR))  // true
 ```
 
 ## Division Operations
@@ -89,13 +119,13 @@ console.log(isSame(temporal, date1, date2, 'year'))  // true
 The signature operation - divide any period into smaller units:
 
 ```typescript
-import { divide } from 'usetemporal'
+import { divide, UNITS } from 'usetemporal'
 
-const year = usePeriod(temporal, 'year')
-const months = divide(temporal, year.value, 'month')     // 12 periods
+const year = usePeriod(temporal, UNITS.YEAR)
+const months = divide(temporal, year.value, UNITS.MONTH)     // 12 periods
 
 const month = months[0]
-const days = divide(temporal, month, 'day')              // 28-31 periods
+const days = divide(temporal, month, UNITS.DAY)              // 28-31 periods
 
 const day = days[0]  
 const hours = divide(temporal, day, 'hour')              // 24 periods
@@ -127,12 +157,12 @@ const targetMonth = months.find(m => contains(m, someDate)) || months[0]
 
 **Zoom Out Pattern:**
 ```typescript
-import { createPeriod, toPeriod } from 'usetemporal'
+import { period, toPeriod } from 'usetemporal'
 
 const day = usePeriod(temporal, 'day')
 
 // Zoom out to the containing month
-const month = createPeriod(temporal, day.value.date, 'month')
+const month = period(temporal, day.value.date, 'month')
 
 // Zoom out to the containing year
 const year = toPeriod(temporal, day.value.date, 'year')
@@ -140,15 +170,15 @@ const year = toPeriod(temporal, day.value.date, 'year')
 
 **Direct Navigation Pattern:**
 ```typescript
-import { createPeriod } from 'usetemporal'
+import { period } from 'usetemporal'
 
 const hour = usePeriod(temporal, 'hour')
 
 // Navigate from hour to its year
-const year = createPeriod(temporal, hour.value.date, 'year')
+const year = period(temporal, hour.value.date, 'year')
 
 // Navigate from hour to its month
-const month = createPeriod(temporal, hour.value.date, 'month')
+const month = period(temporal, hour.value.date, 'month')
 ```
 
 ## Advanced Operations

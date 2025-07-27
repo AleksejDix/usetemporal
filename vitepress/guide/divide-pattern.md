@@ -398,7 +398,7 @@ watch(month, () => {
 
 ```typescript
 // ✅ Good: Cache subdivisions that don't change
-const year2024 = createPeriod(temporal, 'year', new Date(2024, 0, 1))
+const year2024 = period(temporal, 'year', new Date(2024, 0, 1))
 const months2024 = divide(temporal, year2024, 'month')
 
 // Use cached months multiple times

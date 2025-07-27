@@ -52,8 +52,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, type ComputedRef } from 'vue'
-import type { Temporal, Period } from 'usetemporal'
-import { usePeriod, divide } from 'usetemporal'
+import type { Temporal, Period } from '@allystudio/usetemporal'
+import { usePeriod, divide } from '@allystudio/usetemporal'
 
 const props = defineProps<{
   temporal: Temporal

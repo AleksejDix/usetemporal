@@ -2,6 +2,130 @@
 
 This guide helps you migrate from popular date libraries to useTemporal. Each section provides direct comparisons and migration strategies.
 
+## Breaking Changes in v2.0.0
+
+### Removal of toPeriod Function
+
+The `toPeriod` function has been removed in v2.0.0 as part of our API simplification efforts. `toPeriod` was just a wrapper around `period` with the same functionality.
+
+#### Before (v1.x)
+```typescript
+import { toPeriod } from '@allystudio/usetemporal';
+
+const dayPeriod = toPeriod(temporal, new Date(), 'day');
+const monthPeriod = toPeriod(temporal, date, 'month');
+```
+
+#### After (v2.0.0)
+```typescript
+import { period } from '@allystudio/usetemporal';
+
+const dayPeriod = period(temporal, new Date(), 'day');
+const monthPeriod = period(temporal, date, 'month');
+```
+
+This is a simple find-and-replace migration - just replace all occurrences of `toPeriod` with `period`. The function signatures are identical.
+
+### Rename of createPeriod to period
+
+The `createPeriod` function has been renamed to `period` in v2.0.0 to follow a cleaner, more mathematical API style. The function behaves identically - only the name has changed.
+
+#### Before (v1.x)
+```typescript
+import { createPeriod } from '@allystudio/usetemporal';
+
+const dayPeriod = createPeriod(temporal, new Date(), 'day');
+const monthPeriod = createPeriod(temporal, date, 'month');
+```
+
+#### After (v2.0.0)
+```typescript
+import { period } from '@allystudio/usetemporal';
+
+const dayPeriod = period(temporal, new Date(), 'day');
+const monthPeriod = period(temporal, date, 'month');
+```
+
+This is a simple find-and-replace migration - just replace all occurrences of `createPeriod` with `period`. The function signatures are identical.
+
+### Merge of createCustomPeriod into period
+
+The `createCustomPeriod` function has been merged into the `period` function in v2.0.0 through function overloading. This reduces the API surface while maintaining all functionality.
+
+#### Before (v1.x)
+```typescript
+import { createCustomPeriod } from '@allystudio/usetemporal';
+
+const customPeriod = createCustomPeriod(startDate, endDate);
+```
+
+#### After (v2.0.0)
+```typescript
+import { period } from '@allystudio/usetemporal';
+
+const customPeriod = period(temporal, { start: startDate, end: endDate });
+```
+
+The `period` function now accepts two signatures:
+- `period(temporal, date, unit)` - Creates a standard period of a specific unit type
+- `period(temporal, { start, end })` - Creates a custom period with arbitrary dates
+
+This is a simple migration - replace `createCustomPeriod(start, end)` with `period(temporal, { start, end })`.
+
+### StableMonth Moved to Calendar Units Package
+
+The `stableMonth` unit has been moved from the core library to the `@usetemporal/calendar-units` package in v2.0.0. This keeps the core library focused on fundamental operations while providing calendar-specific features as an optional enhancement.
+
+#### Before (v1.x)
+```typescript
+import { period, STABLE_MONTH } from '@usetemporal/core';
+
+const stableMonth = period(temporal, 'stableMonth', date);
+// or
+const stableMonth = period(temporal, STABLE_MONTH, date);
+```
+
+#### After (v2.0.0)
+
+Install the calendar units package:
+
+```bash
+npm install @usetemporal/calendar-units
+```
+
+Then use it:
+
+```typescript
+import { period } from '@usetemporal/core';
+import '@usetemporal/calendar-units'; // Registers stableMonth unit
+
+const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value);
+const days = divide(temporal, stableMonth, 'day'); // Always 42 days
+```
+
+#### Manual Implementation (if not using calendar-units)
+```typescript
+// Generate 6-week calendar grid manually
+const month = period(temporal, 'month', date);
+const weeks = divide(temporal, month, 'week');
+
+// Get all weeks that touch this month
+const firstWeek = weeks[0];
+const prevWeek = previous(temporal, firstWeek);
+const allWeeks = [prevWeek, ...weeks];
+
+// Ensure 6 weeks total
+while (allWeeks.length < 6) {
+  const lastWeek = allWeeks[allWeeks.length - 1];
+  allWeeks.push(next(temporal, lastWeek));
+}
+
+// Get all days
+const days = allWeeks.flatMap(week => divide(temporal, week, 'day'));
+```
+
+See [Calendar Units](/extensions/calendar-units) for more details.
+
 ## Migration from Moment.js
 
 ### Basic Date Operations
@@ -29,9 +153,9 @@ const yesterday = moment().subtract(1, "day");
 
 ```javascript
 import { createTemporal } from "@usetemporal/core";
-import { nativeAdapter } from "@usetemporal/adapter-native";
+import { createNativeAdapter } from "@usetemporal/core/native";
 
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 
 // Current time
 const now = temporal.now;
@@ -175,7 +299,7 @@ const days = eachDayOfInterval({
 #### useTemporal
 
 ```javascript
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 
 // Current date
 const now = temporal.now;
@@ -206,11 +330,11 @@ For a smoother migration, use the date-fns adapter:
 
 ```javascript
 import { createTemporal } from "@usetemporal/core";
-import { dateFnsAdapter } from "@usetemporal/adapter-date-fns";
+import { createDateFnsAdapter } from "@usetemporal/core/date-fns";
 import { format } from "date-fns";
 
 const temporal = createTemporal({
-  dateAdapter: dateFnsAdapter,
+  adapter: createDateFnsAdapter(),
 });
 
 // Now you can use date-fns functions on useTemporal dates
@@ -251,7 +375,7 @@ const month = dayjs().month(); // 0-11
 #### useTemporal
 
 ```javascript
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 
 // Current time
 const now = temporal.now;
@@ -307,10 +431,10 @@ const tomorrow = now.plus({ days: 1 });
 
 ```javascript
 import { createTemporal } from "@usetemporal/core";
-import { luxonAdapter } from "@usetemporal/adapter-luxon";
+import { createLuxonAdapter } from "@usetemporal/core/luxon";
 
 const temporal = createTemporal({
-  dateAdapter: luxonAdapter,
+  adapter: createLuxonAdapter(),
   timeZone: "America/New_York", // planned feature
 });
 
@@ -322,7 +446,7 @@ const date = new Date("2024-03-14");
 const day = temporal.periods.day(temporal, { date });
 
 // Format using Luxon through the adapter
-const formatted = luxonAdapter.format(day.start, "yyyy-MM-dd");
+const formatted = temporal.adapter.format(day.start, "yyyy-MM-dd");
 
 // Start of period
 const month = temporal.periods.month(temporal);
@@ -364,7 +488,7 @@ const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 #### useTemporal
 
 ```javascript
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 
 // Current time
 const now = temporal.now;
@@ -425,9 +549,12 @@ function generateCalendar(year, month) {
 ```javascript
 // Simple and clear with useTemporal
 function generateCalendar(temporal) {
-  const stableMonth = temporal.periods.stableMonth(temporal);
-  const days = temporal.divide(stableMonth, "day");
-  return days; // Always 42 days, perfect 6-week grid!
+  const month = temporal.periods.month(temporal);
+  const weeks = temporal.divide(month, "week");
+  
+  // Get all days from all weeks that touch this month
+  const days = weeks.flatMap(week => temporal.divide(week, "day"));
+  return days; // Includes padding days for complete weeks
 }
 ```
 
@@ -488,7 +615,7 @@ function subscribe(fn) {
 // Automatic reactivity
 import { watch } from "@vue/reactivity";
 
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 const month = temporal.periods.month(temporal);
 
 // Automatically updates when date changes
@@ -507,9 +634,11 @@ When migrating to useTemporal:
 1. **Install useTemporal and choose an adapter**
 
    ```bash
-   npm install @usetemporal/core @usetemporal/adapter-native
-   # or with your preferred adapter
-   npm install @usetemporal/core @usetemporal/adapter-luxon luxon
+   npm install @usetemporal/core
+   # or with your preferred adapter (luxon or date-fns)
+   npm install @usetemporal/core luxon
+   # or
+   npm install @usetemporal/core date-fns
    ```
 
 2. **Update imports**
@@ -520,8 +649,7 @@ When migrating to useTemporal:
 
    ```javascript
    const temporal = createTemporal({
-     dateAdapter: yourAdapter,
-     weekStartsOn: 1, // Configure as needed
+     adapter: createNativeAdapter({ weekStartsOn: 1 }), // Configure as needed
    });
    ```
 
@@ -539,7 +667,7 @@ When migrating to useTemporal:
 
 7. **Simplify complex date logic**
    - Replace manual calculations with divide()
-   - Use stableMonth for calendar UIs
+   - Use week-based calendar generation
 
 ## Gradual Migration Strategy
 
@@ -547,7 +675,7 @@ You don't have to migrate everything at once:
 
 ```javascript
 // Phase 1: Use useTemporal for new features
-const temporal = createTemporal({ dateAdapter: nativeAdapter });
+const temporal = createTemporal({ adapter: createNativeAdapter() });
 
 // Phase 2: Keep existing date library for formatting
 import { format } from "date-fns";

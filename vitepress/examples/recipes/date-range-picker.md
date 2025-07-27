@@ -5,7 +5,7 @@ Patterns for implementing date range selection with useTemporal.
 ## Basic Date Range Selection
 
 ```typescript
-import { createTemporal, contains, isSame, createCustomPeriod } from 'usetemporal'
+import { createTemporal, contains, isSame, period } from 'usetemporal'
 
 interface DateRange {
   start: Date | null
@@ -43,7 +43,7 @@ class DateRangePicker {
   // Get selected period
   getSelectedPeriod(): Period | null {
     if (this.range.start && this.range.end) {
-      return createCustomPeriod(this.range.start, this.range.end)
+      return period(this.temporal, { start: this.range.start, end: this.range.end })
     }
     return null
   }
@@ -145,7 +145,7 @@ class DateRangePicker {
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { createTemporal, toPeriod, next, previous, createCustomPeriod } from 'usetemporal'
+import { createTemporal, toPeriod, next, previous, period } from 'usetemporal'
 
 const props = defineProps({
   modelValue: Object // { start: Date, end: Date }
@@ -479,7 +479,7 @@ function getBusinessDayRange(
     current = next(temporal, current)
   }
   
-  return createCustomPeriod(startDate, endDate)
+  return period(temporal, { start: startDate, end: endDate })
 }
 ```
 
@@ -487,7 +487,7 @@ function getBusinessDayRange(
 
 ```jsx
 import { useState, useCallback, useMemo } from 'react'
-import { createTemporal, createCustomPeriod, contains, isSame } from 'usetemporal'
+import { createTemporal, period, contains, isSame } from 'usetemporal'
 
 function useDateRange(constraints = {}) {
   const [temporal] = useState(() => createTemporal({ date: new Date() }))
@@ -508,7 +508,7 @@ function useDateRange(constraints = {}) {
       setRange(newRange)
       setSelecting(false)
       
-      return createCustomPeriod(newRange.start, newRange.end)
+      return period(temporal, { start: newRange.start, end: newRange.end })
     }
     
     return null
@@ -518,8 +518,8 @@ function useDateRange(constraints = {}) {
     if (!range.start) return false
     
     if (range.end) {
-      const period = createCustomPeriod(range.start, range.end)
-      return contains(period, date)
+      const customPeriod = period(temporal, { start: range.start, end: range.end })
+      return contains(customPeriod, date)
     } else if (selecting) {
       // Preview range
       const start = range.start.getTime()
@@ -606,7 +606,7 @@ class LinkedDateInputs {
   
   private updateRange(): void {
     if (this.start && this.end) {
-      const range = createCustomPeriod(this.start, this.end)
+      const range = period(this.temporal, { start: this.start, end: this.end })
       this.onRangeChange(range)
     } else {
       this.onRangeChange(null)
@@ -669,4 +669,4 @@ console.log(`Total days: ${days}, Business days: ${businessDays}`)
 - [Business Days](/examples/recipes/business-days) - Working with business days
 - [Month Calendar](/examples/calendars/month-calendar) - Calendar implementation
 - [contains](/api/operations/contains) - Check date containment
-- [createCustomPeriod](/api/factory-functions/create-custom-period) - Create custom periods
+- [period](/api/operations/period) - Create custom periods

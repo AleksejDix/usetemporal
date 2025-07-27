@@ -17,10 +17,8 @@
 
 ### 🚧 Needs Creation
 
-#### Factory Functions (3 pages)
-1. `createPeriod.md` - Create period of specific type
-2. `createCustomPeriod.md` - Create custom date ranges
-3. `toPeriod.md` - Convert date to period
+#### Factory Functions (1 page)
+1. `period.md` - Create period of specific type or custom date ranges
 
 #### Operations - Time Division (2 pages)
 1. `split.md` - Advanced splitting with options
@@ -56,9 +54,7 @@
 ## Implementation Order
 
 ### Phase 1: Factory Functions (High Priority)
-1. createPeriod
-2. createCustomPeriod
-3. toPeriod
+1. period
 
 ### Phase 2: Core Operations
 1. Split existing navigation.md into next, previous, go

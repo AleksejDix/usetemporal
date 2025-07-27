@@ -38,8 +38,8 @@
 
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue'
-import type { Temporal, Period } from 'usetemporal'
-import { usePeriod, divide, isSame, toPeriod } from 'usetemporal'
+import type { Temporal, Period } from '@allystudio/usetemporal'
+import { usePeriod, divide, isSame, period } from '@allystudio/usetemporal'
 
 const props = defineProps<{
   temporal: Temporal
@@ -79,7 +79,7 @@ function formatDate(date: Date) {
 }
 
 function getDayOfWeek(date: Date) {
-  const dayPeriod = toPeriod(props.temporal, date, 'day')
+  const dayPeriod = period(props.temporal, date, 'day')
 
   if (isSame(props.temporal, dayPeriod, props.temporal.now.value, 'day')) return 'Today'
 

@@ -21,7 +21,7 @@ const hours = divide(temporal, day, 'hour')
 ## 📦 Installation
 
 ```bash
-npm install usetemporal
+npm install @allystudio/usetemporal
 ```
 
 ## 🎯 Quick Start
@@ -29,8 +29,8 @@ npm install usetemporal
 ### Basic Usage
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 // Create temporal instance with adapter
 const temporal = createTemporal({
@@ -61,8 +61,8 @@ const days = divide(temporal, month.value, 'day')
 
 <script setup>
 import { computed } from 'vue'
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const temporal = createTemporal({
   adapter: createNativeAdapter()
@@ -81,8 +81,8 @@ const monthLabel = computed(() =>
 
 ```tsx
 import { useMemo } from 'react'
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 function Calendar() {
   const temporal = useMemo(() => createTemporal({
@@ -119,7 +119,7 @@ function Calendar() {
 
 ```typescript
 import { createTemporal } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createNativeAdapter } from '@usetemporal/core/native'
 
 const temporal = createTemporal({
   adapter: createNativeAdapter(), // Required
@@ -178,21 +178,32 @@ Visit our [documentation site](https://usetemporal.dev) for:
 
 ## 🔌 Date Adapters
 
-Choose your preferred date library:
+> **Important**: Starting with v2.0.0, all adapters are bundled in `@allystudio/usetemporal`. Individual adapter packages are deprecated. See the [migration guide](docs/MIGRATION-ADAPTERS.md) for details.
+
+useTemporal supports multiple date libraries through adapters. Choose the one that fits your needs:
+
+| Adapter | Bundle Size | Timezone | Tree-shakeable | Status |
+|---------|------------|----------|----------------|---------|
+| Native | 0KB | ❌ | ✅ | Stable |
+| date-fns | ~2.1KB | ❌ | ✅ | Stable |
+| Luxon | ~2.3KB | ✅ | ✅ | Stable |
+| Temporal | ~3KB | ✅ | ✅ | Polyfill |
 
 ```bash
 # Native JavaScript Date (included by default)
-npm install usetemporal
+npm install @allystudio/usetemporal
 
 # With date-fns
-npm install @usetemporal/adapter-date-fns date-fns
+npm install @allystudio/usetemporal date-fns
 
-# With Luxon
-npm install @usetemporal/adapter-luxon luxon
+# With Luxon  
+npm install @allystudio/usetemporal luxon
 
 # With Temporal API (future)
-npm install @usetemporal/adapter-temporal
+npm install @allystudio/usetemporal @js-temporal/polyfill
 ```
+
+📖 See our [comprehensive adapter guide](https://usetemporal.dev/guide/adapters/) for detailed comparisons, selection help, and migration guides.
 
 ## 🎯 Why useTemporal?
 

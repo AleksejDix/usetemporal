@@ -291,6 +291,5 @@ const eventsByDay = computed(() => {
 ## See Also
 
 - [Basic Calendar Example](/examples/calendar)
-- [Stable Month Calendar](/examples/stable-month-calendar)
 - [divide() API Reference](/api/operations/divide)
 - [Calendar Systems History](/resources/calendar-systems-history)

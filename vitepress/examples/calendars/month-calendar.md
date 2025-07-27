@@ -2,6 +2,10 @@
 
 A complete month calendar implementation using useTemporal.
 
+:::tip Stable Month Grid
+For a consistent 6-week (42-day) calendar grid, check out the `stableMonth` unit in the [@usetemporal/calendar-units](https://www.npmjs.com/package/@usetemporal/calendar-units) package. It provides a cleaner solution than the manual implementation shown below.
+:::
+
 ## Basic Month Calendar
 
 ```vue
@@ -153,6 +157,81 @@ const getDayClasses = (day) => ({
 
 For a consistent 6-week calendar grid that always shows the same number of cells:
 
+### Using @usetemporal/calendar-units (Recommended)
+
+Install the calendar units package:
+
+```bash
+npm install @usetemporal/calendar-units
+```
+
+Then use the `stableMonth` unit:
+
+```vue
+<template>
+  <div class="stable-calendar">
+    <div class="calendar-header">
+      <button @click="previousMonth">‹</button>
+      <h2>{{ monthName }}</h2>
+      <button @click="nextMonth">›</button>
+    </div>
+    
+    <div class="calendar-grid">
+      <div 
+        v-for="day in days" 
+        :key="day.date.toISOString()"
+        :class="getDayClasses(day)"
+      >
+        {{ day.date.getDate() }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { period, divide, next, previous } from 'usetemporal'
+import '@usetemporal/calendar-units' // Registers stableMonth unit
+
+const props = defineProps({
+  temporal: Object
+})
+
+// Create stable month (always 42 days)
+const stableMonth = computed(() => 
+  period(props.temporal, 'stableMonth', props.temporal.browsing.value)
+)
+
+// Get all 42 days
+const days = computed(() => 
+  divide(props.temporal, stableMonth.value, 'day')
+)
+
+const monthName = computed(() => 
+  props.temporal.browsing.value.date.toLocaleDateString('en', { 
+    month: 'long', 
+    year: 'numeric' 
+  })
+)
+
+const getDayClasses = (day) => ({
+  'calendar-day': true,
+  'current-month': day.date.getMonth() === props.temporal.browsing.value.date.getMonth(),
+  'other-month': day.date.getMonth() !== props.temporal.browsing.value.date.getMonth()
+})
+
+const previousMonth = () => {
+  props.temporal.browsing.value = previous(props.temporal, props.temporal.browsing.value)
+}
+
+const nextMonth = () => {
+  props.temporal.browsing.value = next(props.temporal, props.temporal.browsing.value)
+}
+</script>
+```
+
+### Manual Implementation (Legacy)
+
 ```vue
 <template>
   <div class="stable-calendar">
@@ -173,13 +252,25 @@ For a consistent 6-week calendar grid that always shows the same number of cells
 <script setup>
 // ... imports
 
-const stableMonth = computed(() => 
-  createPeriod(props.temporal, 'stableMonth', month.value)
-)
-
-const stableDays = computed(() => 
-  divide(props.temporal, stableMonth.value, 'day')
-)
+// Generate 6-week calendar grid
+const stableDays = computed(() => {
+  const monthPeriod = month.value
+  const weeks = divide(props.temporal, monthPeriod, 'week')
+  
+  // Get all weeks that touch this month
+  const firstWeek = weeks[0]
+  const prevWeek = previous(props.temporal, firstWeek)
+  const allWeeks = [prevWeek, ...weeks]
+  
+  // Ensure 6 weeks total
+  while (allWeeks.length < 6) {
+    const lastWeek = allWeeks[allWeeks.length - 1]
+    allWeeks.push(next(props.temporal, lastWeek))
+  }
+  
+  // Get all days from the weeks
+  return allWeeks.flatMap(week => divide(props.temporal, week, 'day'))
+})
 
 const getStableDayClasses = (day) => ({
   'calendar-day': true,

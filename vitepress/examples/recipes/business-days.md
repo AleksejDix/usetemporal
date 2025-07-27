@@ -80,7 +80,7 @@ function isHoliday(date: Date): boolean {
 ## Business Day Navigation
 
 ```typescript
-import { createTemporal, toPeriod } from 'usetemporal'
+import { createTemporal, toPeriod, period } from 'usetemporal'
 
 // Navigate by business days
 function addBusinessDays(
@@ -107,7 +107,7 @@ function getBusinessDaysBetween(
   startDate: Date,
   endDate: Date
 ): Period[] {
-  const range = createCustomPeriod(startDate, endDate)
+  const range = period(temporal, { start: startDate, end: endDate })
   const allDays = divide(temporal, range, 'day')
   
   return allDays.filter(isBusinessDay)

@@ -1,5 +1,9 @@
 # Date Adapters
 
+::: tip Comprehensive Documentation
+This page provides a quick overview. For detailed adapter comparisons, selection guides, and migration help, see our **[comprehensive adapter documentation](./adapters/index.md)**.
+:::
+
 useTemporal supports multiple date libraries through a simple adapter pattern.
 
 ## Available Adapters
@@ -9,7 +13,7 @@ useTemporal supports multiple date libraries through a simple adapter pattern.
 Zero dependencies, works everywhere:
 
 ```typescript
-import { createTemporal } from 'usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
 
 const temporal = createTemporal()
 // Native adapter is included by default
@@ -20,12 +24,12 @@ const temporal = createTemporal()
 For advanced date operations:
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-date-fns date-fns
+npm install @allystudio/usetemporal date-fns
 ```
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createDateFnsAdapter } from '@usetemporal/adapter-date-fns'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createDateFnsAdapter } from '@allystudio/usetemporal/date-fns'
 import { enUS } from 'date-fns/locale'
 
 const temporal = createTemporal({
@@ -41,12 +45,12 @@ const temporal = createTemporal({
 For timezone support:
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-luxon luxon
+npm install @allystudio/usetemporal luxon
 ```
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createLuxonAdapter } from '@usetemporal/adapter-luxon'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createLuxonAdapter } from '@allystudio/usetemporal/luxon'
 
 const temporal = createTemporal({
   adapter: createLuxonAdapter({
@@ -61,12 +65,12 @@ const temporal = createTemporal({
 Future-proof with the upcoming Temporal API:
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-temporal
+npm install @allystudio/usetemporal @js-temporal/polyfill
 ```
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createTemporalAdapter } from '@usetemporal/adapter-temporal'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createTemporalAdapter } from '@allystudio/usetemporal/temporal'
 
 const temporal = createTemporal({
   adapter: createTemporalAdapter()
@@ -118,6 +122,8 @@ const temporal = createTemporal({ adapter: myAdapter })
 
 ## Next Steps
 
+- **[Adapter Comparison & Selection Guide](./adapters/index.md)** - Detailed feature matrix and performance data
+- **[Adapter Selection Helper](./adapters/selection.md)** - Interactive guide to choose the right adapter
+- **[Migration Guide](./adapters/migration.md)** - Migrate from other libraries or switch adapters
 - Learn about [TypeScript Support](/guide/typescript)
 - See [Performance](/guide/performance) comparisons
-- Check [Migration Guide](/guide/migration) for switching adapters

@@ -14,14 +14,13 @@ type Unit =
   | 'hour'
   | 'minute'
   | 'second'
-  | 'stableMonth'
   | 'custom'
   | (string & {})  // Extensible for custom units
 ```
 
 ## Description
 
-The `Unit` type represents all possible time units in useTemporal. It includes standard calendar units, special units like `stableMonth`, and is extensible to support custom units through the unit plugin system.
+The `Unit` type represents all possible time units in useTemporal. It includes standard calendar units, special units, and is extensible to support custom units through the unit plugin system.
 
 ## Standard Units
 
@@ -41,8 +40,7 @@ The `Unit` type represents all possible time units in useTemporal. It includes s
 
 ### Special Units
 
-- **`stableMonth`** - 6-week calendar grid for consistent month displays
-- **`custom`** - Arbitrary date ranges created with `createCustomPeriod`
+- **`custom`** - Arbitrary date ranges created with `period({ start, end })`
 
 ## Usage Examples
 
@@ -52,8 +50,8 @@ The `Unit` type represents all possible time units in useTemporal. It includes s
 // All operations accept Unit type
 divide(temporal, yearPeriod, 'month')
 split(temporal, yearPeriod, { by: 'week' })
-createPeriod(temporal, monthPeriod.date, 'day')
-createPeriod(temporal, dayPeriod.date, 'month')
+period(temporal, monthPeriod.date, 'day')
+period(temporal, dayPeriod.date, 'month')
 isSame(temporal, periodA, periodB, 'day')
 ```
 
@@ -61,7 +59,7 @@ isSame(temporal, periodA, periodB, 'day')
 
 ```typescript
 // Create periods of specific units
-createPeriod(temporal, 'year', somePeriod)
+period(temporal, 'year', somePeriod)
 toPeriod(temporal, new Date(), 'month')
 usePeriod(temporal, 'week')
 ```
@@ -84,14 +82,14 @@ Units have a natural hierarchy from largest to smallest:
 year
   └── quarter (3 months)
       └── month
-          └── week* / stableMonth*
+          └── week*
               └── day
                   └── hour
                       └── minute
                           └── second
 ```
 
-*Note: weeks and stableMonth can overlap month boundaries
+*Note: weeks can overlap month boundaries
 
 ## Extensibility
 
@@ -125,21 +123,12 @@ toPeriod(temporal, date, UNITS.DAY)
 
 ## Special Unit Behaviors
 
-### StableMonth
-
-The `stableMonth` unit creates a 6-week grid:
-
-```typescript
-const stableMonth = createPeriod(temporal, 'stableMonth', period)
-// Always returns exactly 42 days (6 weeks)
-```
-
 ### Custom
 
 The `custom` unit represents arbitrary date ranges:
 
 ```typescript
-const customPeriod = createCustomPeriod(start, end)
+const customPeriod = period(temporal, { start, end })
 console.log(customPeriod.type) // 'custom'
 
 // Custom periods maintain their duration when navigating
@@ -175,7 +164,7 @@ type AdapterUnit =
   | 'second'
 ```
 
-Custom units and `stableMonth` are handled by useTemporal internally.
+Custom units are handled by useTemporal internally.
 
 ## See Also
 

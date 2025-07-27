@@ -17,9 +17,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@usetemporal/adapter-date-fns": "file:../../packages/adapter-date-fns",
-    "@usetemporal/adapter-luxon": "file:../../packages/adapter-luxon",
-    "usetemporal": "file:../../packages/usetemporal",
+    "@allystudio/usetemporal": "file:../../packages/usetemporal",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
   },

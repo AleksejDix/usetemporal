@@ -39,4 +39,4 @@ console.log(year.value.date)
 
 - [Reactive Time Units](/guide/reactive-time-units) - How reactivity works
 - [Period Type](/api/types/period) - Period interface
-- [createPeriod](/api/factory-functions/create-period) - Non-reactive alternative
+- [period](/api/factory-functions/create-period) - Non-reactive alternative

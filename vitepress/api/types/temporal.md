@@ -106,14 +106,14 @@ watch(temporal.browsing, (newPeriod, oldPeriod) => {
 })
 
 // Update browsing period
-temporal.browsing.value = createPeriod(temporal, 'month', someDate)
+temporal.browsing.value = period(temporal, 'month', someDate)
 ```
 
 ### Working with Now
 
 ```typescript
 // Manually update "now"
-temporal.now.value = createPeriod(temporal, 'minute', new Date())
+temporal.now.value = period(temporal, 'minute', new Date())
 
 // Check if a period is today
 const isToday = isSame(temporal, somePeriod, temporal.now.value, 'day')
@@ -146,7 +146,7 @@ function navigateCalendar(direction: 'next' | 'previous') {
 
 ```typescript
 function goToToday() {
-  temporal.browsing.value = createPeriod(
+  temporal.browsing.value = period(
     temporal, 
     temporal.browsing.value.type,
     temporal.now.value.date

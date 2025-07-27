@@ -42,7 +42,7 @@ Time naturally forms a hierarchy. The `divide()` pattern embraces this:
 year
   └── quarter (3 months)
       └── month
-          └── week* / stableMonth*
+          └── week*
               └── day
                   └── hour
                       └── minute
@@ -242,9 +242,12 @@ The divide function has a built-in safety limit of 1000 periods to prevent memor
 
 ```typescript
 // Divide custom periods like sprints
-const sprint = createCustomPeriod(
-  new Date('2024-01-01'),
-  new Date('2024-01-14')
+const sprint = period(
+  temporal,
+  {
+    start: new Date('2024-01-01'),
+    end: new Date('2024-01-14')
+  }
 )
 
 const sprintDays = divide(temporal, sprint, 'day')

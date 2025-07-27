@@ -25,7 +25,6 @@ const UNITS = {
   SECOND: 'second' as const,
   
   // Special units
-  STABLE_MONTH: 'stableMonth' as const,
   CUSTOM: 'custom' as const
 } as const
 ```
@@ -39,10 +38,10 @@ The `UNITS` object provides type-safe constants for all built-in time units. Usi
 ### Basic Usage
 
 ```typescript
-import { UNITS, divide, createPeriod } from '@usetemporal/core'
+import { UNITS, divide, period } from '@usetemporal/core'
 
 // Using constants instead of strings
-const year = createPeriod(temporal, UNITS.YEAR, date)
+const year = period(temporal, UNITS.YEAR, date)
 const months = divide(temporal, year, UNITS.MONTH)
 const weeks = divide(temporal, year, UNITS.WEEK)
 ```
@@ -59,7 +58,7 @@ const isSameDay = isSame(temporal, periodA, periodB, UNITS.DAY)
 const isSameMonth = isSame(temporal, periodA, periodB, UNITS.MONTH)
 
 // Navigation between units
-const monthView = createPeriod(temporal, dayPeriod.date, UNITS.MONTH)
+const monthView = period(temporal, dayPeriod.date, UNITS.MONTH)
 const hours = divide(temporal, dayPeriod, UNITS.HOUR)
 ```
 
@@ -91,12 +90,12 @@ function processUnit(unit: Unit) {
 
 ```typescript
 // String literals work but have drawbacks
-createPeriod(temporal, 'month', date)  // No autocomplete
-createPeriod(temporal, 'mnth', date)   // Typo not caught until runtime
+period(temporal, 'month', date)  // No autocomplete
+period(temporal, 'mnth', date)   // Typo not caught until runtime
 
 // Constants provide safety and convenience
-createPeriod(temporal, UNITS.MONTH, date) // Autocomplete + type safety
-createPeriod(temporal, UNITS.MNTH, date)  // TypeScript error
+period(temporal, UNITS.MONTH, date) // Autocomplete + type safety
+period(temporal, UNITS.MNTH, date)  // TypeScript error
 ```
 
 ## Using with Custom Units
@@ -121,7 +120,7 @@ declare module '@usetemporal/core' {
 }
 
 // Use consistently
-const sprint = createPeriod(temporal, CUSTOM_UNITS.SPRINT, date)
+const sprint = period(temporal, CUSTOM_UNITS.SPRINT, date)
 ```
 
 ## Benefits
@@ -132,7 +131,7 @@ IDEs can suggest available units:
 
 ```typescript
 // Type UNITS. and see all options
-const period = createPeriod(temporal, UNITS.█)
+const period = period(temporal, UNITS.█)
 // IDE shows: YEAR, QUARTER, MONTH, WEEK, DAY, etc.
 ```
 
@@ -161,7 +160,7 @@ Enforces consistent unit references:
 
 ```typescript
 // Team members use the same constants
-// No mix of 'stableMonth' vs 'stable-month' vs 'STABLE_MONTH'
+// No mix of different string variations
 ```
 
 ## Common Patterns

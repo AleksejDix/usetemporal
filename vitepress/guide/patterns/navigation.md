@@ -209,9 +209,12 @@ function InfiniteCalendar({ temporal }) {
 Navigation works seamlessly with custom periods:
 
 ```typescript
-const sprint = createCustomPeriod(
-  new Date('2024-01-01'),
-  new Date('2024-01-14')
+const sprint = period(
+  temporal,
+  {
+    start: new Date('2024-01-01'),
+    end: new Date('2024-01-14')
+  }
 )
 
 // Next sprint (same duration)

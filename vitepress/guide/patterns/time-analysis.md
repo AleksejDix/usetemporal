@@ -11,14 +11,17 @@ The `split` operation provides three powerful approaches for dividing periods:
 Divide any period into equal parts:
 
 ```typescript
-import { createTemporal, split, createCustomPeriod } from 'usetemporal'
+import { createTemporal, split, period } from 'usetemporal'
 
 const temporal = createTemporal({ date: new Date() })
 
 // Split a quarter into 3 equal parts
-const quarter = createCustomPeriod(
-  new Date('2024-01-01'),
-  new Date('2024-03-31')
+const quarter = period(
+  temporal,
+  {
+    start: new Date('2024-01-01'),
+    end: new Date('2024-03-31')
+  }
 )
 
 const thirds = split(temporal, quarter, { count: 3 })
@@ -63,9 +66,12 @@ Split project timelines into manageable phases:
 
 ```typescript
 // Split a project timeline into phases
-const project = createCustomPeriod(
-  new Date('2024-01-01'),
-  new Date('2024-12-31')
+const project = period(
+  temporal,
+  {
+    start: new Date('2024-01-01'),
+    end: new Date('2024-12-31')
+  }
 )
 
 // Equal phases
@@ -88,9 +94,12 @@ Process large date ranges in batches:
 
 ```typescript
 // Split data range for batch processing
-const dataRange = createCustomPeriod(
-  new Date('2023-01-01'),
-  new Date('2023-12-31')
+const dataRange = period(
+  temporal,
+  {
+    start: new Date('2023-01-01'),
+    end: new Date('2023-12-31')
+  }
 )
 
 // Process in monthly batches
@@ -113,9 +122,12 @@ await Promise.all(
 Analyze trends over different time windows:
 
 ```typescript
-const yearData = createCustomPeriod(
-  new Date('2023-01-01'),
-  new Date('2023-12-31')
+const yearData = period(
+  temporal,
+  {
+    start: new Date('2023-01-01'),
+    end: new Date('2023-12-31')
+  }
 )
 
 // Weekly analysis
@@ -146,12 +158,15 @@ quarters.forEach((quarter, i) => {
 When splitting by count, the last period accounts for rounding:
 
 ```typescript
-const period = createCustomPeriod(
-  new Date('2024-01-01'),
-  new Date('2024-01-10') // 10 days
+const timePeriod = period(
+  temporal,
+  {
+    start: new Date('2024-01-01'),
+    end: new Date('2024-01-10') // 10 days
+  }
 )
 
-const parts = split(temporal, period, { count: 3 })
+const parts = split(temporal, timePeriod, { count: 3 })
 // parts[0]: ~3.33 days
 // parts[1]: ~3.33 days  
 // parts[2]: ~3.34 days (includes remainder)
@@ -279,13 +294,13 @@ function findGaps(periods: Period[], container: Period): Period[] {
   
   for (const period of sorted) {
     if (period.start > lastEnd) {
-      gaps.push(createCustomPeriod(lastEnd, period.start))
+      gaps.push(period(temporal, { start: lastEnd, end: period.start }))
     }
     lastEnd = period.end > lastEnd ? period.end : lastEnd
   }
   
   if (lastEnd < container.end) {
-    gaps.push(createCustomPeriod(lastEnd, container.end))
+    gaps.push(period(temporal, { start: lastEnd, end: container.end }))
   }
   
   return gaps
@@ -293,9 +308,12 @@ function findGaps(periods: Period[], container: Period): Period[] {
 
 // Find free time slots
 const meetings = [/* array of meeting periods */]
-const workDay = createCustomPeriod(
-  new Date('2024-01-15T09:00:00'),
-  new Date('2024-01-15T17:00:00')
+const workDay = period(
+  temporal,
+  {
+    start: new Date('2024-01-15T09:00:00'),
+    end: new Date('2024-01-15T17:00:00')
+  }
 )
 const freeSlots = findGaps(meetings, workDay)
 ```
