@@ -143,9 +143,18 @@ src/
 │   └── utils/
 │       ├── isToday.ts
 │       └── isToday.test.ts
-├── __tests__/                            # Integration tests only
+├── calendar/
+│   ├── stableMonth.ts
+│   ├── stableMonth.test.ts               # Colocated calendar tests
+│   ├── stableYear.ts
+│   └── stableYear.test.ts
+├── composables/
+│   ├── usePeriods.ts
+│   └── reactivity.test.ts                # Reactivity integration tests
+├── __tests__/                            # Integration/regression only
 │   ├── integration/
-│   │   └── exports.test.ts
+│   │   ├── exports.test.ts
+│   │   └── integration.test.ts
 │   └── regression/
 │       └── regression.test.ts
 └── test/                                 # Test utilities only

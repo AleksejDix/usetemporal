@@ -74,10 +74,12 @@ packages/usetemporal/
 │   ├── calendar/                 # Calendar units extension
 │   │   ├── index.ts
 │   │   ├── stableMonth.ts
-│   │   └── __tests__/
+│   │   ├── stableMonth.test.ts   # Colocated calendar tests
+│   │   ├── stableYear.ts
+│   │   └── stableYear.test.ts
 │   ├── composables/
 │   │   ├── usePeriods.ts        # Reactive period composable
-│   │   └── usePeriods.test.ts
+│   │   └── reactivity.test.ts    # Reactivity integration tests
 │   ├── operations/
 │   │   ├── index.ts             # Operations barrel export
 │   │   ├── period.ts            # Period creation (renamed from createPeriod)
@@ -103,9 +105,15 @@ packages/usetemporal/
 │   │   ├── multi-adapter-test-template.ts
 │   │   ├── run-adapter-compliance.test.ts
 │   │   └── shared-adapter-tests.ts
-│   └── __tests__/               # Additional test files
-│       ├── unit-package-integration.test.ts.skip
-│       └── unit-plugin-system.test.ts.skip
+│   └── __tests__/               # Integration and regression tests
+│       ├── integration/
+│       │   ├── exports.test.ts
+│       │   ├── integration.test.ts  # Calendar integration
+│       │   ├── unit-package-integration.test.ts.skip
+│       │   ├── unit-plugin-system.test.ts.skip
+│       │   └── unit-type-augmentation.test.ts.skip
+│       └── regression/
+│           └── regression.test.ts
 ├── dist/                        # Build output (git-ignored)
 ├── package.json                 # Package manifest
 ├── tsconfig.json               # TypeScript config
@@ -261,23 +269,42 @@ Each package includes:
 
 ## Test File Organization
 
-Tests are colocated with source:
+Tests are colocated with source files following modern best practices:
 
 ```
 src/
 ├── operations/
 │   ├── divide.ts
-│   ├── divide.test.ts          # Unit tests
-│   └── divide.bench.ts         # Performance tests
+│   ├── divide.test.ts                    # Unit tests
+│   ├── divide.multi-adapter.test.ts      # Multi-adapter tests
+│   └── utils/
+│       ├── isToday.ts
+│       └── isToday.test.ts
+├── calendar/
+│   ├── stableMonth.ts
+│   ├── stableMonth.test.ts               # Colocated with source
+│   ├── stableYear.ts
+│   └── stableYear.test.ts
+├── composables/
+│   ├── usePeriods.ts
+│   └── reactivity.test.ts                # Integration test
+├── __tests__/                            # Non-colocated tests
+│   ├── integration/
+│   │   ├── exports.test.ts               # Export verification
+│   │   └── integration.test.ts           # Calendar integration
+│   └── regression/
+│       └── regression.test.ts            # Bug prevention tests
+└── test/                                 # Test utilities
+    └── multi-adapter-test-template.ts
 ```
 
-Multi-adapter tests:
-
-```
-src/
-├── operations/
-│   └── utils.multi-adapter.test.ts
-```
+**Test Structure (Post Story 005.01):**
+- **20 test files** with **722 tests**
+- **Unit tests**: Colocated with source (e.g., `divide.test.ts`)
+- **Multi-adapter tests**: Colocated (e.g., `divide.multi-adapter.test.ts`)
+- **Integration tests**: Centralized in `__tests__/integration/`
+- **Regression tests**: Centralized in `__tests__/regression/`
+- **Test utilities**: Located in `test/` directory
 
 ## Build Outputs
 
