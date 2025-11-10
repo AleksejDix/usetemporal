@@ -30,14 +30,14 @@ export interface UnitRegistry {
   hour: true;
   minute: true;
   second: true;
-  custom: true;
 }
 
 /**
  * Unified type for all time units
  * Extensible via module augmentation of UnitRegistry
  */
-export type Unit = keyof UnitRegistry | (string & {});
+export type AdapterUnit = keyof UnitRegistry;
+export type Unit = AdapterUnit | "custom" | "stableMonth" | "stableYear" | (string & {});
 
 /**
  * All available time unit constants grouped for better autocomplete and imports.
@@ -112,7 +112,7 @@ export interface AdapterOptions {
 /**
  * Known adapter units (units that adapters must implement)
  */
-export type AdapterUnit = Exclude<keyof UnitRegistry, "custom">;
+
 
 /**
  * Simplified functional adapter interface (RFC 015)

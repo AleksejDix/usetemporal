@@ -1,9 +1,7 @@
 /**
  * StableMonth unit - Always returns a 42-day (6-week) grid for consistent calendar layouts
  */
-
-import { defineUnit } from "../unit-registry";
-import type { Adapter } from "../types";
+import type { Adapter, Period } from "../types";
 
 /**
  * Helper to calculate the stable month grid boundaries
@@ -28,43 +26,17 @@ function getStableMonthBounds(date: Date, adapter: Adapter, weekStartsOn: number
   return { start: gridStart, end: gridEndTime };
 }
 
-// Define the stableMonth unit
-defineUnit("stableMonth", {
-  period(date: Date, adapter: Adapter) {
-    // For stableMonth, we return the 42-day grid boundaries
-    // Note: weekStartsOn defaults to 1 (Monday) here, but will use temporal's value in divide
-    return getStableMonthBounds(date, adapter, 1);
-  },
-  
-  validate(period) {
-    // A stableMonth is valid if it spans exactly 42 days
-    const days = Math.round((period.end.getTime() - period.start.getTime()) / (1000 * 60 * 60 * 24));
-    return days === 42; // 42 days total
-  },
-  
-  divisions: ["week", "day"],
-  mergesTo: "year",
-});
-
 /**
- * Helper function to properly divide a stableMonth with correct weekStartsOn
- * This should be used instead of the standard divide when you need the proper weekStartsOn
+ * Creates a "stable month" period, which is a 6-week (42-day) grid
+ * that contains the given month, useful for calendar displays.
  */
-export function createStableMonth(temporal: any, date: Date): any {
-  const { adapter, weekStartsOn } = temporal;
+export function createStableMonth(adapter: Adapter, weekStartsOn: number, date: Date): Period {
   const bounds = getStableMonthBounds(date, adapter, weekStartsOn);
   
   return {
     start: bounds.start,
     end: bounds.end,
-    type: "stableMonth",
+    type: "stableMonth", // This is now a custom string type
     date: adapter.startOf(date, "month"), // Reference date is the actual month start
   };
-}
-
-// TypeScript module augmentation
-declare module "@allystudio/usetemporal" {
-  interface UnitRegistry {
-    stableMonth: true;
-  }
 }

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createTemporal } from "../createTemporal";
 import { createNativeAdapter } from "../adapters/native";
-import { ref, computed, effect, isRef, reactive, toRaw } from "@vue/reactivity";
-import { next, previous, go, divide, merge } from "../operations";
+import { ref, computed, effect, isRef, reactive } from "@vue/reactivity";
+import { next, go, divide } from "../operations";
 import { usePeriod } from "./usePeriods";
 import type { Period, Adapter } from "../types";
 
@@ -35,7 +35,7 @@ describe("Vue Reactivity Integration", () => {
 
       // Navigate forward
       const monthPeriod = usePeriod(temporal, "month");
-      const nextMonth = next(temporal, monthPeriod.value);
+      const nextMonth = next(temporal.adapter, monthPeriod.value);
       temporal.browsing.value = nextMonth;
 
       expect(effectCount).toBe(2);
@@ -90,7 +90,7 @@ describe("Vue Reactivity Integration", () => {
 
       // Navigate to March
       const monthPeriod = usePeriod(temporal, "month");
-      temporal.browsing.value = go(temporal, monthPeriod.value, 2);
+      temporal.browsing.value = go(temporal.adapter, monthPeriod.value, 2);
 
       expect(currentMonth.value).toBe(2);
       expect(monthName.value).toBe("Mar");
@@ -120,7 +120,7 @@ describe("Vue Reactivity Integration", () => {
       expect(effectCount).toBe(1);
 
       // Navigate to next year
-      temporal.browsing.value = go(temporal, yearPeriod.value, 1);
+      temporal.browsing.value = go(temporal.adapter, yearPeriod.value, 1);
 
       expect(effectCount).toBe(2);
       expect(yearPeriod.value.date.getFullYear()).toBe(2025);
@@ -149,7 +149,7 @@ describe("Vue Reactivity Integration", () => {
       });
 
       // Navigate forward  
-      temporal.browsing.value = next(temporal, month.value);
+      temporal.browsing.value = next(temporal.adapter, month.value);
 
       expect(periodInfo.value.month).toBe(1);
       expect(periodInfo.value.year).toBe(2024);
@@ -167,11 +167,11 @@ describe("Vue Reactivity Integration", () => {
       const dividedPeriods = computed(() => {
         const period = currentPeriod.value;
         if (period.type === "year") {
-          return divide(temporal, period, "month");
+          return divide(temporal.adapter, period, "month");
         } else if (period.type === "month") {
-          return divide(temporal, period, "week");
+          return divide(temporal.adapter, period, "week");
         } else if (period.type === "week") {
-          return divide(temporal, period, "day");
+          return divide(temporal.adapter, period, "day");
         }
         return [period];
       });
@@ -212,7 +212,7 @@ describe("Vue Reactivity Integration", () => {
 
       // Select some days
       const monthPeriod = usePeriod(temporal, "month").value;
-      const days = divide(temporal, monthPeriod, "day");
+      const days = divide(temporal.adapter, monthPeriod, "day");
       selectedPeriods.value = days.slice(0, 7); // First week
 
       expect(selectionInfo.value.count).toBe(7);
@@ -244,7 +244,7 @@ describe("Vue Reactivity Integration", () => {
 
       // Update should trigger effect
       const dayPeriod = usePeriod(temporal, "day").value;
-      temporal.browsing.value = next(temporal, dayPeriod);
+      temporal.browsing.value = next(temporal.adapter, dayPeriod);
       
       expect(effectCount).toBeGreaterThan(initialCount);
       const countBeforeStop = effectCount;
@@ -253,7 +253,7 @@ describe("Vue Reactivity Integration", () => {
       runner.effect.stop();
 
       // Further updates should not trigger effect
-      temporal.browsing.value = next(temporal, temporal.browsing.value);
+      temporal.browsing.value = next(temporal.adapter, temporal.browsing.value);
       
       expect(effectCount).toBe(countBeforeStop);
     });
@@ -335,7 +335,7 @@ describe("Vue Reactivity Integration", () => {
                           calendarState.view === "month" ? "day" :
                           calendarState.view === "week" ? "day" : "hour";
         
-        const children = divide(temporal, period, childUnit);
+        const children = divide(temporal.adapter, period, childUnit);
         
         return {
           periodType: period.type,
@@ -368,7 +368,7 @@ describe("Vue Reactivity Integration", () => {
       const highlightedDate = ref(new Date(2024, 0, 20));
       
       const periods = computed(() => {
-        return divide(temporal, usePeriod(temporal, "month").value, "day");
+        return divide(temporal.adapter, usePeriod(temporal, "month").value, "day");
       });
 
       const highlightedPeriods = computed(() => {
@@ -403,7 +403,7 @@ describe("Vue Reactivity Integration", () => {
 
       // Trigger multiple updates
       for (let i = 0; i < 10; i++) {
-        temporal.browsing.value = next(temporal, temporal.browsing.value);
+        temporal.browsing.value = next(temporal.adapter, temporal.browsing.value);
       }
 
       const duration = performance.now() - start;

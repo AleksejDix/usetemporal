@@ -1,15 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
-import { createTemporal } from "../createTemporal";
 
 withAllAdapters("period", (adapter) => {
-  const temporal = createTemporal({ adapter, date: new Date(2024, 0, 1) });
-
   describe("period creation", () => {
     it("should create year periods correctly", () => {
       const date = new Date(2024, 5, 15, 14, 30, 45);
-      const year = period(temporal, date, "year");
+      const year = period(adapter, date, "year");
       
       expect(year.type).toBe("year");
       expect(year.start.getFullYear()).toBe(2024);
@@ -29,7 +26,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create month periods correctly", () => {
       const date = new Date(2024, 1, 15); // February
-      const month = period(temporal, date, "month");
+      const month = period(adapter, date, "month");
       
       expect(month.type).toBe("month");
       expect(month.start.getMonth()).toBe(1);
@@ -40,7 +37,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create week periods correctly", () => {
       const date = new Date(2024, 0, 10); // Wednesday
-      const week = period(temporal, date, "week");
+      const week = period(adapter, date, "week");
       
       expect(week.type).toBe("week");
       // Week should start on Monday (weekStartsOn: 1)
@@ -54,7 +51,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create day periods correctly", () => {
       const date = new Date(2024, 0, 15, 14, 30, 45);
-      const day = period(temporal, date, "day");
+      const day = period(adapter, date, "day");
       
       expect(day.type).toBe("day");
       expect(day.start.getDate()).toBe(15);
@@ -70,7 +67,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create hour periods correctly", () => {
       const date = new Date(2024, 0, 15, 14, 30, 45);
-      const hour = period(temporal, date, "hour");
+      const hour = period(adapter, date, "hour");
       
       expect(hour.type).toBe("hour");
       expect(hour.start.getHours()).toBe(14);
@@ -84,7 +81,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create minute periods correctly", () => {
       const date = new Date(2024, 0, 15, 14, 30, 45);
-      const minute = period(temporal, date, "minute");
+      const minute = period(adapter, date, "minute");
       
       expect(minute.type).toBe("minute");
       expect(minute.start.getMinutes()).toBe(30);
@@ -96,7 +93,7 @@ withAllAdapters("period", (adapter) => {
 
     it("should create second periods correctly", () => {
       const date = new Date(2024, 0, 15, 14, 30, 45, 500);
-      const second = period(temporal, date, "second");
+      const second = period(adapter, date, "second");
       
       expect(second.type).toBe("second");
       expect(second.start.getSeconds()).toBe(45);
@@ -108,26 +105,26 @@ withAllAdapters("period", (adapter) => {
 
     it("should handle month boundaries correctly", () => {
       // Test February in non-leap year
-      const feb2023 = period(temporal, new Date(2023, 1, 15), "month");
+      const feb2023 = period(adapter, new Date(2023, 1, 15), "month");
       expect(feb2023.end.getDate()).toBe(28);
       
       // Test months with 30 days
-      const april = period(temporal, new Date(2024, 3, 15), "month");
+      const april = period(adapter, new Date(2024, 3, 15), "month");
       expect(april.end.getDate()).toBe(30);
       
       // Test months with 31 days
-      const january = period(temporal, new Date(2024, 0, 15), "month");
+      const january = period(adapter, new Date(2024, 0, 15), "month");
       expect(january.end.getDate()).toBe(31);
     });
 
     it("should handle year boundaries correctly", () => {
       const newYearsEve = new Date(2023, 11, 31, 23, 59, 59);
-      const day = period(temporal, newYearsEve, "day");
+      const day = period(adapter, newYearsEve, "day");
       
       expect(day.start.getFullYear()).toBe(2023);
       expect(day.end.getFullYear()).toBe(2023);
       
-      const week = period(temporal, newYearsEve, "week");
+      const week = period(adapter, newYearsEve, "week");
       // Week might span across years
       expect(week.start.getTime()).toBeLessThanOrEqual(newYearsEve.getTime());
       expect(week.end.getTime()).toBeGreaterThanOrEqual(newYearsEve.getTime());
@@ -138,7 +135,7 @@ withAllAdapters("period", (adapter) => {
       const units = ["year", "month", "week", "day", "hour", "minute", "second"] as const;
       
       units.forEach(unit => {
-        const p = period(temporal, date, unit);
+        const p = period(adapter, date, unit);
         expect(p.date.getTime()).toBe(date.getTime());
       });
     });

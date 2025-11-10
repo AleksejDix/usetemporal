@@ -2,14 +2,14 @@ import { describe, it, expect } from "vitest";
 import { split } from "./split";
 import { period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
-import { createTemporal } from "../createTemporal";
+
 
 withAllAdapters("split", (adapter) => {
-  const temporal = createTemporal({ adapter, date: new Date(2024, 0, 1) });
+  
 
   describe("period splitting", () => {
     it("should split a period at specific date", () => {
-      const month = period(temporal, new Date(2024, 0, 15), "month");
+      const month = period(adapter, new Date(2024, 0, 15), "month");
       const splitDate = new Date(2024, 0, 15, 12, 0, 0);
       
       const [before, after] = split(month, splitDate);
@@ -21,7 +21,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should handle split at period start", () => {
-      const day = period(temporal, new Date(2024, 0, 15), "day");
+      const day = period(adapter, new Date(2024, 0, 15), "day");
       const splitDate = day.start;
       
       const [before, after] = split(day, splitDate);
@@ -36,7 +36,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should handle split at period end", () => {
-      const week = period(temporal, new Date(2024, 0, 15), "week");
+      const week = period(adapter, new Date(2024, 0, 15), "week");
       const splitDate = week.end;
       
       const [before, after] = split(week, splitDate);
@@ -51,7 +51,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should split year in half", () => {
-      const year = period(temporal, new Date(2024, 0, 1), "year");
+      const year = period(adapter, new Date(2024, 0, 1), "year");
       const midYear = new Date(2024, 6, 1); // July 1
       
       const [firstHalf, secondHalf] = split(year, midYear);
@@ -63,7 +63,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should split hour at 30 minutes", () => {
-      const hour = period(temporal, new Date(2024, 0, 15, 14), "hour");
+      const hour = period(adapter, new Date(2024, 0, 15, 14), "hour");
       const halfHour = new Date(2024, 0, 15, 14, 30);
       
       const [firstHalf, secondHalf] = split(hour, halfHour);
@@ -75,7 +75,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should handle split outside period", () => {
-      const day = period(temporal, new Date(2024, 0, 15), "day");
+      const day = period(adapter, new Date(2024, 0, 15), "day");
       const beforeDay = new Date(2024, 0, 14);
       const afterDay = new Date(2024, 0, 16);
       
@@ -91,7 +91,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should preserve period type", () => {
-      const month = period(temporal, new Date(2024, 0, 15), "month");
+      const month = period(adapter, new Date(2024, 0, 15), "month");
       const splitDate = new Date(2024, 0, 20);
       
       const [before, after] = split(month, splitDate);
@@ -118,7 +118,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should handle millisecond precision", () => {
-      const second = period(temporal, new Date(2024, 0, 15, 14, 30, 45), "second");
+      const second = period(adapter, new Date(2024, 0, 15, 14, 30, 45), "second");
       const splitMs = new Date(2024, 0, 15, 14, 30, 45, 500);
       
       const [before, after] = split(second, splitMs);
@@ -130,7 +130,7 @@ withAllAdapters("split", (adapter) => {
     });
 
     it("should maintain split point consistency", () => {
-      const week = period(temporal, new Date(2024, 0, 15), "week");
+      const week = period(adapter, new Date(2024, 0, 15), "week");
       const wednesday = new Date(2024, 0, 17, 12, 0);
       
       const [before, after] = split(week, wednesday);

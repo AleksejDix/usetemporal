@@ -1,4 +1,4 @@
-import type { Period, Unit, Temporal, AdapterUnit } from "../types";
+import type { Period, Adapter, AdapterUnit } from "../types";
 
 /**
  * Check if two periods are the same for a given unit
@@ -8,17 +8,18 @@ import type { Period, Unit, Temporal, AdapterUnit } from "../types";
  *
  * @example
  * // Compare two periods
- * isSame(temporal, yearPeriod, otherYearPeriod, 'year')
+ * isSame(adapter, yearPeriod, otherYearPeriod, 'year')
  *
+ * @example
  * // Compare periods by their reference dates
- * const sameDayPeriod = period(temporal, 'day', period)
- * isSame(temporal, period, sameDayPeriod, 'day')
+ * const sameDayPeriod = period(adapter, 'day', period)
+ * isSame(adapter, period, sameDayPeriod, 'day')
  */
 export function isSame(
-  temporal: Temporal,
+  adapter: Adapter,
   a: Period | null | undefined,
   b: Period | null | undefined,
-  unit: Unit
+  unit: AdapterUnit | 'custom'
 ): boolean {
   if (!a || !b) return false;
 
@@ -32,13 +33,13 @@ export function isSame(
 
 
   // For all other units, compare by checking if startOf values are equal
-  const startA = temporal.adapter.startOf(
+  const startA = adapter.startOf(
     dateA,
-    unit as AdapterUnit
+    unit
   );
-  const startB = temporal.adapter.startOf(
+  const startB = adapter.startOf(
     dateB,
-    unit as AdapterUnit
+    unit
   );
   return startA.getTime() === startB.getTime();
 }

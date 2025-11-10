@@ -14,7 +14,7 @@ describe("Export Verification Tests", () => {
       
       // Verify each export is the same function
       operationsKeys.forEach(key => {
-        expect(operationsExports[key]).toBe(operationsIndex[key]);
+        expect((operationsExports as Record<string, any>)[key]).toBe((operationsIndex as Record<string, any>)[key]);
       });
     });
 
@@ -35,8 +35,8 @@ describe("Export Verification Tests", () => {
       ];
 
       expectedOperations.forEach(op => {
-        expect(operationsExports[op]).toBeDefined();
-        expect(typeof operationsExports[op]).toBe("function");
+        expect((operationsExports as Record<string, any>)[op]).toBeDefined();
+        expect(typeof (operationsExports as Record<string, any>)[op]).toBe("function");
       });
     });
   });
@@ -71,10 +71,10 @@ describe("Export Verification Tests", () => {
       ];
 
       expectedOperations.forEach(op => {
-        expect(mainExports[op]).toBeDefined();
-        expect(typeof mainExports[op]).toBe("function");
+        expect((mainExports as Record<string, any>)[op]).toBeDefined();
+        expect(typeof (mainExports as Record<string, any>)[op]).toBe("function");
         // Should be same function as from operations
-        expect(mainExports[op]).toBe(operationsExports[op]);
+        expect((mainExports as Record<string, any>)[op]).toBe((operationsExports as Record<string, any>)[op]);
       });
     });
 
@@ -117,8 +117,8 @@ describe("Export Verification Tests", () => {
       ];
 
       expectedUnits.forEach(unit => {
-        expect(mainExports[unit]).toBeDefined();
-        expect(typeof mainExports[unit]).toBe("string");
+        expect((mainExports as Record<string, any>)[unit]).toBeDefined();
+        expect(typeof (mainExports as Record<string, any>)[unit]).toBe("string");
       });
 
       // Verify individual constants match UNITS object values
@@ -133,19 +133,7 @@ describe("Export Verification Tests", () => {
       expect(mainExports.CUSTOM).toBe(mainExports.UNITS.custom);
     });
 
-    it("should export unit registry functions", () => {
-      expect(mainExports.defineUnit).toBeDefined();
-      expect(typeof mainExports.defineUnit).toBe("function");
-      
-      expect(mainExports.getUnitDefinition).toBeDefined();
-      expect(typeof mainExports.getUnitDefinition).toBe("function");
-      
-      expect(mainExports.hasUnit).toBeDefined();
-      expect(typeof mainExports.hasUnit).toBe("function");
-      
-      expect(mainExports.getRegisteredUnits).toBeDefined();
-      expect(typeof mainExports.getRegisteredUnits).toBe("function");
-    });
+    
 
     it("should not export internal implementation details", () => {
       // These should NOT be exported
@@ -157,7 +145,7 @@ describe("Export Verification Tests", () => {
       ];
 
       internalDetails.forEach(internal => {
-        expect(mainExports[internal]).toBeUndefined();
+        expect((mainExports as Record<string, any>)[internal]).toBeUndefined();
       });
     });
 
@@ -176,7 +164,7 @@ describe("Export Verification Tests", () => {
       ];
 
       operationNames.forEach(op => {
-        expect(mainExports[op]).toBe(operationsExports[op]);
+        expect((mainExports as Record<string, any>)[op]).toBe((operationsExports as Record<string, any>)[op]);
       });
     });
   });
@@ -190,7 +178,6 @@ describe("Export Verification Tests", () => {
       const typeRelatedExports = [
         "createTemporal", // Related to CreateTemporalOptions
         "UNITS", // Related to Unit type
-        "defineUnit", // Related to UnitDefinition
       ];
 
       typeRelatedExports.forEach(name => {
@@ -237,11 +224,7 @@ describe("Export Verification Tests", () => {
         "SECOND",
         "CUSTOM",
         
-        // Unit Registry
-        "defineUnit",
-        "getUnitDefinition",
-        "hasUnit",
-        "getRegisteredUnits"
+
       ];
 
       minimumExports.forEach(exportName => {
@@ -266,14 +249,14 @@ describe("Export Verification Tests", () => {
       
       // Access all exports to ensure they're loaded
       Object.keys(mainExports).forEach(key => {
-        const value = mainExports[key];
+        const value = (mainExports as Record<string, any>)[key];
         if (typeof value === 'function') {
           expect(value).toBeDefined();
         }
       });
 
       Object.keys(operationsExports).forEach(key => {
-        const value = operationsExports[key];
+        const value = (operationsExports as Record<string, any>)[key];
         if (typeof value === 'function') {
           expect(value).toBeDefined();
         }

@@ -1,16 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { period } from "./period";
-import { createTemporal } from "../createTemporal";
+
 import { createNativeAdapter } from "../adapters/native";
 
 describe("period with custom options", () => {
-  const temporal = createTemporal({ adapter: createNativeAdapter() });
+  const adapter = createNativeAdapter();
 
   it("should create custom period with correct properties", () => {
     const start = new Date(2024, 0, 1);
     const end = new Date(2024, 0, 14, 23, 59, 59, 999);
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     expect(customPeriod.type).toBe("custom");
     expect(customPeriod.start).toEqual(start);
@@ -21,7 +21,7 @@ describe("period with custom options", () => {
     const start = new Date(2024, 0, 1);
     const end = new Date(2024, 0, 31);
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     const expectedMiddle = new Date((start.getTime() + end.getTime()) / 2);
     expect(customPeriod.date).toEqual(expectedMiddle);
@@ -30,7 +30,7 @@ describe("period with custom options", () => {
   it("should handle same start and end dates", () => {
     const date = new Date(2024, 0, 15, 12, 0, 0);
 
-    const customPeriod = period(temporal, { start: date, end: date });
+    const customPeriod = period(adapter, { start: date, end: date });
 
     expect(customPeriod.start).toEqual(date);
     expect(customPeriod.end).toEqual(date);
@@ -41,7 +41,7 @@ describe("period with custom options", () => {
     const start = new Date(2024, 0, 1, 9, 0, 0);
     const end = new Date(2024, 0, 1, 17, 0, 0);
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     expect(customPeriod.start.getHours()).toBe(9);
     expect(customPeriod.end.getHours()).toBe(17);
@@ -52,7 +52,7 @@ describe("period with custom options", () => {
     const start = new Date(2024, 0, 15);
     const end = new Date(2024, 1, 15);
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     expect(customPeriod.start.getMonth()).toBe(0); // January
     expect(customPeriod.end.getMonth()).toBe(1); // February
@@ -63,7 +63,7 @@ describe("period with custom options", () => {
     const start = new Date(2023, 11, 15); // Dec 15, 2023
     const end = new Date(2024, 0, 15); // Jan 15, 2024
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     expect(customPeriod.start.getFullYear()).toBe(2023);
     expect(customPeriod.end.getFullYear()).toBe(2024);
@@ -76,7 +76,7 @@ describe("period with custom options", () => {
     const start = new Date(2024, 0, 1, 0, 0, 0, 0);
     const end = new Date(2024, 0, 1, 0, 0, 0, 999);
 
-    const customPeriod = period(temporal, { start, end });
+    const customPeriod = period(adapter, { start, end });
 
     // JavaScript Date rounds milliseconds to integers
     expect(customPeriod.date.getMilliseconds()).toBe(499);
@@ -86,11 +86,11 @@ describe("period with custom options", () => {
     const date = new Date(2024, 0, 15);
     
     // Standard period
-    const monthPeriod = period(temporal, date, "month");
+    const monthPeriod = period(adapter, date, "month");
     expect(monthPeriod.type).toBe("month");
     
     // Custom period
-    const customPeriod = period(temporal, { 
+    const customPeriod = period(adapter, { 
       start: new Date(2024, 0, 1), 
       end: new Date(2024, 0, 31) 
     });

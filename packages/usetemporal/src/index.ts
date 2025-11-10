@@ -52,20 +52,5 @@ export {
   CUSTOM,
 } from "./types";
 
-// Unit registry functionality
-export { 
-  defineUnit, 
-  getUnitDefinition, 
-  hasUnit, 
-  getRegisteredUnits,
-  type UnitDefinition 
-} from "./unit-registry";
-
-// Initialize core unit definitions
-import "./units/definitions";
-
-// Initialize calendar units
-import "./calendar";
-
 // Calendar helper functions
 export { createStableMonth, createStableYear } from "./calendar";

@@ -1,9 +1,7 @@
 /**
  * StableYear unit - Always returns a consistent grid of full weeks (52 or 53) for year visualizations
  */
-
-import { defineUnit } from "../unit-registry";
-import type { Adapter } from "../types";
+import type { Adapter, Period } from "../types";
 
 /**
  * Helper to calculate the stable year grid boundaries
@@ -46,55 +44,21 @@ function getStableYearBounds(date: Date, adapter: Adapter, weekStartsOn: number 
   return { start: gridStart, end: gridEnd };
 }
 
-// Define the stableYear unit
-defineUnit("stableYear", {
-  period(date: Date, adapter: Adapter) {
-    // For stableYear, we return the full-week grid boundaries
-    // Note: weekStartsOn defaults to 1 (Monday) here, but will use temporal's value in divide
-    return getStableYearBounds(date, adapter, 1);
-  },
-  
-  validate(period) {
-    // A stableYear is valid if it spans exactly 52 or 53 weeks
-    const ms = period.end.getTime() - period.start.getTime();
-    const days = Math.round(ms / (1000 * 60 * 60 * 24)) + 1; // +1 for inclusive end
-    const weeks = days / 7;
-    return weeks === 52 || weeks === 53;
-  },
-  
-  divisions: ["week", "day"],
-  mergesTo: undefined, // stableYear doesn't merge to anything larger
-});
-
 /**
- * Helper function to properly create a stableYear with correct weekStartsOn
- * This should be used instead of the standard period when you need the proper weekStartsOn
+ * Creates a "stable year" period, which is a grid of 52 or 53 full weeks
+ * that contains the given year. Useful for calendar displays like contribution graphs.
  * 
  * @example
- * const stableYear = createStableYear(temporal, new Date());
- * const weeks = divide(temporal, stableYear, 'week'); // 52 or 53 weeks
- * 
- * @example
- * // GitHub-style contribution grid
- * const year = createStableYear(temporal, new Date());
- * const days = divide(temporal, year, 'day');
- * // Group days into weeks for grid display
+ * const stableYear = createStableYear(adapter, 1, new Date());
+ * const weeks = divide(adapter, stableYear, 'week'); // 52 or 53 weeks
  */
-export function createStableYear(temporal: any, date: Date): any {
-  const { adapter, weekStartsOn } = temporal;
+export function createStableYear(adapter: Adapter, weekStartsOn: number, date: Date): Period {
   const bounds = getStableYearBounds(date, adapter, weekStartsOn);
   
   return {
     start: bounds.start,
     end: bounds.end,
-    type: "stableYear",
+    type: "stableYear", // This is now a custom string type
     date: adapter.startOf(date, "year"), // Reference date is the actual year start
   };
-}
-
-// TypeScript module augmentation
-declare module "@allystudio/usetemporal" {
-  interface UnitRegistry {
-    stableYear: true;
-  }
 }
