@@ -55,17 +55,17 @@ This library follows a minimal philosophy inspired by calculus - provide fundame
 
 ```typescript
 // Fundamental operations (like dx, ∫)
-createPeriod(temporal, date, unit)  // Create any period
+period(temporal, date, unit)        // Create any period
 divide(temporal, period, unit)      // Break down periods
 merge(temporal, periods)            // Combine periods
 next/previous/go                    // Navigate relatively
 
 // Everything else is composition
-today(temporal, unit) = createPeriod(temporal, new Date(), unit)
+today(temporal, unit) = period(temporal, new Date(), unit)
 
 // Users can compose their own abstractions
-const isThisWeek = (period, temporal) => 
-  isSame(temporal, period, createPeriod(temporal, new Date(), "week"), "week");
+const isThisWeek = (p, temporal) => 
+  isSame(temporal, p, period(temporal, new Date(), "week"), "week");
 ```
 
 ### What This Means for Development
@@ -129,10 +129,10 @@ npm run docs:preview  # Preview built docs
 npm run dev
 
 # Build specific package
-npm run build --workspace=@usetemporal/adapter-luxon
+npm run build --workspace=@allystudio/usetemporal-adapter-luxon
 
 # Test specific package
-npm test --workspace=@usetemporal/core
+npm test --workspace=@allystudio/usetemporal
 
 # Run any command in a specific workspace
 npm run <command> --workspace=<package-name>
@@ -166,29 +166,35 @@ interface Temporal {
 1. **Factory Function**: `createTemporal(options)` - requires an adapter
 2. **Single Composable**: `usePeriod(temporal, unit)` - creates reactive periods
 3. **Operations**: All are pure functions that work with Period objects
+   - `period(temporal, date, unit)` - Create periods (renamed from createPeriod)
+   - `period(temporal, {start, end})` - Create custom periods
    - `divide(temporal, period, unit)` - The revolutionary pattern
+   - `split(period, date)` - Split at specific point
+   - `merge(temporal, periods)` - Combine periods
    - `next()`, `previous()`, `go()` - Navigation
    - `contains()`, `isSame()` - Comparison
-   - `zoomIn()`, `zoomOut()`, `zoomTo()` - Zooming
-   - `split()`, `merge()` - Advanced operations
+   - `isToday()`, `isWeekday()`, `isWeekend()` - Utilities
 
 ### Monorepo Structure
 
 ```
 pickle/
 ├── packages/
-│   ├── core/                    # Core library (functional API)
-│   ├── adapter-native/          # Native JS Date adapter
-│   ├── adapter-date-fns/        # date-fns adapter
-│   ├── adapter-luxon/           # Luxon adapter
-│   ├── adapter-temporal/        # Temporal API adapter
-│   ├── usetemporal/            # Meta package (core + native adapter)
+│   ├── usetemporal/            # Main library with all functionality
 │   └── tsconfig/               # Shared TypeScript configs
 ├── examples/
 │   └── vue/                    # Vue.js example with routing
-├── docs/                       # VitePress documentation
-└── research/                   # RFCs and design documents
+├── vitepress/                  # User-facing documentation
+├── docs/                       # Developer documentation (BMad)
+├── .bmad-core/                 # BMad method configuration
+└── CLAUDE.md                   # This file
 ```
+
+**Note**: The project has been consolidated from multiple packages into a single `usetemporal` package that includes:
+- Core functionality with the functional API
+- All date adapters (native, date-fns, luxon, temporal) integrated
+- Calendar units extension
+- Complete test suite with multi-adapter testing
 
 ### Adapter System
 
@@ -215,7 +221,7 @@ defineUnit('fortnight', {
 });
 
 // TypeScript augmentation
-declare module '@usetemporal/core' {
+declare module '@allystudio/usetemporal' {
   interface UnitRegistry {
     fortnight: true;
   }
@@ -232,10 +238,41 @@ declare module '@usetemporal/core' {
 
 ## Testing Guidelines
 
-- Tests use Vitest and are located in `src/__tests__/`
-- Mock adapter available in `src/test/mockAdapter.ts`
-- Test utilities in `src/test/utils.ts`
+### Environment Setup
+
+**CRITICAL**: Set timezone to UTC before running tests to ensure consistent behavior across different environments:
+
+```bash
+# Unix/Linux/macOS
+export TZ=UTC
+npm test
+
+# Or run in a single command
+TZ=UTC npm test
+
+# Windows (PowerShell)
+$env:TZ="UTC"
+npm test
+
+# Windows (Command Prompt)
+set TZ=UTC
+npm test
+```
+
+### Test Architecture
+
+- Tests use Vitest with multi-adapter testing pattern
+- All tests run against real adapters (native, date-fns, luxon, temporal)
+- Multi-adapter test template in `src/test/multi-adapter-test-template.ts`
 - Focus on Period operations and reactivity
+- Tests are colocated with source files (e.g., `divide.ts` and `divide.test.ts`)
+
+### Why UTC is Required
+
+Date operations can behave differently based on the system timezone, especially around DST boundaries and date calculations. Setting `TZ=UTC` ensures:
+- Consistent test results across all development environments
+- Predictable date arithmetic without DST complications
+- Matching CI/CD environment behavior
 
 ## Common Pitfalls
 

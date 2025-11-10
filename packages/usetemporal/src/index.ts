@@ -1,26 +1,71 @@
-// useTemporal - Convenience meta package
-// Provides a simple entry point with native adapter as default
+// Core function
+export { createTemporal } from "./createTemporal";
+export type { CreateTemporalOptions } from "./createTemporal";
 
-export * from "@usetemporal/core";
-export { createNativeAdapter } from "@usetemporal/adapter-native";
-import { createNativeAdapter } from "@usetemporal/adapter-native";
-import { createTemporal as createTemporalCore } from "@usetemporal/core";
-import type { CreateTemporalOptions, Temporal } from "@usetemporal/core";
-import type { Ref } from "@vue/reactivity";
+// Period composables - module exports
+export { usePeriod } from "./composables/usePeriods";
 
-// Convenience function that uses native adapter by default
-export function createTemporal(
-  options: Omit<CreateTemporalOptions, "adapter"> & {
-    date: Date | Ref<Date>;
-    adapter?: CreateTemporalOptions["adapter"];
-    weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  }
-): Temporal {
-  return createTemporalCore({
-    ...options,
-    adapter: options.adapter || createNativeAdapter({ weekStartsOn: options.weekStartsOn }),
-  });
-}
+// Operations - functional API
+export {
+  divide,
+  next,
+  previous,
+  go,
+  contains,
+  period,
+  split,
+  merge,
+  isSame,
+} from "./operations";
+export type { SplitOptions } from "./types";
 
-// Re-export as default
-export default createTemporal;
+// Utility functions
+export { isWeekend, isWeekday, isToday } from "./operations/utils";
+
+// Types
+export type {
+  Period,
+  Unit,
+  UnitRegistry,
+  AdapterUnit,
+  Temporal,
+  TemporalContext,
+  Adapter,
+  UnitHandler,
+  AdapterOptions,
+  Duration,
+  DateOrRef,
+  UnitsObject,
+} from "./types";
+
+// Unit constants
+export {
+  UNITS,
+  YEAR,
+  QUARTER,
+  MONTH,
+  WEEK,
+  DAY,
+  HOUR,
+  MINUTE,
+  SECOND,
+  CUSTOM,
+} from "./types";
+
+// Unit registry functionality
+export { 
+  defineUnit, 
+  getUnitDefinition, 
+  hasUnit, 
+  getRegisteredUnits,
+  type UnitDefinition 
+} from "./unit-registry";
+
+// Initialize core unit definitions
+import "./units/definitions";
+
+// Initialize calendar units
+import "./calendar";
+
+// Calendar helper functions
+export { createStableMonth, createStableYear } from "./calendar";

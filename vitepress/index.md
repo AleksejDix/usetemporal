@@ -14,7 +14,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/AleksejDix/pickle
+      link: https://github.com/AleksejDix/usetemporal
     - theme: alt
       text: Live Demo
       link: /examples/calendars/month-calendar
@@ -22,7 +22,7 @@ hero:
 features:
   - icon: ∫
     title: Fundamental Operations
-    details: Like calculus provides dx and ∫, we provide createPeriod, divide, merge, and navigate. Everything else emerges through composition.
+    details: Like calculus provides dx and ∫, we provide period, divide, merge, and navigate. Everything else emerges through composition.
     link: /guide/core-concepts
     
   - icon: 🔄
@@ -126,15 +126,15 @@ Just as calculus provides fundamental operations (derivatives, integrals) that c
 
 ```typescript
 // These are our "dx" and "∫" - the irreducible operations
-createPeriod(temporal, date, unit)  // Create any period
+period(temporal, date, unit)  // Create any period
 divide(temporal, period, unit)      // Hierarchical subdivision  
 merge(temporal, periods)            // Combine periods
 next/previous/go                    // Relative navigation
 
 // Everything else is composition
-const today = (temporal, unit) => createPeriod(temporal, new Date(), unit)
+const today = (temporal, unit) => period(temporal, new Date(), unit)
 const isThisWeek = (period, temporal) => 
-  isSame(temporal, period, createPeriod(temporal, new Date(), "week"), "week")
+  isSame(temporal, period, period(temporal, new Date(), "week"), "week")
 ```
 
 ### Why This Matters
@@ -338,7 +338,7 @@ useTemporal provides only the essential operations - each one irreducible and co
 ```typescript
 // Creation & Factory
 createTemporal()   // Create temporal instance
-createPeriod()     // Create a period
+period()     // Create a period
 usePeriod()        // Reactive period hook
 
 // The Revolutionary Pattern

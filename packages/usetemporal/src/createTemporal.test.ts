@@ -1,0 +1,402 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { createTemporal, type CreateTemporalOptions } from "./createTemporal";
+import { ref, isRef, effect, computed } from "@vue/reactivity";
+import { createNativeAdapter } from "./adapters/native";
+import type { Adapter } from "./types";
+
+describe("createTemporal", () => {
+  let mockAdapter: Adapter;
+  let testDate: Date;
+
+  beforeEach(() => {
+    testDate = new Date(2024, 0, 15, 12, 30, 45); // Jan 15, 2024 12:30:45
+    mockAdapter = createNativeAdapter();
+  });
+
+  describe("factory function validation", () => {
+    it("should throw error when adapter is not provided", () => {
+      const options = {
+        date: testDate,
+      } as CreateTemporalOptions;
+
+      expect(() => createTemporal(options)).toThrow(
+        "A date adapter is required. Please install and provide an adapter from @usetemporal/adapter-* packages."
+      );
+    });
+
+    it("should throw error when adapter is null", () => {
+      const options = {
+        date: testDate,
+        adapter: null as any,
+      };
+
+      expect(() => createTemporal(options)).toThrow(
+        "A date adapter is required"
+      );
+    });
+
+    it("should throw error when adapter is undefined", () => {
+      const options = {
+        date: testDate,
+        adapter: undefined as any,
+      };
+
+      expect(() => createTemporal(options)).toThrow(
+        "A date adapter is required"
+      );
+    });
+  });
+
+  describe("basic initialization", () => {
+    it("should create temporal with required options", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      expect(temporal).toBeDefined();
+      expect(temporal.adapter).toBe(mockAdapter);
+      expect(temporal.weekStartsOn).toBe(1); // Default Monday
+      expect(isRef(temporal.browsing)).toBe(true);
+      expect(isRef(temporal.now)).toBe(true);
+    });
+
+    it("should accept custom weekStartsOn values", () => {
+      for (let day = 0; day <= 6; day++) {
+        const temporal = createTemporal({
+          date: testDate,
+          adapter: mockAdapter,
+          weekStartsOn: day,
+        });
+        expect(temporal.weekStartsOn).toBe(day);
+      }
+    });
+
+    it("should use provided now date", () => {
+      const nowDate = new Date(2024, 0, 20, 10, 0, 0);
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+        now: nowDate,
+      });
+
+      expect(temporal.now.value.date).toEqual(nowDate);
+    });
+
+    it("should default now to current date when not provided", () => {
+      const beforeCreate = new Date();
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+      const afterCreate = new Date();
+
+      const nowTime = temporal.now.value.date.getTime();
+      expect(nowTime).toBeGreaterThanOrEqual(beforeCreate.getTime());
+      expect(nowTime).toBeLessThanOrEqual(afterCreate.getTime());
+    });
+  });
+
+  describe("reactive date handling", () => {
+    it("should accept ref date and preserve reactivity", () => {
+      const dateRef = ref(testDate);
+      const temporal = createTemporal({
+        date: dateRef,
+        adapter: mockAdapter,
+      });
+
+      expect(temporal.browsing.value.date).toEqual(testDate);
+
+      // Update ref
+      const newDate = new Date(2024, 1, 1);
+      dateRef.value = newDate;
+      expect(temporal.browsing.value.date).toEqual(testDate); // browsing is its own ref
+    });
+
+    it("should accept plain date and convert to ref", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      expect(isRef(temporal.browsing)).toBe(true);
+      expect(temporal.browsing.value.date).toEqual(testDate);
+    });
+
+    it("should accept ref now and preserve reactivity", () => {
+      const nowRef = ref(new Date(2024, 0, 20));
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+        now: nowRef,
+      });
+
+      expect(temporal.now.value.date).toEqual(nowRef.value);
+
+      // Verify reactivity
+      let effectCount = 0;
+      effect(() => {
+        temporal.now.value;
+        effectCount++;
+      });
+
+      expect(effectCount).toBe(1);
+
+      // Update ref
+      nowRef.value = new Date(2024, 0, 21);
+      expect(effectCount).toBe(2);
+      expect(temporal.now.value.date).toEqual(nowRef.value);
+    });
+  });
+
+  describe("period initialization", () => {
+    it("should initialize browsing period correctly", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      const browsing = temporal.browsing.value;
+      expect(browsing.start).toEqual(testDate);
+      expect(browsing.end).toEqual(testDate);
+      expect(browsing.type).toBe("day");
+      expect(browsing.date).toEqual(testDate);
+    });
+
+    it("should initialize now period as computed", () => {
+      const nowDate = new Date(2024, 0, 20, 15, 30, 45);
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+        now: nowDate,
+      });
+
+      const now = temporal.now.value;
+      expect(now.start).toEqual(nowDate);
+      expect(now.end).toEqual(nowDate);
+      expect(now.type).toBe("second");
+      expect(now.date).toEqual(nowDate);
+    });
+  });
+
+  describe("reactivity behavior", () => {
+    it("should trigger effects when browsing changes", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      let effectCount = 0;
+      let lastBrowsing;
+
+      effect(() => {
+        lastBrowsing = temporal.browsing.value;
+        effectCount++;
+      });
+
+      expect(effectCount).toBe(1);
+
+      // Update browsing
+      const newPeriod = {
+        start: new Date(2024, 1, 1),
+        end: new Date(2024, 1, 1),
+        type: "day" as const,
+        date: new Date(2024, 1, 1),
+      };
+      temporal.browsing.value = newPeriod;
+
+      expect(effectCount).toBe(2);
+      expect(lastBrowsing).toEqual(newPeriod);
+    });
+
+    it("should support computed properties based on temporal state", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      const year = computed(() => temporal.browsing.value.date.getFullYear());
+      const month = computed(() => temporal.browsing.value.date.getMonth());
+
+      expect(year.value).toBe(2024);
+      expect(month.value).toBe(0); // January
+
+      // Update browsing
+      temporal.browsing.value = {
+        start: new Date(2025, 5, 15),
+        end: new Date(2025, 5, 15),
+        type: "day",
+        date: new Date(2025, 5, 15),
+      };
+
+      expect(year.value).toBe(2025);
+      expect(month.value).toBe(5); // June
+    });
+
+    it("should cleanup reactive effects properly", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      let effectCount = 0;
+
+      // Create effect runner
+      const runner = effect(() => {
+        temporal.browsing.value;
+        effectCount++;
+      });
+
+      // Initial run
+      expect(effectCount).toBeGreaterThan(0);
+      const initialCount = effectCount;
+
+      // Update should trigger effect
+      temporal.browsing.value = {
+        start: new Date(2025, 0, 1),
+        end: new Date(2025, 0, 1),
+        type: "day",
+        date: new Date(2025, 0, 1),
+      };
+
+      expect(effectCount).toBeGreaterThan(initialCount);
+      const countBeforeStop = effectCount;
+
+      // Stop the effect
+      runner.effect.stop();
+
+      // Update should not trigger effect after stopping
+      temporal.browsing.value = {
+        start: new Date(2025, 6, 1),
+        end: new Date(2025, 6, 1),
+        type: "day",
+        date: new Date(2025, 6, 1),
+      };
+
+      expect(effectCount).toBe(countBeforeStop); // No change after stop
+    });
+
+    it("should handle concurrent reactive updates", async () => {
+      const dateRef = ref(testDate);
+      const nowRef = ref(new Date(2024, 0, 20));
+
+      const temporal = createTemporal({
+        date: dateRef,
+        adapter: mockAdapter,
+        now: nowRef,
+      });
+
+      const updates: string[] = [];
+
+      effect(() => {
+        temporal.browsing.value;
+        updates.push("browsing");
+      });
+
+      effect(() => {
+        temporal.now.value;
+        updates.push("now");
+      });
+
+      // Initial effects
+      expect(updates).toEqual(["browsing", "now"]);
+
+      // Update both refs
+      dateRef.value = new Date(2024, 1, 1);
+      nowRef.value = new Date(2024, 1, 1);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      // Should have triggered both effects
+      expect(updates.length).toBe(3); // Initial + 1 now update
+      expect(updates[2]).toBe("now");
+    });
+  });
+
+  describe("edge cases", () => {
+    it("should handle dates at year boundaries", () => {
+      const endOfYear = new Date(2023, 11, 31, 23, 59, 59);
+      const temporal = createTemporal({
+        date: endOfYear,
+        adapter: mockAdapter,
+      });
+
+      expect(temporal.browsing.value.date).toEqual(endOfYear);
+    });
+
+    it("should handle leap year dates", () => {
+      const leapDay = new Date(2024, 1, 29); // Feb 29, 2024
+      const temporal = createTemporal({
+        date: leapDay,
+        adapter: mockAdapter,
+      });
+
+      expect(temporal.browsing.value.date).toEqual(leapDay);
+    });
+
+    it("should handle invalid weekStartsOn gracefully", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+        weekStartsOn: -1 as any,
+      });
+
+      expect(temporal.weekStartsOn).toBe(-1); // Uses provided value
+    });
+
+    it("should handle weekStartsOn as undefined", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+        weekStartsOn: undefined,
+      });
+
+      expect(temporal.weekStartsOn).toBe(1); // Default Monday
+    });
+  });
+
+  describe("adapter integration", () => {
+    it("should work with different adapter implementations", () => {
+      // Mock a custom adapter
+      const customAdapter: Adapter = {
+        startOf: vi.fn(),
+        endOf: vi.fn(),
+        add: vi.fn(),
+        diff: vi.fn(),
+      };
+
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: customAdapter,
+      });
+
+      expect(temporal.adapter).toBe(customAdapter);
+    });
+
+    it("should preserve adapter reference", () => {
+      const temporal = createTemporal({
+        date: testDate,
+        adapter: mockAdapter,
+      });
+
+      expect(temporal.adapter).toBe(mockAdapter);
+      expect(temporal.adapter.startOf).toBe(mockAdapter.startOf);
+    });
+  });
+
+  describe("performance", () => {
+    it("should execute in less than 100ms", () => {
+      const start = performance.now();
+
+      for (let i = 0; i < 100; i++) {
+        createTemporal({
+          date: new Date(),
+          adapter: mockAdapter,
+        });
+      }
+
+      const duration = performance.now() - start;
+      expect(duration).toBeLessThan(100);
+    });
+  });
+});

@@ -1,0 +1,64 @@
+import type { Adapter, AdapterUnit, UnitHandler } from "../../types";
+import { Temporal } from "@js-temporal/polyfill";
+import { yearHandler } from "./units/year";
+import { quarterHandler } from "./units/quarter";
+import { monthHandler } from "./units/month";
+import { createWeekHandler } from "./units/week";
+import { dayHandler } from "./units/day";
+import { hourHandler } from "./units/hour";
+import { minuteHandler } from "./units/minute";
+import { secondHandler } from "./units/second";
+
+// Ensure Temporal is available globally
+if (typeof (globalThis as any).Temporal === "undefined") {
+  (globalThis as any).Temporal = Temporal;
+}
+
+/**
+ * Create a functional Temporal API adapter with modular unit handlers
+ */
+export function createTemporalAdapter(options?: {
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+}): Adapter {
+  // Check if Temporal API is available (should always be true now)
+  if (typeof (globalThis as any).Temporal === "undefined") {
+    throw new Error(
+      "Temporal API is not available in this environment."
+    );
+  }
+
+  const weekStartsOn = options?.weekStartsOn ?? 1;
+  
+  // Create handlers map with proper typing
+  const handlers: Record<AdapterUnit, UnitHandler> = {
+    year: yearHandler,
+    quarter: quarterHandler,
+    month: monthHandler,
+    week: createWeekHandler(weekStartsOn),
+    day: dayHandler,
+    hour: hourHandler,
+    minute: minuteHandler,
+    second: secondHandler,
+  };
+
+  return {
+    startOf(date: Date, unit: AdapterUnit): Date {
+      return handlers[unit].startOf(date);
+    },
+
+    endOf(date: Date, unit: AdapterUnit): Date {
+      return handlers[unit].endOf(date);
+    },
+
+    add(date: Date, amount: number, unit: AdapterUnit): Date {
+      return handlers[unit].add(date, amount);
+    },
+
+    diff(from: Date, to: Date, unit: AdapterUnit): number {
+      return handlers[unit].diff(from, to);
+    },
+  };
+}
+
+// Export a default instance with Monday as week start
+export const temporalAdapter = createTemporalAdapter({ weekStartsOn: 1 });

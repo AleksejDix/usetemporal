@@ -45,7 +45,7 @@ import {
   isSame,
   isWeekend,
   isToday,
-  createPeriod
+  period
 } from 'usetemporal'
 
 const props = defineProps({

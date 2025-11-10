@@ -65,6 +65,5 @@ const getDayType = (day) => ({
 
 ## See Also
 
-- [Stable Month Calendar](/examples/stable-month-calendar)
 - [divide() Pattern Guide](/guide/divide-pattern)
 - [Date Picker Examples](/examples/frameworks/vue-integration#date-picker-component)

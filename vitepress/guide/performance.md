@@ -220,9 +220,9 @@ watch(
 );
 ```
 
-### 6. Use StableMonth for Calendar UIs
+### 6. Use Calendar Units Package for Calendar UIs
 
-StableMonth is optimized for calendar grids:
+The `@usetemporal/calendar-units` package provides optimized units like `stableMonth` for calendar grids:
 
 ```javascript
 // ❌ Bad: Complex logic to fill calendar grid
@@ -248,10 +248,30 @@ function getCalendarDays(month) {
   return [...previousDays, ...days, ...nextDays];
 }
 
-// ✅ Good: Use stableMonth
+// ✅ Good: Use stableMonth from calendar-units package
+import '@usetemporal/calendar-units';
+
 function getCalendarDays() {
-  const stableMonth = temporal.periods.stableMonth(temporal);
-  return temporal.divide(stableMonth, "day");
+  const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value);
+  return divide(temporal, stableMonth, 'day'); // Always 42 days
+}
+
+// ✅ Alternative: Manual 6-week grid implementation
+function getCalendarDaysManual() {
+  const month = temporal.periods.month(temporal);
+  const weeks = temporal.divide(month, "week");
+  
+  // Get 6-week grid
+  const firstWeek = weeks[0];
+  const prevWeek = firstWeek.past();
+  const allWeeks = [prevWeek, ...weeks];
+  
+  while (allWeeks.length < 6) {
+    const lastWeek = allWeeks[allWeeks.length - 1];
+    allWeeks.push(lastWeek.future());
+  }
+  
+  return allWeeks.flatMap(week => temporal.divide(week, "day"));
   // Always returns exactly 42 days!
 }
 ```
@@ -319,14 +339,14 @@ Focus on the most common operations:
 
 ```javascript
 // Most apps need:
-// - Current month view (stableMonth)
+// - Current month view (6-week grid)
 // - Navigation by month/week
 // - Today highlighting
 
 // Optimize these first!
 const quickCalendar = {
   _currentMonth: null,
-  _stableMonth: null,
+  _calendarDays: null,
 
   get currentMonth() {
     // Cache current month
@@ -336,15 +356,31 @@ const quickCalendar = {
     if (this._monthKey !== monthKey) {
       this._monthKey = monthKey;
       this._currentMonth = temporal.periods.month(temporal);
-      this._stableMonth = temporal.periods.stableMonth(temporal);
+      this._calendarDays = null; // Reset cache
     }
 
     return this._currentMonth;
   },
 
   get calendarDays() {
-    // Reuse stable month
-    return temporal.divide(this._stableMonth, "day");
+    // Cache 6-week grid
+    if (!this._calendarDays) {
+      const month = this.currentMonth;
+      const weeks = temporal.divide(month, "week");
+      
+      const firstWeek = weeks[0];
+      const prevWeek = firstWeek.past();
+      const allWeeks = [prevWeek, ...weeks];
+      
+      while (allWeeks.length < 6) {
+        const lastWeek = allWeeks[allWeeks.length - 1];
+        allWeeks.push(lastWeek.future());
+      }
+      
+      this._calendarDays = allWeeks.flatMap(week => temporal.divide(week, "day"));
+    }
+    
+    return this._calendarDays;
   },
 };
 ```
@@ -387,13 +423,13 @@ Offload expensive operations to Web Workers:
 ```javascript
 // worker.js
 import { createTemporal } from "@usetemporal/core";
-import { nativeAdapter } from "@usetemporal/adapter-native";
+import { createNativeAdapter } from "@usetemporal/core/native";
 
 self.addEventListener("message", (event) => {
   const { type, data } = event.data;
 
   if (type === "computeYearStats") {
-    const temporal = createTemporal({ dateAdapter: nativeAdapter });
+    const temporal = createTemporal({ adapter: createNativeAdapter() });
     const year = temporal.periods.year(temporal, {
       date: new Date(data.year, 0, 1),
     });
@@ -525,7 +561,7 @@ useTemporal is designed to be performant for typical use cases. By following the
 1. **Cache temporal instances** - Create once, use everywhere
 2. **Memoize expensive operations** - Especially divide() results
 3. **Use lazy loading** - Compute only what you need
-4. **Leverage stableMonth** - For optimized calendar UIs
+4. **Cache 6-week grids** - For optimized calendar UIs
 5. **Profile before optimizing** - Measure actual performance
 6. **Consider your use case** - Most apps don't need microsecond precision
 

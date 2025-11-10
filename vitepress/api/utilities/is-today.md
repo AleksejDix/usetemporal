@@ -6,23 +6,23 @@ Check if a period represents today.
 
 ```typescript
 function isToday(
-  period: Period,
-  temporal: Temporal
+  temporal: Temporal,
+  period: Period
 ): boolean
 ```
 
 ## Parameters
 
-- `period` - `Period` - The period to check
 - `temporal` - `Temporal` - The temporal instance for accessing current time
+- `period` - `Period` - The period to check
 
 ## Returns
 
-`boolean` - True if the period is on the same day as the current time
+`boolean` - True if the period is a day period that represents today
 
 ## Description
 
-The `isToday` function checks if a period's reference date falls on the same day as the current time from `temporal.now`. It uses the `isSame` function internally to compare at the day level.
+The `isToday` function checks if a period is a day period that represents today. It returns `true` only for periods with `type: 'day'` whose date falls on the same day as the current time from `temporal.now`. Periods of other types (week, month, year, etc.) will always return `false`, even if they contain today.
 
 ## Examples
 
@@ -35,14 +35,14 @@ const temporal = createTemporal({ date: new Date() })
 
 // Check if a date is today
 const somePeriod = toPeriod(temporal, new Date(), 'day')
-console.log(isToday(somePeriod, temporal)) // true
+console.log(isToday(temporal, somePeriod)) // true
 
 // Check a different date
 const yesterday = toPeriod(temporal, 
   new Date(Date.now() - 24 * 60 * 60 * 1000), 
   'day'
 )
-console.log(isToday(yesterday, temporal)) // false
+console.log(isToday(temporal, yesterday)) // false
 ```
 
 ### Calendar Highlighting
@@ -53,11 +53,11 @@ function CalendarDay({ day, temporal }) {
   return (
     <div className={`
       calendar-day 
-      ${isToday(day, temporal) ? 'today' : ''}
+      ${isToday(temporal, day) ? 'today' : ''}
       ${isWeekend(day) ? 'weekend' : ''}
     `}>
       <span className="day-number">{day.date.getDate()}</span>
-      {isToday(day, temporal) && <span className="today-indicator">●</span>}
+      {isToday(temporal, day) && <span className="today-indicator">●</span>}
     </div>
   )
 }
@@ -77,7 +77,7 @@ function CalendarDay({ day, temporal }) {
 function getTodaysAppointments(appointments: Appointment[], temporal: Temporal) {
   return appointments.filter(apt => {
     const aptPeriod = toPeriod(temporal, apt.date, 'day')
-    return isToday(aptPeriod, temporal)
+    return isToday(temporal, aptPeriod)
   })
 }
 
@@ -85,7 +85,7 @@ function getTodaysAppointments(appointments: Appointment[], temporal: Temporal) 
 function TodayWidget({ temporal }) {
   const todaysEvents = events.filter(event => {
     const eventPeriod = toPeriod(temporal, event.date, 'hour')
-    return isToday(eventPeriod, temporal)
+    return isToday(temporal, eventPeriod)
   })
   
   return (
@@ -115,7 +115,7 @@ function TodayButton({ temporal }) {
     temporal.browsing.value = today
   }
   
-  const alreadyToday = isToday(temporal.browsing.value, temporal)
+  const alreadyToday = isToday(temporal, temporal.browsing.value)
   
   return (
     <button 
@@ -134,7 +134,7 @@ function TodayButton({ temporal }) {
 ```typescript
 // Show relative time for recent dates
 function formatRelativeDate(period: Period, temporal: Temporal): string {
-  if (isToday(period, temporal)) {
+  if (isToday(temporal, period)) {
     return 'Today'
   }
   
@@ -158,7 +158,7 @@ function formatRelativeDate(period: Period, temporal: Temporal): string {
 function getDailySummary(temporal: Temporal) {
   const allPeriods = getAllPeriods() // Your data
   
-  const todaysPeriods = allPeriods.filter(p => isToday(p, temporal))
+  const todaysPeriods = allPeriods.filter(p => isToday(temporal, p))
   
   return {
     date: temporal.now.value.date,
@@ -171,25 +171,32 @@ function getDailySummary(temporal: Temporal) {
 }
 ```
 
-## Works with Any Period Type
+## Only Works with Day Periods
 
-While commonly used with day periods, `isToday` works with any period type:
+The `isToday` function only returns `true` for day periods. Other period types will always return `false`:
 
 ```typescript
-// Hour period
+// Day period - works as expected
+const todayDay = toPeriod(temporal, new Date(), 'day')
+console.log(isToday(temporal, todayDay)) // true
+
+// Hour period - returns false (not a day period)
 const currentHour = toPeriod(temporal, new Date(), 'hour')
-console.log(isToday(currentHour, temporal)) // true
+console.log(isToday(temporal, currentHour)) // false
 
-// Month period (if reference date is today)
+// Month period - returns false (not a day period)
 const currentMonth = toPeriod(temporal, new Date(), 'month')
-console.log(isToday(currentMonth, temporal)) // true
+console.log(isToday(temporal, currentMonth)) // false
 
-// Custom period
-const customPeriod = createCustomPeriod(
-  new Date(new Date().setHours(0, 0, 0, 0)),
-  new Date(new Date().setHours(23, 59, 59, 999))
+// Custom period - returns false (type is 'custom')
+const customPeriod = period(
+  temporal,
+  { 
+    start: new Date(new Date().setHours(0, 0, 0, 0)),
+    end: new Date(new Date().setHours(23, 59, 59, 999))
+  }
 )
-console.log(isToday(customPeriod, temporal)) // true
+console.log(isToday(temporal, customPeriod)) // false
 ```
 
 ## Time Zone Considerations
@@ -210,7 +217,11 @@ const result = isToday(period, temporal)
 The function is implemented using `isSame`:
 
 ```typescript
-export function isToday(period: Period, temporal: Temporal): boolean {
+export function isToday(temporal: Temporal, period: Period): boolean {
+  // Only day periods can be "today"
+  if (period.type !== "day") {
+    return false;
+  }
   return isSame(temporal, period, temporal.now.value, 'day')
 }
 ```
@@ -230,10 +241,10 @@ const testTemporal = createTemporal({
 
 // This will always be "today" relative to the fixed now
 const march15 = toPeriod(testTemporal, new Date('2024-03-15'), 'day')
-expect(isToday(march15, testTemporal)).toBe(true)
+expect(isToday(testTemporal, march15)).toBe(true)
 
 const march16 = toPeriod(testTemporal, new Date('2024-03-16'), 'day')
-expect(isToday(march16, testTemporal)).toBe(false)
+expect(isToday(testTemporal, march16)).toBe(false)
 ```
 
 ## See Also

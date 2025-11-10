@@ -496,32 +496,42 @@ months.forEach((month) => {
 });
 ```
 
-### Stable Month Pattern
+### 6-Week Calendar Grid Pattern
 
-useTemporal introduces the innovative `stableMonth` concept for UI consistency:
+useTemporal supports consistent 6-week calendar displays through pattern composition:
 
 ```javascript
 // Problem: Calendar UIs need consistent 6-week displays
-// Solution: stableMonth always returns 42 days (6 weeks)
+// Solution: Generate a 6-week grid using divide and navigation
 
 const temporal = createTemporal({
-  dateAdapter: nativeAdapter,
+  adapter: nativeAdapter(),
   weekStartsOn: 1, // Monday
 });
 
 // Regular month - variable length
-const regularMonth = temporal.periods.month(temporal);
-const regularDays = temporal.divide(regularMonth, "day");
+const month = period(temporal, 'month', new Date());
+const regularDays = divide(temporal, month, 'day');
 console.log(regularDays.length); // 28-31 days
 
-// Stable month - always 42 days
-const stableMonth = temporal.periods.stableMonth(temporal);
-const stableDays = temporal.divide(stableMonth, "day");
-console.log(stableDays.length); // Always 42 days
+// Generate 6-week calendar grid
+const weeks = divide(temporal, month, 'week');
 
-// Perfect for calendar grids!
-const weeks = temporal.divide(stableMonth, "week");
-console.log(weeks.length); // Always 6 weeks
+// Get all weeks that touch this month
+const firstWeek = weeks[0];
+const prevWeek = previous(temporal, firstWeek);
+const allWeeks = [prevWeek, ...weeks];
+
+// Ensure 6 weeks total
+while (allWeeks.length < 6) {
+  const lastWeek = allWeeks[allWeeks.length - 1];
+  allWeeks.push(next(temporal, lastWeek));
+}
+
+// Get all days from the weeks - always 42 days!
+const calendarDays = allWeeks.flatMap(week => divide(temporal, week, 'day'));
+console.log(calendarDays.length); // Always 42 days
+console.log(allWeeks.length); // Always 6 weeks
 ```
 
 ### Future-Proof Calendar Support
@@ -619,4 +629,4 @@ Calendar systems reflect the rich tapestry of human culture and history. As deve
 
 The story of calendars reminds us that even something as "simple" as counting days is deeply intertwined with culture, politics, and human nature. When we handle dates in our software, we're not just manipulating numbers – we're working with systems that have evolved over millennia of human civilization.
 
-useTemporal embraces this complexity through its adapter pattern and divide functionality, providing a consistent API that works across different calendar systems. While full historical calendar support is planned for future releases, the foundation is already in place to handle the rich diversity of human timekeeping systems. The innovative stableMonth pattern solves practical UI challenges, while the framework-agnostic design ensures your calendar code works everywhere.
+useTemporal embraces this complexity through its adapter pattern and divide functionality, providing a consistent API that works across different calendar systems. While full historical calendar support is planned for future releases, the foundation is already in place to handle the rich diversity of human timekeeping systems. The 6-week calendar grid pattern solves practical UI challenges, while the framework-agnostic design ensures your calendar code works everywhere.

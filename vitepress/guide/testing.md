@@ -24,12 +24,12 @@ npm install -D @testing-library/vue @testing-library/react
 ```javascript
 // test-setup.js
 import { createTemporal } from "@usetemporal/core";
-import { nativeAdapter } from "@usetemporal/adapter-native";
+import { createNativeAdapter } from "@usetemporal/core/native";
 
 // Create a test temporal instance
 export function createTestTemporal(options = {}) {
   return createTemporal({
-    dateAdapter: nativeAdapter,
+    adapter: createNativeAdapter(),
     ...options,
   });
 }
@@ -166,16 +166,27 @@ describe("Divide Pattern", () => {
     expect(months[11].name).toBe("December");
   });
 
-  it("should handle stable month correctly", () => {
+  it("should handle 6-week calendar grid correctly", () => {
     const temporal = createTestTemporal();
 
-    const stableMonth = temporal.periods.stableMonth(temporal);
-    const days = temporal.divide(stableMonth, "day");
-
+    // Generate 6-week calendar grid
+    const month = temporal.periods.month(temporal);
+    const weeks = temporal.divide(month, "week");
+    
+    // Get all weeks that touch this month
+    const firstWeek = weeks[0];
+    const prevWeek = firstWeek.past();
+    const allWeeks = [prevWeek, ...weeks];
+    
+    // Ensure 6 weeks total
+    while (allWeeks.length < 6) {
+      const lastWeek = allWeeks[allWeeks.length - 1];
+      allWeeks.push(lastWeek.future());
+    }
+    
+    const days = allWeeks.flatMap(week => temporal.divide(week, "day"));
     expect(days).toHaveLength(42); // Always 6 weeks
-
-    const weeks = temporal.divide(stableMonth, "week");
-    expect(weeks).toHaveLength(6);
+    expect(allWeeks).toHaveLength(6);
   });
 });
 ```
@@ -408,8 +419,18 @@ it("should generate consistent calendar structure", () => {
     weekStartsOn: 1,
   });
 
-  const month = temporal.periods.stableMonth(temporal);
+  const month = temporal.periods.month(temporal);
   const weeks = temporal.divide(month, "week");
+  
+  // Get 6-week calendar grid
+  const firstWeek = weeks[0];
+  const prevWeek = firstWeek.past();
+  const allWeeks = [prevWeek, ...weeks];
+  
+  while (allWeeks.length < 6) {
+    const lastWeek = allWeeks[allWeeks.length - 1];
+    allWeeks.push(lastWeek.future());
+  }
 
   const calendarStructure = weeks.map((week) => {
     const days = temporal.divide(week, "day");

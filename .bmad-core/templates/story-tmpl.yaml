@@ -45,7 +45,13 @@ sections:
   - id: acceptance-criteria
     title: Acceptance Criteria
     type: numbered-list
-    instruction: Copy the acceptance criteria numbered list from the epic file
+    instruction: |
+      Copy the acceptance criteria numbered list from the epic file.
+      IMPORTANT: Always include documentation criteria:
+      - VitePress documentation updated
+      - API docs reflect changes
+      - Navigation updated if needed
+      - Migration guide updated for breaking changes
     elicit: true
     owner: scrum-master
     editors: [scrum-master]
@@ -56,13 +62,18 @@ sections:
     instruction: |
       Break down the story into specific tasks and subtasks needed for implementation.
       Reference applicable acceptance criteria numbers where relevant.
+      ALWAYS include documentation tasks at the end.
     template: |
-      - [ ] Task 1 (AC: # if applicable)
+      - [ ] Implementation Tasks (AC: # if applicable)
         - [ ] Subtask1.1...
-      - [ ] Task 2 (AC: # if applicable)
+      - [ ] Testing Tasks (AC: # if applicable)
         - [ ] Subtask 2.1...
-      - [ ] Task 3 (AC: # if applicable)
-        - [ ] Subtask 3.1...
+      - [ ] Documentation Tasks (AC: # - REQUIRED)
+        - [ ] Update VitePress documentation
+        - [ ] Update API documentation
+        - [ ] Update navigation if needed
+        - [ ] Update CHANGELOG.md
+        - [ ] Update migration guide if breaking changes
     elicit: true
     owner: scrum-master
     editors: [scrum-master, dev-agent]
@@ -87,6 +98,19 @@ sections:
           - Test standards
           - Testing frameworks and patterns to use
           - Any specific testing requirements for this story
+        elicit: true
+        owner: scrum-master
+        editors: [scrum-master]
+      - id: documentation-requirements
+        title: Documentation Requirements
+        instruction: |
+          Specify all documentation that must be updated for this story:
+          - VitePress documentation pages to update
+          - API documentation changes needed
+          - Navigation/menu updates required
+          - Migration guide updates (if breaking changes)
+          - CHANGELOG.md entries
+          - Code examples or tutorials affected
         elicit: true
         owner: scrum-master
         editors: [scrum-master]

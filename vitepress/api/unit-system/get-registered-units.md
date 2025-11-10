@@ -26,7 +26,7 @@ import { getRegisteredUnits } from '@usetemporal/core'
 // Get all available units
 const units = getRegisteredUnits()
 console.log(units)
-// ['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second', 'stableMonth', 'custom', ...]
+// ['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second', 'custom', ...]
 
 // Check if custom units are registered
 const hasCustomUnits = units.some(unit => 
@@ -92,7 +92,7 @@ function categorizeUnits() {
   
   const standardCalendar = ['year', 'quarter', 'month', 'week', 'day']
   const standardTime = ['hour', 'minute', 'second']
-  const special = ['stableMonth', 'custom']
+  const special = ['custom']
   
   for (const unit of units) {
     if (standardCalendar.includes(unit)) {

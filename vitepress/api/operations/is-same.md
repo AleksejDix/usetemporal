@@ -50,7 +50,6 @@ console.log(isSame(temporal, period1, period2, 'day'))   // false
 
 - Returns `false` for null/undefined values
 - For custom periods, compares reference dates
-- For stableMonth, checks if in same stable month grid
 
 ## See Also
 

@@ -30,8 +30,8 @@
 
 <script setup lang="ts">
 import { computed, ref, type ComputedRef } from 'vue'
-import type { Temporal, Period } from 'usetemporal'
-import { usePeriod, divide } from 'usetemporal'
+import type { Temporal, Period } from '@allystudio/usetemporal'
+import { usePeriod, divide, period } from '@allystudio/usetemporal'
 
 const props = defineProps<{
   temporal: Temporal
@@ -44,12 +44,27 @@ const emit = defineEmits<{
 
 const month = props.initialMonth || usePeriod(props.temporal, 'month')
 
-// Use stableMonth for the calendar grid
-const stableMonth = usePeriod(props.temporal, 'stableMonth')
-
 const selectedDay = ref<Period | null>(null)
 
-const weeks = computed(() => divide(props.temporal, stableMonth.value, 'week'))
+// Generate 6-week calendar grid
+const weeks = computed(() => {
+  const monthWeeks = divide(props.temporal, month.value, 'week')
+  
+  // Get the first week
+  const firstWeek = monthWeeks[0]
+
+  // Create array of 6 weeks starting from the first week
+  const sixWeeks: Period[] = []
+  let currentWeek = firstWeek
+  
+  for (let i = 0; i < 6; i++) {
+    sixWeeks.push(currentWeek)
+    const nextWeekDate = new Date(currentWeek.end)
+    currentWeek = period(props.temporal, nextWeekDate, 'week')
+  }
+  
+  return sixWeeks
+})
 
 // Weekdays starting with Monday
 const weekdays =

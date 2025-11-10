@@ -45,7 +45,7 @@ const christmasWeek = toPeriod(temporal, christmas, 'week')
 const christmasMonth = toPeriod(temporal, christmas, 'month')
 ```
 
-### createPeriod()
+### period()
 
 Create a period with specific start and end dates:
 
@@ -161,7 +161,7 @@ console.log(isSame(temporal, date1, date2, 'month')) // true
 Navigate between different period levels using composition:
 
 ```typescript
-import { divide, contains, createPeriod } from 'usetemporal'
+import { divide, contains, period } from 'usetemporal'
 
 const year = usePeriod(temporal, 'year')
 
@@ -171,7 +171,7 @@ const june = months[5] // 0-indexed
 
 // Navigate from day to its containing month
 const day = usePeriod(temporal, 'day')
-const containingMonth = createPeriod(temporal, day.value.date, 'month')
+const containingMonth = period(temporal, day.value.date, 'month')
 ```
 
 ## Examples

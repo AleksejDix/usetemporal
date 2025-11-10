@@ -1,0 +1,21 @@
+import type { Period } from "../types";
+
+/**
+ * Check if a period contains a date or another period
+ */
+export function contains(p: Period, target: Date | Period): boolean {
+  if (target instanceof Date) {
+    const targetTime = target.getTime();
+    const startTime = p.start.getTime();
+    const endTime = p.end.getTime();
+    return targetTime >= startTime && targetTime <= endTime;
+  } else {
+    // Check if target period is fully contained
+    const targetStart = target.start.getTime();
+    const targetEnd = target.end.getTime();
+    const thisStart = p.start.getTime();
+    const thisEnd = p.end.getTime();
+
+    return targetStart >= thisStart && targetEnd <= thisEnd;
+  }
+}

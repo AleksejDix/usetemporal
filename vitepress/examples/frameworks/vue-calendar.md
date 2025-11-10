@@ -227,7 +227,7 @@ button.active {
     
     <div class="days-grid">
       <div
-        v-for="day in stableMonthDays"
+        v-for="day in calendarDays"
         :key="day.date.toISOString()"
         class="day-cell"
         :class="getDayClasses(day)"
@@ -249,7 +249,7 @@ button.active {
 
 <script setup>
 import { computed } from 'vue'
-import { divide, createPeriod, isSame, isToday, isWeekend } from 'usetemporal'
+import { divide, period, isSame, isToday, isWeekend } from 'usetemporal'
 
 const props = defineProps({
   temporal: Object,
@@ -264,14 +264,25 @@ const emit = defineEmits(['date-select'])
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-// Use stable month for consistent 6-week grid
-const stableMonth = computed(() => 
-  createPeriod(props.temporal, 'stableMonth', props.period)
-)
-
-const stableMonthDays = computed(() => 
-  divide(props.temporal, stableMonth.value, 'day')
-)
+// Generate 6-week calendar grid
+const calendarDays = computed(() => {
+  const month = props.period
+  const weeks = divide(props.temporal, month, 'week')
+  
+  // Get all weeks that touch this month
+  const firstWeek = weeks[0]
+  const prevWeek = previous(props.temporal, firstWeek)
+  const allWeeks = [prevWeek, ...weeks]
+  
+  // Ensure 6 weeks total
+  while (allWeeks.length < 6) {
+    const lastWeek = allWeeks[allWeeks.length - 1]
+    allWeeks.push(next(props.temporal, lastWeek))
+  }
+  
+  // Get all days from the weeks
+  return allWeeks.flatMap(week => divide(props.temporal, week, 'day'))
+})
 
 const getDayClasses = (day) => ({
   'other-month': !isSame(props.temporal, day, props.period, 'month'),
@@ -395,8 +406,22 @@ function useCalendar(initialDate = new Date()) {
   // Get visible periods
   const visiblePeriods = computed(() => {
     if (view.value === 'month') {
-      const stable = createPeriod(temporal, 'stableMonth', period.value)
-      return divide(temporal, stable, 'day')
+      const month = period.value
+      const weeks = divide(temporal, month, 'week')
+      
+      // Get all weeks that touch this month
+      const firstWeek = weeks[0]
+      const prevWeek = previous(temporal, firstWeek)
+      const allWeeks = [prevWeek, ...weeks]
+      
+      // Ensure 6 weeks total
+      while (allWeeks.length < 6) {
+        const lastWeek = allWeeks[allWeeks.length - 1]
+        allWeeks.push(next(temporal, lastWeek))
+      }
+      
+      // Get all days from the weeks
+      return allWeeks.flatMap(week => divide(temporal, week, 'day'))
     }
     return divide(temporal, period.value, 'day')
   })

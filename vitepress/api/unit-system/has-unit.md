@@ -53,7 +53,7 @@ function createSafePeriod(
     return null
   }
   
-  return createPeriod(temporal, unit as Unit, date)
+  return period(temporal, unit as Unit, date)
 }
 
 // Usage
@@ -97,7 +97,7 @@ function getAvailableUnits(): string[] {
   const allPossibleUnits = [
     // Built-in units
     'year', 'quarter', 'month', 'week', 'day', 
-    'hour', 'minute', 'second', 'stableMonth',
+    'hour', 'minute', 'second',
     // Potential custom units
     'sprint', 'fiscal-year', 'semester', 'fortnight'
   ]
@@ -155,7 +155,7 @@ if (missing.length > 0) {
 // Use custom unit if available, fallback to standard
 function getBillingPeriod(temporal: Temporal, date: Date): Period {
   const unit = hasUnit('billing-cycle') ? 'billing-cycle' : 'month'
-  return createPeriod(temporal, unit as Unit, date)
+  return period(temporal, unit as Unit, date)
 }
 
 // Progressive enhancement
@@ -173,7 +173,7 @@ function categorizeUnits(): Record<string, string[]> {
     calendar: ['year', 'quarter', 'month', 'week', 'day'],
     time: ['hour', 'minute', 'second'],
     custom: ['sprint', 'fiscal-year', 'semester'],
-    special: ['stableMonth', 'custom']
+    special: ['custom']
   }
   
   const available: Record<string, string[]> = {}
@@ -247,7 +247,7 @@ function isValidUnit(unit: string): unit is Unit {
 const userInput = 'month'
 if (isValidUnit(userInput)) {
   // TypeScript now knows userInput is a Unit
-  const period = createPeriod(temporal, userInput, date)
+  const period = period(temporal, userInput, date)
 }
 ```
 

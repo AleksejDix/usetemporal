@@ -51,8 +51,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Temporal, Period } from 'usetemporal'
-import { usePeriod, divide, isSame, toPeriod, MONTH, YEAR, DAY } from 'usetemporal'
+import type { Temporal, Period } from '@allystudio/usetemporal'
+import { usePeriod, divide, isSame, period, MONTH, YEAR, DAY } from '@allystudio/usetemporal'
 
 const props = defineProps<{
   temporal: Temporal
@@ -82,7 +82,7 @@ function isCurrentMonth(month: Period): boolean {
 
 // Check if a day is today
 function isToday(day: Date): boolean {
-  const dayPeriod = toPeriod(props.temporal, day, DAY)
+  const dayPeriod = period(props.temporal, day, DAY)
   return isSame(props.temporal, dayPeriod, props.temporal.now.value, DAY)
 }
 

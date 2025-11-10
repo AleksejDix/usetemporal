@@ -32,14 +32,9 @@ Factory functions are used to create temporal instances and period objects.
 ### [createTemporal](./api/factory-functions/create-temporal.md)
 Creates a new temporal instance - the central controller for time operations in useTemporal.
 
-### [createPeriod](./api/factory-functions/create-period.md)
-Creates a period of a specific unit type using another period's date as reference.
+### [period](./api/operations/period.md)
+Creates a period of a specific unit type using a date as reference, or creates a custom period with start and end dates.
 
-### [createCustomPeriod](./api/factory-functions/create-custom-period.md)
-Creates a custom period with arbitrary start and end dates.
-
-### [toPeriod](./api/factory-functions/to-period.md)
-Converts a date to a period of a specific unit type.
 
 ## API/Operations
 
@@ -116,6 +111,19 @@ Get the definition details for a specific time unit.
 ### [hasUnit](./api/unit-system/has-unit.md)
 Check if a time unit is registered in the system.
 
+## API/Calendar
+
+Special calendar units for consistent grid layouts:
+
+### [Calendar Units Overview](./api/calendar/index.md)
+Special unit types designed for consistent calendar grid layouts.
+
+### [stableMonth](./api/calendar/stable-month.md)
+Always returns a 42-day (6-week) grid for month visualizations.
+
+### [stableYear](./api/calendar/stable-year.md)
+Always returns a 52 or 53 full-week grid for year visualizations.
+
 ## API/Utilities
 
 Utility functions for common date operations:
@@ -141,9 +149,6 @@ Quick examples to get you started with useTemporal.
 
 ### [Calendar Examples](./examples/calendar.md)
 Complete calendar implementations in different frameworks.
-
-### [Stable Month Calendar](./examples/stable-month-calendar.md)
-Implementation of a calendar with stable week rows across months.
 
 ## Examples/Basic
 

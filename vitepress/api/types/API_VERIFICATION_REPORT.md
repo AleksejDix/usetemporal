@@ -115,7 +115,7 @@ const temporal = createTemporal({
 
 **Documentation Issue:**
 - ✅ Function signature appears correct
-- ❌ Documentation doesn't mention the errors thrown for 'stableMonth' and 'custom' units
+- ❌ Documentation doesn't mention the errors thrown for 'custom' units
 - ❌ Documentation doesn't mention the 1000 period safety limit
 
 ### 7. usePeriod Composable
@@ -135,7 +135,7 @@ const temporal = createTemporal({
 
 The following documentation was verified to be accurate:
 - ✅ `usePeriod` composable - signature and examples are correct
-- ✅ `createPeriod` function - signature matches implementation
+- ✅ `period` function - signature matches implementation
 - ✅ `toPeriod` function - signature and parameter order correct
 - ✅ `isSame` operation - signature matches implementation
 - ✅ `isWeekend` and `isWeekday` utilities - signatures correct
@@ -149,7 +149,7 @@ The following documentation was verified to be accurate:
    - Fix examples showing `createTemporal()` with no arguments
 2. **Clarify Period.end** as inclusive in documentation
 3. **Add isToday temporal parameter** in documentation
-4. **Add error documentation** for divide() function (stableMonth, custom units, safety limit)
+4. **Add error documentation** for divide() function (custom units, safety limit)
 5. **Add package distinction** in import examples
 
 ## Files That Need Updates

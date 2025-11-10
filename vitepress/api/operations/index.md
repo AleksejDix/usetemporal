@@ -28,26 +28,40 @@ const year = merge(temporal, months) // 12 months → 1 year
 
 ## Navigation Operations
 
+### [period](/api/operations/period)
+Create a period of a specific unit type from a date, or create a custom period with specific start and end dates.
+
+```typescript
+// Standard period from date
+const monthPeriod = period(temporal, new Date(), 'month')
+
+// Custom period with start and end
+const customPeriod = period(temporal, { 
+  start: new Date('2024-01-01'), 
+  end: new Date('2024-03-31') 
+})
+```
+
 ### [next](/api/operations/next)
 Navigate to the next period of the same type.
 
 ```typescript
-const nextMonth = next(monthPeriod, temporal)
+const nextMonth = next(temporal, monthPeriod)
 ```
 
 ### [previous](/api/operations/previous)
 Navigate to the previous period of the same type.
 
 ```typescript
-const prevMonth = previous(monthPeriod, temporal)
+const prevMonth = previous(temporal, monthPeriod)
 ```
 
 ### [go](/api/operations/go)
 Navigate forward or backward by a number of steps.
 
 ```typescript
-const futureMonth = go(monthPeriod, 3, temporal)  // 3 months forward
-const pastMonth = go(monthPeriod, -2, temporal)   // 2 months back
+const futureMonth = go(temporal, monthPeriod, 3)  // 3 months forward
+const pastMonth = go(temporal, monthPeriod, -2)   // 2 months back
 ```
 
 ## Comparison Operations
@@ -80,7 +94,7 @@ const targetMonth = months.find(m => contains(m, yearPeriod.date)) || months[0];
 **Zoom Out Pattern:**
 ```typescript
 // Instead of: zoomOut(monthPeriod, 'year')
-const year = createPeriod(temporal, monthPeriod.date, 'year');
+const year = period(temporal, monthPeriod.date, 'year');
 ```
 
 See the [migration guide](/guide/migration#zoom-operations) for more details.

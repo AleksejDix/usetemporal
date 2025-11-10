@@ -5,7 +5,7 @@ Patterns for managing appointment slots, schedules, and time-based reservations.
 ## Basic Time Slot Generation
 
 ```typescript
-import { createTemporal, split, createCustomPeriod } from 'usetemporal'
+import { createTemporal, split, period } from 'usetemporal'
 
 // Generate time slots for a period
 function generateTimeSlots(
@@ -18,9 +18,12 @@ function generateTimeSlots(
 
 // Create appointment slots for a day
 const temporal = createTemporal({ date: new Date() })
-const workDay = createCustomPeriod(
-  new Date('2024-03-15T09:00:00'),
-  new Date('2024-03-15T17:00:00')
+const workDay = period(
+  temporal,
+  {
+    start: new Date('2024-03-15T09:00:00'),
+    end: new Date('2024-03-15T17:00:00')
+  }
 )
 
 // Generate 30-minute slots
@@ -59,7 +62,7 @@ class ScheduleManager {
     const dayEnd = new Date(date)
     dayEnd.setHours(config.end, 0, 0, 0)
     
-    const workPeriod = createCustomPeriod(dayStart, dayEnd)
+    const workPeriod = period(this.temporal, { start: dayStart, end: dayEnd })
     const periods = split(this.temporal, workPeriod, { 
       duration: { minutes: config.slotMinutes } 
     })
@@ -151,7 +154,7 @@ class RecurringScheduleManager {
         daySchedule.slots.forEach(slotConfig => {
           const start = this.parseTime(day.date, slotConfig.start)
           const end = this.parseTime(day.date, slotConfig.end)
-          const period = createCustomPeriod(start, end)
+          const slotPeriod = period(this.temporal, { start, end })
           
           allSlots.push({
             period,
@@ -380,7 +383,7 @@ function mergeAdjacentSlots(
         current.available === next.available) {
       // Merge
       current = {
-        period: createCustomPeriod(current.period.start, next.period.end),
+        period: period(temporal, { start: current.period.start, end: next.period.end }),
         available: current.available,
         type: current.type
       }
@@ -436,7 +439,7 @@ class ServiceScheduler {
       slotEnd.setMinutes(slotEnd.getMinutes() + totalDuration)
       
       if (slotEnd <= dayEnd) {
-        const potentialSlot = createCustomPeriod(currentTime, slotEnd)
+        const potentialSlot = period(temporal, { start: currentTime, end: slotEnd })
         
         if (!hasConflict(existingBookings, potentialSlot)) {
           availableSlots.push(potentialSlot)

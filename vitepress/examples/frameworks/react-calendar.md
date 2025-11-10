@@ -6,7 +6,7 @@ A complete calendar implementation using React and useTemporal.
 
 ```jsx
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { createTemporal, usePeriod, next, previous, toPeriod, divide, createPeriod, isSame, isToday, isWeekend } from 'usetemporal'
+import { createTemporal, usePeriod, next, previous, toPeriod, divide, period, isSame, isToday, isWeekend } from 'usetemporal'
 import CalendarHeader from './CalendarHeader'
 import CalendarSidebar from './CalendarSidebar'
 import MonthView from './MonthView'
@@ -178,21 +178,30 @@ export default CalendarHeader
 
 ```jsx
 import React, { useMemo } from 'react'
-import { divide, createPeriod, isSame, isToday, isWeekend } from 'usetemporal'
+import { divide, period, isSame, isToday, isWeekend, next, previous } from 'usetemporal'
 
 function MonthView({ temporal, period, events, selectedDate, onDateSelect }) {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   
-  // Use stable month for consistent 6-week grid
-  const stableMonth = useMemo(() => 
-    createPeriod(temporal, 'stableMonth', period),
-    [temporal, period]
-  )
-  
-  const days = useMemo(() => 
-    divide(temporal, stableMonth, 'day'),
-    [temporal, stableMonth]
-  )
+  // Generate 6-week calendar grid
+  const days = useMemo(() => {
+    const month = period
+    const weeks = divide(temporal, month, 'week')
+    
+    // Get all weeks that touch this month
+    const firstWeek = weeks[0]
+    const prevWeek = previous(temporal, firstWeek)
+    const allWeeks = [prevWeek, ...weeks]
+    
+    // Ensure 6 weeks total
+    while (allWeeks.length < 6) {
+      const lastWeek = allWeeks[allWeeks.length - 1]
+      allWeeks.push(next(temporal, lastWeek))
+    }
+    
+    // Get all days from the weeks
+    return allWeeks.flatMap(week => divide(temporal, week, 'day'))
+  }, [temporal, period])
   
   const getDayClasses = (day) => {
     const classes = ['day-cell']
@@ -296,8 +305,22 @@ function useCalendar(initialDate = new Date()) {
   // Get visible periods
   const visiblePeriods = useMemo(() => {
     if (view === 'month') {
-      const stable = createPeriod(temporal, 'stableMonth', period)
-      return divide(temporal, stable, 'day')
+      const month = period
+      const weeks = divide(temporal, month, 'week')
+      
+      // Get all weeks that touch this month
+      const firstWeek = weeks[0]
+      const prevWeek = previous(temporal, firstWeek)
+      const allWeeks = [prevWeek, ...weeks]
+      
+      // Ensure 6 weeks total
+      while (allWeeks.length < 6) {
+        const lastWeek = allWeeks[allWeeks.length - 1]
+        allWeeks.push(next(temporal, lastWeek))
+      }
+      
+      // Get all days from the weeks
+      return allWeeks.flatMap(week => divide(temporal, week, 'day'))
     }
     return divide(temporal, period, 'day')
   }, [temporal, period, view])

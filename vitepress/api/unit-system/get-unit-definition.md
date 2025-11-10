@@ -8,7 +8,7 @@ Retrieve the definition of a registered unit.
 function getUnitDefinition(type: string): UnitDefinition | undefined
 
 interface UnitDefinition {
-  createPeriod(date: Date, adapter: Adapter): {
+  period(date: Date, adapter: Adapter): {
     start: Date;
     end: Date;
   };
@@ -87,9 +87,9 @@ function createDerivedUnit(baseUnit: string, multiplier: number): UnitDefinition
   }
   
   return {
-    createPeriod(date: Date, adapter: Adapter) {
+    period(date: Date, adapter: Adapter) {
       // Create base period
-      const basePeriod = baseDef.createPeriod(date, adapter)
+      const basePeriod = baseDef.period(date, adapter)
       
       // Extend by multiplier
       const start = new Date(basePeriod.start)
@@ -154,7 +154,7 @@ function validatePeriod(period: Period): boolean {
 // Check if operations are supported
 function getSupportedOperations(unit: string): string[] {
   const def = getUnitDefinition(unit)
-  const operations: string[] = ['createPeriod', 'next', 'previous']
+  const operations: string[] = ['period', 'next', 'previous']
   
   if (def?.divisions && def.divisions.length > 0) {
     operations.push('divide')
@@ -181,21 +181,21 @@ function validateCustomUnit(unit: Unit): string[] {
   }
   
   // Check for common issues
-  if (!def.createPeriod) {
-    errors.push('Unit missing required createPeriod method')
+  if (!def.period) {
+    errors.push('Unit missing required period method')
   }
   
-  if (def.createPeriod) {
+  if (def.period) {
     // Test period creation
     try {
       const date = new Date()
-      const period = def.createPeriod(date, temporal.adapter)
+      const period = def.period(date, temporal.adapter)
       
       if (period.start >= period.end) {
-        errors.push('createPeriod returns invalid period (start >= end)')
+        errors.push('period returns invalid period (start >= end)')
       }
     } catch (e) {
-      errors.push(`createPeriod throws error: ${e.message}`)
+      errors.push(`period throws error: ${e.message}`)
     }
   }
   

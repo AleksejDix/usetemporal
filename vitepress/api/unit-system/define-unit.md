@@ -11,7 +11,7 @@ function defineUnit(
 ): void
 
 interface UnitDefinition {
-  createPeriod(date: Date, adapter: Adapter): {
+  period(date: Date, adapter: Adapter): {
     start: Date;
     end: Date;
   };
@@ -52,7 +52,7 @@ import { defineUnit } from '@usetemporal/core'
 
 // Define a 2-week sprint
 defineUnit('sprint', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     // Sprints start on Monday
     const d = new Date(date)
     const day = d.getDay()
@@ -79,7 +79,7 @@ defineUnit('sprint', {
 })
 
 // Now use it
-const sprint = createPeriod(temporal, 'sprint', new Date())
+const sprint = period(temporal, 'sprint', new Date())
 const nextSprint = next(temporal, sprint)
 ```
 
@@ -88,7 +88,7 @@ const nextSprint = next(temporal, sprint)
 ```typescript
 // Fiscal year starts July 1
 defineUnit('fiscal-quarter', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const d = new Date(date)
     const month = d.getMonth()
     
@@ -119,7 +119,7 @@ defineUnit('fiscal-quarter', {
 
 ```typescript
 defineUnit('semester', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const d = new Date(date)
     const month = d.getMonth()
     
@@ -155,13 +155,13 @@ defineUnit('semester', {
 
 ## Definition Properties
 
-### createPeriod
+### period
 
 Defines how to create a normalized period from any date:
 
 ```typescript
 defineUnit('custom-month', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     // Use adapter for standard operations
     const start = adapter.startOf(date, 'month')
     const end = adapter.endOf(date, 'month')
@@ -176,7 +176,7 @@ Optional validation to ensure a period conforms to unit rules:
 
 ```typescript
 defineUnit('fortnight', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const start = adapter.startOf(date, 'week')
     const end = new Date(start)
     end.setDate(end.getDate() + 13)
@@ -197,7 +197,7 @@ Specify what units this can be divided into:
 
 ```typescript
 defineUnit('quarter', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     // Quarter logic
   },
   divisions: ['month', 'week', 'day'] // Can divide quarter into these units
@@ -210,7 +210,7 @@ Specify what unit multiple of these merge into:
 
 ```typescript
 defineUnit('sprint', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     // Sprint logic
   },
   mergesTo: 'quarter' // Multiple sprints can merge into a quarter
@@ -223,7 +223,7 @@ Once defined, custom units work with all operations:
 
 ```typescript
 // Create periods
-const sprint = createPeriod(temporal, 'sprint', date)
+const sprint = period(temporal, 'sprint', date)
 const semester = toPeriod(temporal, date, 'semester')
 
 // Navigate
@@ -265,7 +265,7 @@ Ensure start and end dates are properly calculated:
 
 ```typescript
 defineUnit('workday', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const start = new Date(date)
     start.setHours(9, 0, 0, 0) // 9 AM
     
@@ -283,7 +283,7 @@ Consider boundary conditions:
 
 ```typescript
 defineUnit('month-pair', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const start = adapter.startOf(date, 'month')
     
     // Add 2 months for the end
@@ -319,7 +319,7 @@ Add clear documentation:
  * - Used for: Subscription billing, usage tracking
  */
 defineUnit('billing-cycle', {
-  createPeriod(date: Date, adapter: Adapter) {
+  period(date: Date, adapter: Adapter) {
     const d = new Date(date)
     
     // Start on the 15th

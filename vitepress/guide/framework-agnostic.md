@@ -32,8 +32,8 @@ import { ref, computed } from '@vue/reactivity'
 
 export function createTemporal(options) {
   // Pure JavaScript implementation
-  const browsing = ref(createPeriod(/*...*/))
-  const now = ref(createPeriod(/*...*/))
+  const browsing = ref(period(/*...*/))
+  const now = ref(period(/*...*/))
   
   return {
     browsing,

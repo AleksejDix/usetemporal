@@ -9,56 +9,72 @@ The fastest way to get started is to install the main package which includes the
 ::: code-group
 
 ```bash [npm]
-npm install usetemporal
+npm install @allystudio/usetemporal
 ```
 
 ```bash [yarn]
-yarn add usetemporal
+yarn add @allystudio/usetemporal
 ```
 
 ```bash [pnpm]
-pnpm add usetemporal
+pnpm add @allystudio/usetemporal
 ```
 
 ```bash [bun]
-bun add usetemporal
+bun add @allystudio/usetemporal
 ```
 
 :::
 
 ## What's Included
 
-The `usetemporal` package includes:
-- `@usetemporal/core` - The core library with all functionality
-- `@usetemporal/adapter-native` - Zero-dependency date adapter
+The `@allystudio/usetemporal` package includes:
+- Core library with all functionality
+- Native JavaScript Date adapter (zero dependencies)
+- Optional adapter integrations for date-fns, Luxon, and Temporal API
+- Calendar units (stableMonth)
 
-## Modular Installation
+## Optional Dependencies
 
-If you need a different date adapter or want more control over bundle size:
+If you want to use a specific date library adapter, install it as an optional dependency:
 
-### Core + Native Adapter (Recommended)
-
-```bash
-npm install @usetemporal/core @usetemporal/adapter-native
-```
-
-### Core + date-fns Adapter
+### With date-fns
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-date-fns date-fns
+npm install @allystudio/usetemporal date-fns
 ```
 
-### Core + Luxon Adapter
+### With Luxon
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-luxon luxon
+npm install @allystudio/usetemporal luxon
 ```
 
-### Core + Temporal API Adapter
+### With Temporal API
 
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-temporal
+npm install @allystudio/usetemporal @js-temporal/polyfill
 ```
+
+
+## Calendar Units
+
+The package includes specialized calendar units like `stableMonth` for consistent calendar grids. These are automatically available when you import the library:
+
+```typescript
+import { createTemporal, period } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value)
+```
+
+Calendar units provide:
+- 6-week (42-day) stable calendar grids
+- Calendar-specific time units
+- Consistent layouts for calendar UIs
+
+See [Calendar Units](/extensions/calendar-units) for more information.
 
 ## Requirements
 

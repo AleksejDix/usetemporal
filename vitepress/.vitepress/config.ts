@@ -33,6 +33,7 @@ export default defineConfig({
         activeMatch: "/guide/",
       },
       { text: "API", link: "/api/index", activeMatch: "/api/" },
+      { text: "Extensions", link: "/extensions/", activeMatch: "/extensions/" },
       {
         text: "Examples",
         link: "/examples/basic-usage",
@@ -59,6 +60,22 @@ export default defineConfig({
     ],
 
     sidebar: {
+      "/extensions/": [
+        {
+          text: "Extensions",
+          items: [
+            { text: "Overview", link: "/extensions/" },
+          ],
+        },
+        {
+          text: "Calendar Units",
+          items: [
+            { text: "Getting Started", link: "/extensions/calendar-units" },
+            { text: "API Reference", link: "/extensions/calendar-units-api" },
+            { text: "Examples", link: "/extensions/calendar-units-examples" },
+          ],
+        },
+      ],
       "/guide/": [
         {
           text: "Introduction",
@@ -133,9 +150,6 @@ export default defineConfig({
           items: [
             { text: "Overview", link: "/api/factory-functions/" },
             { text: "createTemporal", link: "/api/factory-functions/create-temporal" },
-            { text: "createPeriod", link: "/api/factory-functions/create-period" },
-            { text: "createCustomPeriod", link: "/api/factory-functions/create-custom-period" },
-            { text: "toPeriod", link: "/api/factory-functions/to-period" },
           ],
         },
         {
@@ -149,6 +163,7 @@ export default defineConfig({
               { text: "merge", link: "/api/operations/merge" },
             ]},
             { text: "Navigation", items: [
+              { text: "period", link: "/api/operations/period" },
               { text: "next", link: "/api/operations/next" },
               { text: "previous", link: "/api/operations/previous" },
               { text: "go", link: "/api/operations/go" },

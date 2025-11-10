@@ -102,10 +102,10 @@ Integration with the Luxon library.
 
 ```typescript
 import { createTemporal } from '@usetemporal/core'
-import { adapter as luxonAdapter } from '@usetemporal/adapter-luxon'
+import { createLuxonAdapter } from '@usetemporal/core/luxon'
 
 const temporal = createTemporal({
-  adapter: luxonAdapter
+  adapter: createLuxonAdapter()
 })
 ```
 
@@ -115,10 +115,10 @@ Integration with date-fns library.
 
 ```typescript
 import { createTemporal } from '@usetemporal/core'
-import { adapter as dateFnsAdapter } from '@usetemporal/adapter-date-fns'
+import { createDateFnsAdapter } from '@usetemporal/core/date-fns'
 
 const temporal = createTemporal({
-  adapter: dateFnsAdapter
+  adapter: createDateFnsAdapter()
 })
 ```
 
@@ -128,10 +128,10 @@ Future-proof adapter for the TC39 Temporal proposal.
 
 ```typescript
 import { createTemporal } from '@usetemporal/core'
-import { adapter as temporalAdapter } from '@usetemporal/adapter-temporal'
+import { createTemporalAdapter } from '@usetemporal/core/temporal'
 
 const temporal = createTemporal({
-  adapter: temporalAdapter
+  adapter: createTemporalAdapter()
 })
 ```
 
@@ -194,7 +194,7 @@ Adapters are used internally by all temporal operations:
 
 ```typescript
 // These operations use the adapter internally
-const period = createPeriod(temporal, 'month', date)
+const period = period(temporal, 'month', date)
 // Uses adapter.startOf() and adapter.endOf()
 
 const nextMonth = next(temporal, period)  

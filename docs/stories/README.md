@@ -1,6 +1,17 @@
 # User Stories
 
-This folder contains user stories following the BMad-Method story template.
+This folder contains active user stories following the BMad-Method story template. Completed stories are moved to the `archive/` directory.
+
+## Directory Structure
+
+```
+stories/
+├── *.md              # Active stories (Draft/Approved/InProgress/Review)
+└── archive/          # Completed stories
+    └── YYYY/         # Year of completion
+        └── MM/       # Month of completion
+            └── *.md  # Archived story files
+```
 
 ## Purpose
 
@@ -42,7 +53,7 @@ All stories MUST include these sections:
 2. **Approved** - Ready for implementation
 3. **InProgress** - Developer/agent is working on it
 4. **Review** - Implementation complete, awaiting review
-5. **Done** - Fully implemented and validated
+5. **Done/Completed** - Fully implemented and validated → Moved to archive/
 
 ## For AI Agents
 

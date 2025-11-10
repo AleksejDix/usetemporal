@@ -125,10 +125,8 @@ function getDaysInPeriod(temporal: Temporal, period: Period): Period[] {
 
 The function throws errors in these cases:
 
-- `Cannot divide by stableMonth` - Use useStableMonth() instead
 - `Cannot divide by custom unit` - Custom periods have arbitrary boundaries  
 - `Unit 'X' cannot be divided into 'Y'` - When division is not valid (e.g., dividing day into month)
-- `stableMonth can only be divided by 'day' or 'week'` - When trying invalid divisions of stableMonth
 
 The function also has a safety limit of 1000 periods to prevent memory issues.
 
