@@ -240,7 +240,7 @@ describe("createTemporal", () => {
       });
 
       let effectCount = 0;
-      
+
       // Create effect runner
       const runner = effect(() => {
         temporal.browsing.value;
@@ -258,7 +258,7 @@ describe("createTemporal", () => {
         type: "day",
         date: new Date(2025, 0, 1),
       };
-      
+
       expect(effectCount).toBeGreaterThan(initialCount);
       const countBeforeStop = effectCount;
 
@@ -279,7 +279,7 @@ describe("createTemporal", () => {
     it("should handle concurrent reactive updates", async () => {
       const dateRef = ref(testDate);
       const nowRef = ref(new Date(2024, 0, 20));
-      
+
       const temporal = createTemporal({
         date: dateRef,
         adapter: mockAdapter,
@@ -305,7 +305,7 @@ describe("createTemporal", () => {
       dateRef.value = new Date(2024, 1, 1);
       nowRef.value = new Date(2024, 1, 1);
 
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       // Should have triggered both effects
       expect(updates.length).toBe(3); // Initial + 1 now update
@@ -387,14 +387,14 @@ describe("createTemporal", () => {
   describe("performance", () => {
     it("should execute in less than 100ms", () => {
       const start = performance.now();
-      
+
       for (let i = 0; i < 100; i++) {
         createTemporal({
           date: new Date(),
           adapter: mockAdapter,
         });
       }
-      
+
       const duration = performance.now() - start;
       expect(duration).toBeLessThan(100);
     });

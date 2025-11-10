@@ -50,10 +50,9 @@ const selectedDay = ref<Period | null>(null)
 const weeks = computed(() => {
   const monthWeeks = divide(props.temporal, month.value, 'week')
   
-  // Get the first day of the first week
+  // Get the first week
   const firstWeek = monthWeeks[0]
-  const firstDay = divide(props.temporal, firstWeek, 'day')[0]
-  
+
   // Create array of 6 weeks starting from the first week
   const sixWeeks: Period[] = []
   let currentWeek = firstWeek
