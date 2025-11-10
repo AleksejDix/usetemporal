@@ -49,7 +49,11 @@ describe("Calendar Units Integration", () => {
 
   describe("StableYear Integration", () => {
     const adapter = createNativeAdapter();
-    const temporal = createTemporal({ adapter, weekStartsOn: 1 }); // Monday start
+    const temporal = createTemporal({
+      date: new Date(2024, 5, 15),
+      adapter,
+      weekStartsOn: 1
+    }); // Monday start
 
     it("should create period with stableYear unit", () => {
       const stableYearPeriod = period(temporal, new Date(2024, 5, 15), "stableYear");
@@ -108,9 +112,10 @@ describe("Calendar Units Integration", () => {
 
   describe("Combined Calendar Usage", () => {
     it("should create consistent month grids for a full year", () => {
-      const temporal = createTemporal({ 
+      const temporal = createTemporal({
+        date: new Date(2024, 0, 1),
         adapter: createNativeAdapter(),
-        weekStartsOn: 1 
+        weekStartsOn: 1
       });
       
       // Test all months in 2024
@@ -129,13 +134,12 @@ describe("Calendar Units Integration", () => {
     });
 
     it("should allow drilling from year to months", () => {
-      const temporal = createTemporal({ 
+      const temporal = createTemporal({
+        date: new Date(2024, 5, 15),
         adapter: createNativeAdapter(),
-        weekStartsOn: 1 
+        weekStartsOn: 1
       });
-      
-      const year2024 = createStableYear(temporal, new Date(2024, 5, 15));
-      
+
       // Get regular year to find months
       const regularYear = period(temporal, new Date(2024, 5, 15), "year");
       const months = divide(temporal, regularYear, "month");
@@ -151,9 +155,10 @@ describe("Calendar Units Integration", () => {
 
   describe("Different weekStartsOn configurations", () => {
     it("should adapt stableYear to Sunday start", () => {
-      const sundayTemporal = createTemporal({ 
-        adapter: createNativeAdapter(), 
-        weekStartsOn: 0 
+      const sundayTemporal = createTemporal({
+        date: new Date(2024, 0, 1),
+        adapter: createNativeAdapter(),
+        weekStartsOn: 0
       });
       const year = createStableYear(sundayTemporal, new Date(2024, 0, 1));
       const days = divide(sundayTemporal, year, "day");

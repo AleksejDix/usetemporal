@@ -4,10 +4,10 @@ import { createNativeAdapter } from "../adapters/native";
 import { ref, computed, effect, isRef, reactive, toRaw } from "@vue/reactivity";
 import { next, previous, go, divide, merge } from "../operations";
 import { usePeriod } from "./usePeriods";
-import type { Period } from "../types";
+import type { Period, Adapter } from "../types";
 
 describe("Vue Reactivity Integration", () => {
-  let adapter;
+  let adapter: Adapter;
   let testDate: Date;
 
   beforeEach(() => {
