@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { createTemporal, period, divide } from "../../index";
-import { createNativeAdapter } from "../../adapters/native";
-import { createDateFnsAdapter } from "../../adapters/date-fns";
-import { createLuxonAdapter } from "../../adapters/luxon";
-import { createStableYear } from "../stableYear";
+import { createTemporal, period, divide } from "../index";
+import { createNativeAdapter } from "../adapters/native";
+import { createDateFnsAdapter } from "../adapters/date-fns";
+import { createLuxonAdapter } from "../adapters/luxon";
+import { createStableYear } from "./stableYear";
 
 describe("stableYear unit", () => {
   const adapters = [

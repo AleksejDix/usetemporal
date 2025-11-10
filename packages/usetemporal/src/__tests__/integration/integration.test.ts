@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { createTemporal, period, divide, hasUnit } from "../..";
 import { createNativeAdapter } from "../../adapters/native";
-import { createStableMonth, createStableYear } from "../index";
-import "../index"; // Import to register units
+import { createStableMonth, createStableYear } from "../../calendar";
+import "../../calendar"; // Import to register units
 
 describe("Calendar Units Integration", () => {
   describe("Unit Registration", () => {

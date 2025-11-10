@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { createTemporal } from "../createTemporal";
-import { createNativeAdapter } from "../adapters/native";
-import { merge } from "./merge";
-import { go } from "./go";
-import { period } from "./period";
-import { divide } from "./divide";
+import { createTemporal } from "../../createTemporal";
+import { createNativeAdapter } from "../../adapters/native";
+import { merge } from "../../operations/merge";
+import { go } from "../../operations/go";
+import { period } from "../../operations/period";
+import { divide } from "../../operations/divide";
 
 /**
  * Regression tests for bugs fixed in story 005.01

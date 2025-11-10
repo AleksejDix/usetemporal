@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { createTemporal } from "./createTemporal";
-import { createNativeAdapter } from "./adapters/native";
+import { createTemporal } from "../createTemporal";
+import { createNativeAdapter } from "../adapters/native";
 import { ref, computed, effect, isRef, reactive, toRaw } from "@vue/reactivity";
-import { next, previous, go, divide, merge } from "./operations";
-import { usePeriod } from "./composables/usePeriods";
-import type { Period } from "./types";
+import { next, previous, go, divide, merge } from "../operations";
+import { usePeriod } from "./usePeriods";
+import type { Period } from "../types";
 
 describe("Vue Reactivity Integration", () => {
   let adapter;

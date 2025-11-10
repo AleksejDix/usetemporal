@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import * as mainExports from "./index";
-import * as operationsExports from "./operations";
-import * as operationsIndex from "./operations/index";
+import * as mainExports from "../../index";
+import * as operationsExports from "../../operations";
+import * as operationsIndex from "../../operations/index";
 
 describe("Export Verification Tests", () => {
   describe("operations.ts exports", () => {

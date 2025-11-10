@@ -19,8 +19,12 @@ const SRC_DIR = path.join(__dirname, '../packages/usetemporal/src');
 // Test files that should be in __tests__/integration/
 const INTEGRATION_TESTS = [
   'exports.test.ts',
-  'reactivity.test.ts',
-  'run-adapter-compliance.test.ts'
+  'integration.test.ts' // calendar integration test
+];
+
+// Test files that should move to composables/
+const COMPOSABLE_TESTS = [
+  'reactivity.test.ts'
 ];
 
 // Test files that are regression tests
@@ -28,16 +32,27 @@ const REGRESSION_TESTS = [
   'regression.test.ts'
 ];
 
+// Test files that should stay in test/ (utilities)
+const TEST_UTILITIES = [
+  'run-adapter-compliance.test.ts'
+];
+
+// Calendar tests that should be colocated
+const CALENDAR_TESTS = {
+  'stableMonth.test.ts': 'calendar/stableMonth.test.ts',
+  'stableYear.test.ts': 'calendar/stableYear.test.ts'
+};
+
 async function findTestFiles(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const files = [];
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
-    
+
     if (entry.isDirectory() && !entry.name.includes('node_modules')) {
       files.push(...await findTestFiles(fullPath));
-    } else if (entry.isFile() && entry.name.endsWith('.test.ts')) {
+    } else if (entry.isFile() && (entry.name.endsWith('.test.ts') || entry.name.endsWith('.test.ts.skip'))) {
       files.push(fullPath);
     }
   }
@@ -49,23 +64,43 @@ async function determineNewLocation(testFile) {
   const relativePath = path.relative(SRC_DIR, testFile);
   const fileName = path.basename(testFile);
   const dirName = path.dirname(testFile);
-  
+
+  // Test utilities should stay in test/
+  if (TEST_UTILITIES.includes(fileName)) {
+    return testFile; // Already in right place
+  }
+
+  // Check if it's a composable test
+  if (COMPOSABLE_TESTS.includes(fileName)) {
+    return path.join(SRC_DIR, 'composables', fileName);
+  }
+
   // Check if it's an integration test
   if (INTEGRATION_TESTS.includes(fileName)) {
     return path.join(SRC_DIR, '__tests__/integration', fileName);
   }
-  
+
   // Check if it's a regression test
   if (REGRESSION_TESTS.includes(fileName)) {
     return path.join(SRC_DIR, '__tests__/regression', fileName);
   }
-  
+
+  // Check if it's a calendar test
+  if (CALENDAR_TESTS[fileName]) {
+    return path.join(SRC_DIR, CALENDAR_TESTS[fileName]);
+  }
+
+  // Handle .skip files in __tests__ - move to integration
+  if (fileName.endsWith('.test.ts.skip') && testFile.includes('__tests__')) {
+    return path.join(SRC_DIR, '__tests__/integration', fileName);
+  }
+
   // Check if it's in a __tests__ folder
   if (testFile.includes('__tests__')) {
     // Move it next to the source file
-    const sourceFileName = fileName.replace('.test.ts', '.ts');
+    const sourceFileName = fileName.replace('.test.ts', '.ts').replace('.test.ts.skip', '.ts');
     const parentDir = path.dirname(dirName);
-    
+
     // Look for the source file
     const possibleSourceFile = path.join(parentDir, sourceFileName);
     try {
@@ -77,7 +112,7 @@ async function determineNewLocation(testFile) {
       return testFile;
     }
   }
-  
+
   // Already in the right place (colocated)
   return testFile;
 }
@@ -105,7 +140,7 @@ async function moveFile(from, to) {
 
 async function cleanupEmptyDirectories(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
-  
+
   // Recursively clean subdirectories first
   for (const entry of entries) {
     if (entry.isDirectory()) {
@@ -113,9 +148,16 @@ async function cleanupEmptyDirectories(dir) {
       await cleanupEmptyDirectories(subDir);
     }
   }
-  
+
   // Check if directory is empty
   const remainingEntries = await fs.readdir(dir);
+  const dirName = path.basename(dir);
+
+  // Don't remove integration/ or regression/ directories even if empty
+  if (dirName === 'integration' || dirName === 'regression') {
+    return;
+  }
+
   if (remainingEntries.length === 0 && dir.includes('__tests__')) {
     console.log(`Removing empty directory: ${path.relative(SRC_DIR, dir)}`);
     if (!DRY_RUN) {

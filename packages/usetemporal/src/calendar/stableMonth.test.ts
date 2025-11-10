@@ -6,12 +6,12 @@ import {
   contains,
   hasUnit,
   getUnitDefinition,
-} from "../..";
-import { createNativeAdapter } from "../../adapters/native";
-import { createDateFnsAdapter } from "../../adapters/date-fns";
-import { createLuxonAdapter } from "../../adapters/luxon";
-import "../index"; // Import to register units
-import { createStableMonth } from "../stableMonth";
+} from "..";
+import { createNativeAdapter } from "../adapters/native";
+import { createDateFnsAdapter } from "../adapters/date-fns";
+import { createLuxonAdapter } from "../adapters/luxon";
+import "./index"; // Import to register units
+import { createStableMonth } from "./stableMonth";
 
 describe("StableMonth Unit", () => {
   const adapters = [
