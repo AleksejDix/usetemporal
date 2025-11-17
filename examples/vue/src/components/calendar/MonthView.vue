@@ -30,11 +30,20 @@
 
 <script setup lang="ts">
 import { computed, ref, type ComputedRef } from 'vue'
-import type { Temporal, Period } from '@allystudio/usetemporal'
-import { usePeriod, divide, period } from '@allystudio/usetemporal'
+import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
+import { usePeriod } from '@allystudio/usetemporal'
+
+/**
+ * MonthView Component
+ *
+ * This component uses the v2.0 Builder API (Level 2):
+ * - usePeriod() for reactive month tracking (Level 3)
+ * - temporal.divide() for period operations (Level 2)
+ * - temporal.period() for creating periods (Level 2)
+ */
 
 const props = defineProps<{
-  temporal: Temporal
+  temporal: TemporalBuilder
   initialMonth?: ComputedRef<Period>
 }>()
 
@@ -48,21 +57,23 @@ const selectedDay = ref<Period | null>(null)
 
 // Generate 6-week calendar grid
 const weeks = computed(() => {
-  const monthWeeks = divide(props.temporal, month.value, 'week')
-  
+  // Use builder API: temporal.divide() instead of divide(temporal, ...)
+  const monthWeeks = props.temporal.divide(month.value, 'week')
+
   // Get the first week
   const firstWeek = monthWeeks[0]
 
   // Create array of 6 weeks starting from the first week
   const sixWeeks: Period[] = []
   let currentWeek = firstWeek
-  
+
   for (let i = 0; i < 6; i++) {
     sixWeeks.push(currentWeek)
     const nextWeekDate = new Date(currentWeek.end)
-    currentWeek = period(props.temporal, nextWeekDate, 'week')
+    // Use builder API: temporal.period() instead of period(temporal, ...)
+    currentWeek = props.temporal.period(nextWeekDate, 'week')
   }
-  
+
   return sixWeeks
 })
 
@@ -75,7 +86,8 @@ const weekdays =
 // Group days by week for the grid
 const gridWeeks = computed(() => {
   return weeks.value.map((week) => {
-    const days = divide(props.temporal, week, 'day')
+    // Use builder API: temporal.divide() instead of divide(temporal, ...)
+    const days = props.temporal.divide(week, 'day')
     return days.map((day) => ({
       day,
       isCurrentMonth: day.date.getMonth() === month.value.date.getMonth(),

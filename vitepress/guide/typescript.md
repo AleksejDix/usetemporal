@@ -7,13 +7,13 @@ useTemporal is written in TypeScript and provides comprehensive type safety.
 All core types are automatically inferred:
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import type { Temporal, Period, Unit } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import type { Temporal, Period, Unit } from '@allystudio/usetemporal'
 
 // Types are inferred
 const temporal = createTemporal()                    // Temporal
 const month = usePeriod(temporal, 'month')          // ComputedRef<Period>
-const days = divide(temporal, month.value, 'day')   // Period[]
+const days = divide(temporal.adapter, month.value, 'day')   // Period[]
 ```
 
 ## Type Definitions
@@ -74,7 +74,7 @@ const day = usePeriod(temporal, 'day')
 const invalid = usePeriod(temporal, 'invalid')
 
 // ✅ Valid divide operation
-const days = divide(temporal, month.value, 'day')
+const days = divide(temporal.adapter, month.value, 'day')
 
 // ❌ Wrong parameter order - TypeScript error
 const wrong = divide(month.value, temporal, 'day')
@@ -110,10 +110,10 @@ function createCalendar<T extends Unit>(
   const period = usePeriod(temporal, unit)
   return computed(() => {
     if (unit === 'year') {
-      return divide(temporal, period.value, 'month')
+      return divide(temporal.adapter, period.value, 'month')
     }
     if (unit === 'month') {
-      return divide(temporal, period.value, 'day')
+      return divide(temporal.adapter, period.value, 'day')
     }
     return [period.value]
   })

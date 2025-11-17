@@ -52,11 +52,18 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, type ComputedRef } from 'vue'
-import type { Temporal, Period } from '@allystudio/usetemporal'
-import { usePeriod, divide } from '@allystudio/usetemporal'
+import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
+import { usePeriod } from '@allystudio/usetemporal'
+
+/**
+ * WeekView Component
+ *
+ * Uses v2.0 Builder API (Level 2):
+ * - temporal.divide() instead of divide(temporal, ...)
+ */
 
 const props = defineProps<{
-  temporal: Temporal
+  temporal: TemporalBuilder
   initialWeek?: ComputedRef<Period>
 }>()
 
@@ -69,7 +76,7 @@ const isReady = computed(() => {
 
 const days = computed(() => {
   if (!week.value) return []
-  return divide(props.temporal, week.value, 'day')
+  return props.temporal.divide(week.value, 'day')
 })
 
 const currentTime = ref(new Date())

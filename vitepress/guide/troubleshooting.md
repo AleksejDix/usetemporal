@@ -153,7 +153,7 @@ const date = new Date("2024-03-14T00:00:00.000Z"); // UTC
 const localDate = new Date(2024, 2, 14); // Local timezone
 
 // Use adapter that handles timezones
-import { luxonAdapter } from "@usetemporal/adapter-luxon";
+import { luxonAdapter } from "@allystudio/usetemporal/luxon";
 const temporal = createTemporal({
   dateAdapter: luxonAdapter,
   timeZone: "America/New_York", // Future feature
@@ -403,7 +403,7 @@ console.log(days[0].dayOfWeek); // Should be 1 (Monday)
 
 ```javascript
 // Use adapter that supports locales
-import { luxonAdapter } from "@usetemporal/adapter-luxon";
+import { luxonAdapter } from "@allystudio/usetemporal/luxon";
 
 const temporal = createTemporal({
   dateAdapter: luxonAdapter,

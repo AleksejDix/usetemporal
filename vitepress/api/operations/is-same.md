@@ -2,11 +2,50 @@
 
 Check if two periods represent the same time unit.
 
-## Signature
+## API Levels
+
+This function is available in multiple API levels:
+
+### Level 1: Pure Function
 
 ```typescript
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const period1 = period(adapter, new Date('2024-01-15'), 'day')
+const period2 = period(adapter, new Date('2024-01-20'), 'day')
+
+console.log(isSame(adapter, period1, period2, 'month')) // true (same month)
+console.log(isSame(adapter, period1, period2, 'day'))   // false (different days)
+```
+
+### Level 2: Builder Method
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const period1 = temporal.period(new Date('2024-01-15'), 'day')
+const period2 = temporal.period(new Date('2024-01-20'), 'day')
+
+console.log(temporal.isSame(period1, period2, 'month')) // true
+```
+
+## Signatures
+
+```typescript
+// Level 1 (Pure Function)
 function isSame(
-  temporal: Temporal,
+  adapter: Adapter,
+  a: Period | null | undefined,
+  b: Period | null | undefined,
+  unit: Unit
+): boolean
+
+// Level 2 (Builder Method)
+temporal.isSame(
   a: Period | null | undefined,
   b: Period | null | undefined,
   unit: Unit
@@ -15,9 +54,17 @@ function isSame(
 
 ## Parameters
 
-- `temporal` - `Temporal` - The temporal instance containing adapter
+### Level 1 (Pure Function)
+
+- `adapter` - `Adapter` - The date adapter instance
 - `a` - `Period | null | undefined` - First period to compare
-- `b` - `Period | null | undefined` - Second period to compare  
+- `b` - `Period | null | undefined` - Second period to compare
+- `unit` - `Unit` - The unit level to compare at
+
+### Level 2 (Builder Method)
+
+- `a` - `Period | null | undefined` - First period to compare
+- `b` - `Period | null | undefined` - Second period to compare
 - `unit` - `Unit` - The unit level to compare at
 
 ## Returns
@@ -26,33 +73,132 @@ function isSame(
 
 ## Description
 
-The `isSame` function compares two periods at a specific unit level. It uses the reference dates of the periods to determine if they fall within the same time unit. This is useful for checking if two dates are in the same day, month, year, etc.
+The `isSame` function compares two periods at a specific unit level. It uses the reference dates (`period.date`) of the periods to determine if they fall within the same time unit. This is useful for checking if two dates/periods are in the same day, month, year, etc.
 
-## Basic Usage
+## Examples
+
+### Check if Same Month
 
 ```typescript
-import { createTemporal, isSame, toPeriod } from 'usetemporal'
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
 
-// Check if two dates are in the same month
-const date1 = new Date('2024-01-15')
-const date2 = new Date('2024-01-30')
+const jan15 = period(adapter, new Date('2024-01-15'), 'day')
+const jan30 = period(adapter, new Date('2024-01-30'), 'day')
+const feb05 = period(adapter, new Date('2024-02-05'), 'day')
 
-const period1 = toPeriod(temporal, date1, 'day')
-const period2 = toPeriod(temporal, date2, 'day')
+console.log(isSame(adapter, jan15, jan30, 'month'))  // true
+console.log(isSame(adapter, jan15, feb05, 'month'))  // false
+console.log(isSame(adapter, jan15, jan30, 'day'))    // false
+```
 
-console.log(isSame(temporal, period1, period2, 'month')) // true
-console.log(isSame(temporal, period1, period2, 'day'))   // false
+### Check if Same Year
+
+```typescript
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+const period2024_jan = period(adapter, new Date('2024-01-15'), 'month')
+const period2024_dec = period(adapter, new Date('2024-12-15'), 'month')
+const period2025_jan = period(adapter, new Date('2025-01-15'), 'month')
+
+console.log(isSame(adapter, period2024_jan, period2024_dec, 'year'))  // true
+console.log(isSame(adapter, period2024_jan, period2025_jan, 'year'))  // false
+```
+
+### Builder API (Level 2)
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+
+const today = temporal.period(new Date(), 'day')
+const tomorrow = temporal.next(today)
+
+console.log(temporal.isSame(today, tomorrow, 'month'))  // true (if same month)
+console.log(temporal.isSame(today, tomorrow, 'day'))    // false
+```
+
+### Practical Example: Group Events by Month
+
+```typescript
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+interface Event {
+  name: string
+  date: Date
+}
+
+const events: Event[] = [
+  { name: 'Event A', date: new Date('2024-01-05') },
+  { name: 'Event B', date: new Date('2024-01-15') },
+  { name: 'Event C', date: new Date('2024-02-10') }
+]
+
+// Group by month
+const targetMonth = period(adapter, new Date('2024-01-01'), 'month')
+const eventsInMonth = events.filter(event => {
+  const eventPeriod = period(adapter, event.date, 'day')
+  return isSame(adapter, eventPeriod, targetMonth, 'month')
+})
+
+console.log(eventsInMonth) // Events A and B
+```
+
+### Check Current Period
+
+```typescript
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+function isThisMonth(datePeriod: Period): boolean {
+  const now = period(adapter, new Date(), 'month')
+  return isSame(adapter, datePeriod, now, 'month')
+}
+
+const jan = period(adapter, new Date('2024-01-15'), 'day')
+console.log(isThisMonth(jan)) // true if current month is January 2024
 ```
 
 ## Special Cases
 
-- Returns `false` for null/undefined values
-- For custom periods, compares reference dates
+- **Returns `false` for null/undefined**: If either period is null or undefined, returns false
+- **Custom periods**: For custom periods, compares reference dates exactly
+- **Same period**: A period is always "same" as itself
+
+## TypeScript
+
+Full type safety:
+
+```typescript
+import type { Adapter, Period, Unit } from '@allystudio/usetemporal'
+import { period, isSame } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter: Adapter = createNativeAdapter()
+const p1: Period = period(adapter, new Date(), 'day')
+const p2: Period = period(adapter, new Date(), 'day')
+const unit: Unit = 'month'
+
+const result: boolean = isSame(adapter, p1, p2, unit)
+```
 
 ## See Also
 
-- [contains](/api/operations/contains) - Check if period contains a date
-- [isToday](/api/utilities/is-today) - Check if period is today
-- [Navigation Patterns](/guide/patterns/navigation) - Using isSame in navigation
+- [contains()](/api/operations/contains) - Check if period contains a date/period
+- [isToday()](/api/utilities/is-today) - Check if period is today
+- [period()](/api/operations/period) - Create periods
+- [Choosing API Level](/guide/choosing-api-level) - Which level to use
+- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
+- [Level 2 API](/api/level-2-builder) - Builder pattern documentation

@@ -7,7 +7,7 @@ Let's build a simple calendar navigation to understand useTemporal's power.
 First, create a temporal instance:
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 
 // Create temporal instance
 const temporal = createTemporal()
@@ -16,7 +16,7 @@ const temporal = createTemporal()
 const month = usePeriod(temporal, 'month')
 
 // Divide into days
-const days = divide(temporal, month.value, 'day')
+const days = divide(temporal.adapter, month.value, 'day')
 
 console.log(`${month.value.date.toLocaleDateString('en', { month: 'long', year: 'numeric' })}`)
 console.log(`This month has ${days.length} days`)
@@ -27,16 +27,16 @@ console.log(`This month has ${days.length} days`)
 Navigate between time periods:
 
 ```typescript
-import { next, previous, go } from 'usetemporal'
+import { next, previous, go } from '@allystudio/usetemporal'
 
 // Navigate to next month
-temporal.browsing.value = next(temporal, month.value)
+temporal.browsing.value = next(temporal.adapter, month.value)
 
 // Navigate to previous month  
-temporal.browsing.value = previous(temporal, month.value)
+temporal.browsing.value = previous(temporal.adapter, month.value)
 
 // Jump 3 months ahead
-temporal.browsing.value = go(temporal, month.value, 3)
+temporal.browsing.value = go(temporal.adapter, month.value, 3)
 ```
 
 ## Simple Calendar Component
@@ -62,11 +62,11 @@ Here's a minimal calendar showing the divide pattern:
 
 <script setup>
 import { computed } from 'vue'
-import { createTemporal, usePeriod, divide, go } from 'usetemporal'
+import { createTemporal, usePeriod, divide, go } from '@allystudio/usetemporal'
 
 const temporal = createTemporal()
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 const monthName = computed(() => 
   month.value.date.toLocaleDateString('en', { 
@@ -76,7 +76,7 @@ const monthName = computed(() =>
 )
 
 function goMonth(direction) {
-  temporal.browsing.value = go(temporal, month.value, direction)
+  temporal.browsing.value = go(temporal.adapter, month.value, direction)
 }
 </script>
 
@@ -99,22 +99,22 @@ function goMonth(direction) {
 
 1. **Show week numbers**:
 ```typescript
-const weeks = divide(temporal, month.value, 'week')
+const weeks = divide(temporal.adapter, month.value, 'week')
 console.log(`This month spans ${weeks.length} weeks`)
 ```
 
 2. **Highlight today**:
 ```typescript
-import { isSame } from 'usetemporal'
+import { isSame } from '@allystudio/usetemporal'
 
 const isToday = (day) => 
-  isSame(temporal, day.date, new Date(), 'day')
+  isSame(temporal.adapter, day.date, new Date(), 'day')
 ```
 
 3. **Show hours in a day**:
 ```typescript
 const today = days.find(d => isToday(d))
-const hours = divide(temporal, today, 'hour')
+const hours = divide(temporal.adapter, today, 'hour')
 ```
 
 ## Next Steps

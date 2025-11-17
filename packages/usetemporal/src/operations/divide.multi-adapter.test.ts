@@ -2,15 +2,12 @@ import { describe, it, expect } from "vitest";
 import { divide } from "./divide";
 import { period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
-import { createTemporal } from "../createTemporal";
 
 withAllAdapters("divide", (adapter) => {
-  const temporal = createTemporal({ adapter, date: new Date(2024, 0, 1) });
-
   describe("period division", () => {
     it("should divide year into months", () => {
-      const year = period(temporal, new Date(2024, 5, 15), "year");
-      const months = divide(temporal, year, "month");
+      const year = period(adapter, new Date(2024, 5, 15), "year");
+      const months = divide(adapter, year, "month");
       
       expect(months).toHaveLength(12);
       expect(months[0].type).toBe("month");
@@ -26,8 +23,8 @@ withAllAdapters("divide", (adapter) => {
     });
 
     it("should divide month into days", () => {
-      const february2024 = period(temporal, new Date(2024, 1, 15), "month");
-      const days = divide(temporal, february2024, "day");
+      const february2024 = period(adapter, new Date(2024, 1, 15), "month");
+      const days = divide(adapter, february2024, "day");
       
       expect(days).toHaveLength(29); // Leap year
       expect(days[0].start.getDate()).toBe(1);
@@ -41,8 +38,8 @@ withAllAdapters("divide", (adapter) => {
     });
 
     it("should divide week into days", () => {
-      const week = period(temporal, new Date(2024, 0, 15), "week");
-      const days = divide(temporal, week, "day");
+      const week = period(adapter, new Date(2024, 0, 15), "week");
+      const days = divide(adapter, week, "day");
       
       expect(days).toHaveLength(7);
       
@@ -62,8 +59,8 @@ withAllAdapters("divide", (adapter) => {
     });
 
     it("should divide day into hours", () => {
-      const day = period(temporal, new Date(2024, 0, 15), "day");
-      const hours = divide(temporal, day, "hour");
+      const day = period(adapter, new Date(2024, 0, 15), "day");
+      const hours = divide(adapter, day, "hour");
       
       expect(hours).toHaveLength(24);
       expect(hours[0].start.getHours()).toBe(0);
@@ -77,8 +74,8 @@ withAllAdapters("divide", (adapter) => {
     });
 
     it("should divide hour into minutes", () => {
-      const hour = period(temporal, new Date(2024, 0, 15, 14), "hour");
-      const minutes = divide(temporal, hour, "minute");
+      const hour = period(adapter, new Date(2024, 0, 15, 14), "hour");
+      const minutes = divide(adapter, hour, "minute");
       
       expect(minutes).toHaveLength(60);
       expect(minutes[0].start.getMinutes()).toBe(0);
@@ -92,8 +89,8 @@ withAllAdapters("divide", (adapter) => {
     });
 
     it("should divide minute into seconds", () => {
-      const minute = period(temporal, new Date(2024, 0, 15, 14, 30), "minute");
-      const seconds = divide(temporal, minute, "second");
+      const minute = period(adapter, new Date(2024, 0, 15, 14, 30), "minute");
+      const seconds = divide(adapter, minute, "second");
       
       expect(seconds).toHaveLength(60);
       expect(seconds[0].start.getSeconds()).toBe(0);
@@ -108,8 +105,8 @@ withAllAdapters("divide", (adapter) => {
 
     it("should handle month boundaries when dividing", () => {
       // Create a week that spans month boundary
-      const lastWeekOfJan = period(temporal, new Date(2024, 0, 29), "week");
-      const days = divide(temporal, lastWeekOfJan, "day");
+      const lastWeekOfJan = period(adapter, new Date(2024, 0, 29), "week");
+      const days = divide(adapter, lastWeekOfJan, "day");
       
       const januaryDays = days.filter(d => d.start.getMonth() === 0);
       const februaryDays = days.filter(d => d.start.getMonth() === 1);
@@ -121,8 +118,8 @@ withAllAdapters("divide", (adapter) => {
 
     it("should handle year boundaries when dividing", () => {
       // Create a week that spans year boundary
-      const lastWeekOf2023 = period(temporal, new Date(2023, 11, 30), "week");
-      const days = divide(temporal, lastWeekOf2023, "day");
+      const lastWeekOf2023 = period(adapter, new Date(2023, 11, 30), "week");
+      const days = divide(adapter, lastWeekOf2023, "day");
       
       const days2023 = days.filter(d => d.start.getFullYear() === 2023);
       const days2024 = days.filter(d => d.start.getFullYear() === 2024);
@@ -132,8 +129,8 @@ withAllAdapters("divide", (adapter) => {
 
     it("should handle daylight saving time transitions", () => {
       // Test spring forward (in US, typically March)
-      const marchDay = period(temporal, new Date(2024, 2, 10), "day");
-      const hours = divide(temporal, marchDay, "hour");
+      const marchDay = period(adapter, new Date(2024, 2, 10), "day");
+      const hours = divide(adapter, marchDay, "hour");
       
       // Even with DST, we should get 24 hour periods
       expect(hours).toHaveLength(24);
@@ -148,7 +145,7 @@ withAllAdapters("divide", (adapter) => {
         date: new Date(2024, 0, 16),
       };
       
-      const hours = divide(temporal, customPeriod, "hour");
+      const hours = divide(adapter, customPeriod, "hour");
       
       // Should include partial hours at boundaries
       expect(hours.length).toBeGreaterThan(0);

@@ -90,10 +90,13 @@ diff(start: Date, end: Date, unit: AdapterUnit): number
 Uses JavaScript's built-in Date methods.
 
 ```typescript
-import { createTemporal } from 'usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// Automatically uses native adapter
-const temporal = createTemporal({ date: new Date() })
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
 ```
 
 ### Luxon Adapter
@@ -101,11 +104,12 @@ const temporal = createTemporal({ date: new Date() })
 Integration with the Luxon library.
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createLuxonAdapter } from '@usetemporal/core/luxon'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createLuxonAdapter } from '@allystudio/usetemporal/luxon'
 
 const temporal = createTemporal({
-  adapter: createLuxonAdapter()
+  adapter: createLuxonAdapter(),
+  date: new Date()
 })
 ```
 
@@ -114,11 +118,12 @@ const temporal = createTemporal({
 Integration with date-fns library.
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createDateFnsAdapter } from '@usetemporal/core/date-fns'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createDateFnsAdapter } from '@allystudio/usetemporal/date-fns'
 
 const temporal = createTemporal({
-  adapter: createDateFnsAdapter()
+  adapter: createDateFnsAdapter(),
+  date: new Date()
 })
 ```
 
@@ -127,11 +132,12 @@ const temporal = createTemporal({
 Future-proof adapter for the TC39 Temporal proposal.
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createTemporalAdapter } from '@usetemporal/core/temporal'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createTemporalAdapter } from '@allystudio/usetemporal/temporal'
 
 const temporal = createTemporal({
-  adapter: createTemporalAdapter()
+  adapter: createTemporalAdapter(),
+  date: new Date()
 })
 ```
 
@@ -193,15 +199,14 @@ const customAdapter: Adapter = {
 Adapters are used internally by all temporal operations:
 
 ```typescript
+import { period, next } from '@allystudio/usetemporal/operations'
+
 // These operations use the adapter internally
-const period = period(temporal, 'month', date)
+const monthPeriod = period(adapter, new Date(), 'month')
 // Uses adapter.startOf() and adapter.endOf()
 
-const nextMonth = next(temporal, period)  
+const nextMonth = next(adapter, monthPeriod)
 // Uses adapter.add()
-
-const daysBetween = diff(temporal, periodA, periodB, 'day')
-// Uses adapter.diff()
 ```
 
 ## Adapter Requirements
@@ -289,7 +294,6 @@ function testAdapter(adapter: Adapter) {
 
 ## See Also
 
-- [Temporal](/api/types/temporal) - Temporal instance
-- [Date Adapters Guide](/guide/adapters) - Choosing adapters
-- [Native Adapter](/packages/adapter-native) - Default adapter
-- [Creating Custom Adapters](/guide/custom-adapters) - Advanced guide
+- [Temporal](/api/types/temporal) - Temporal type
+- [Period](/api/types/period) - Period type
+- [Unit](/api/types/unit) - Unit type

@@ -33,19 +33,19 @@ graph TD
 
 ## Basic Usage
 
+### Level 1: Pure Functions
+
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({
-  adapter: createNativeAdapter()
-})
+const adapter = createNativeAdapter()
 
-// Get the current year as a reactive period
-const year = usePeriod(temporal, 'year')
+// Create a year period
+const year = period(adapter, new Date(), 'year')
 
 // Divide year into months - returns exactly 12 month periods
-const months = divide(temporal, year.value, 'month')
+const months = divide(adapter, year, 'month')
 console.log(months.length) // 12
 
 // Each month is a Period object
@@ -55,12 +55,50 @@ console.log(january.start) // Start of January
 console.log(january.end) // End of January
 
 // Continue dividing - get all days in January
-const days = divide(temporal, january, 'day')
+const days = divide(adapter, january, 'day')
 console.log(days.length) // 31 (for January)
+```
 
-// Each day is a Period
-const firstDay = days[0]
-console.log(firstDay.date) // Date object for January 1st
+### Level 2: Builder API
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+// Create and divide using builder methods
+const year = temporal.period(new Date(), 'year')
+const months = temporal.divide(year, 'month')
+console.log(months.length) // 12
+
+// Continue dividing
+const days = temporal.divide(months[0], 'day')
+console.log(days.length) // 31
+```
+
+### Level 3: Reactive Composables
+
+```typescript
+import { computed } from '@vue/reactivity'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+// Get the current year as a reactive period
+const year = usePeriod(temporal, 'year')
+
+// Reactive subdivision
+const months = computed(() => divide(temporal.adapter, year.value, 'month'))
+console.log(months.value.length) // 12
 ```
 
 ## Key Features
@@ -70,22 +108,26 @@ console.log(firstDay.date) // Date object for January 1st
 You can divide time units as deep as needed, creating a complete hierarchy:
 
 ```typescript
-const year = usePeriod(temporal, 'year')
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(), 'year')
 
 // Level 1: Year → Months
-const months = divide(temporal, year.value, 'month')
+const months = divide(adapter, year, 'month')
 
 // Level 2: Month → Days
-const days = divide(temporal, months[0], 'day')
+const days = divide(adapter, months[0], 'day')
 
 // Level 3: Day → Hours
-const hours = divide(temporal, days[0], 'hour')
+const hours = divide(adapter, days[0], 'hour')
 
 // Level 4: Hour → Minutes
-const minutes = divide(temporal, hours[0], 'minute')
+const minutes = divide(adapter, hours[0], 'minute')
 
 // Level 5: Minute → Seconds
-const seconds = divide(temporal, minutes[0], 'second')
+const seconds = divide(adapter, minutes[0], 'second')
 ```
 
 ### 2. Perfect Synchronization
@@ -98,13 +140,13 @@ import { watch } from '@vue/reactivity'
 const month = usePeriod(temporal, 'month')
 
 // Create reactive subdivisions
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 // Initial state - January has 31 days
 console.log(days.value.length) // 31
 
 // Navigate to February
-temporal.browsing.value = next(temporal, month.value)
+temporal.browsing.value = next(temporal.adapter, month.value)
 
 // Days automatically update!
 console.log(days.value.length) // 28 or 29
@@ -115,12 +157,17 @@ console.log(days.value.length) // 28 or 29
 Every operation is fully type-safe:
 
 ```typescript
+import { divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
 // TypeScript knows these are valid units
-const validDays = divide(temporal, month.value, 'day') // ✅
-const validHours = divide(temporal, day, 'hour') // ✅
+const validDays = divide(adapter, month, 'day') // ✅
+const validHours = divide(adapter, day, 'hour') // ✅
 
 // TypeScript catches invalid operations
-// const invalid = divide(temporal, month.value, 'invalid') // ❌ Type error
+// const invalid = divide(adapter, month, 'invalid') // ❌ Type error
 ```
 
 ## Real-World Examples
@@ -128,12 +175,12 @@ const validHours = divide(temporal, day, 'hour') // ✅
 ### Building a Calendar View
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 function createCalendarMonth(temporal: Temporal) {
   const month = usePeriod(temporal, 'month')
-  const days = computed(() => divide(temporal, month.value, 'day'))
+  const days = computed(() => divide(temporal.adapter, month.value, 'day'))
   
   const calendarGrid = computed(() => {
     const allDays = days.value
@@ -152,7 +199,7 @@ function createCalendarMonth(temporal: Temporal) {
     allDays.forEach(day => {
       grid.push({
         number: day.date.getDate(),
-        isToday: isSame(temporal, day.date, new Date(), 'day'),
+        isToday: isSame(temporal.adapter, day.date, new Date(), 'day'),
         isWeekend: day.date.getDay() === 0 || day.date.getDay() === 6,
         period: day
       })
@@ -176,11 +223,11 @@ function createCalendarMonth(temporal: Temporal) {
 ```typescript
 function createYearHeatmap(temporal: Temporal, data: Map<string, number>) {
   const year = usePeriod(temporal, 'year')
-  const months = computed(() => divide(temporal, year.value, 'month'))
+  const months = computed(() => divide(temporal.adapter, year.value, 'month'))
   
   const heatmap = computed(() => 
     months.value.map(month => {
-      const days = divide(temporal, month, 'day')
+      const days = divide(temporal.adapter, month, 'day')
       
       return {
         month: month.date.toLocaleDateString('en', { month: 'long' }),
@@ -202,7 +249,7 @@ function createYearHeatmap(temporal: Temporal, data: Map<string, number>) {
 ```typescript
 function createTimeSlots(temporal: Temporal, slotDuration = 30) {
   const day = usePeriod(temporal, 'day')
-  const hours = computed(() => divide(temporal, day.value, 'hour'))
+  const hours = computed(() => divide(temporal.adapter, day.value, 'hour'))
   
   const timeSlots = computed(() => {
     const slots = []
@@ -214,7 +261,7 @@ function createTimeSlots(temporal: Temporal, slotDuration = 30) {
     })
     
     businessHours.forEach(hour => {
-      const minutes = divide(temporal, hour, 'minute')
+      const minutes = divide(temporal.adapter, hour, 'minute')
       
       // Create slots every 30 minutes
       for (let i = 0; i < 60; i += slotDuration) {
@@ -259,11 +306,11 @@ interface DateNavigator {
 
 function createDateNavigator(temporal: Temporal): DateNavigator {
   const year = usePeriod(temporal, 'year')
-  const months = computed(() => divide(temporal, year.value, 'month'))
+  const months = computed(() => divide(temporal.adapter, year.value, 'month'))
   const currentMonth = ref(months.value[new Date().getMonth()])
   
   const days = computed(() => 
-    divide(temporal, currentMonth.value, 'day')
+    divide(temporal.adapter, currentMonth.value, 'day')
   )
   
   return {
@@ -282,7 +329,7 @@ function createDateNavigator(temporal: Temporal): DateNavigator {
     },
     
     goToToday() {
-      temporal.browsing.value = toPeriod(temporal, new Date(), 'day')
+      temporal.browsing.value = temporal.period(new Date(), 'day')
     }
   }
 }
@@ -306,13 +353,13 @@ function compareYears(year1: number, year2: number) {
   const y1 = usePeriod(temp1, 'year')
   const y2 = usePeriod(temp2, 'year')
   
-  const months1 = divide(temp1, y1.value, 'month')
-  const months2 = divide(temp2, y2.value, 'month')
+  const months1 = divide(temp1.adapter, y1.value, 'month')
+  const months2 = divide(temp2.adapter, y2.value, 'month')
   
   return months1.map((month1, index) => {
     const month2 = months2[index]
-    const days1 = divide(temp1, month1, 'day')
-    const days2 = divide(temp2, month2, 'day')
+    const days1 = divide(temp1.adapter, month1, 'day')
+    const days2 = divide(temp2.adapter, month2, 'day')
     
     return {
       month: month1.date.toLocaleDateString('en', { month: 'long' }),
@@ -324,29 +371,37 @@ function compareYears(year1: number, year2: number) {
 }
 ```
 
-## Working with Custom Units
+## Working with Standard Units
 
-The divide() pattern works with custom units too:
+The divide() pattern works seamlessly with all standard time units:
 
 ```typescript
-import { defineUnit } from 'usetemporal'
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// Define a business quarter (3 months)
-defineUnit('businessQuarter', {
-  duration: { months: 3 },
-  validate: (adapter, date) => {
-    const month = date.getMonth()
-    return month % 3 === 0 // Must start on Jan, Apr, Jul, Oct
-  }
-})
+const adapter = createNativeAdapter()
 
-// Now use it with divide()
-const year = usePeriod(temporal, 'year')
-const quarters = divide(temporal, year.value, 'businessQuarter') // 4 quarters
+// Year divided into quarters
+const year = period(adapter, new Date(), 'year')
+const quarters = divide(adapter, year, 'quarter') // 4 quarters
 
-// Each quarter can be further divided
-const q1Days = divide(temporal, quarters[0], 'day') // ~90 days
+// Each quarter can be further divided into months
+const q1Months = divide(adapter, quarters[0], 'month') // 3 months
+
+// And months into days
+const janDays = divide(adapter, q1Months[0], 'day') // ~31 days
 ```
+
+::: tip Custom Time Periods
+For custom time ranges, use the `period()` function with start/end dates:
+```typescript
+const customPeriod = period(adapter, {
+  start: new Date(2024, 0, 1),
+  end: new Date(2024, 2, 31)
+})
+const days = divide(adapter, customPeriod, 'day') // ~90 days
+```
+:::
 
 ## Performance Optimization
 
@@ -356,12 +411,12 @@ Subdivisions are created on-demand for optimal performance:
 
 ```typescript
 const year = usePeriod(temporal, 'year')
-const months = divide(temporal, year.value, 'month')
+const months = divide(temporal.adapter, year.value, 'month')
 // Only 12 Period objects created
 
 // Days are created only when accessed
-const januaryDays = divide(temporal, months[0], 'day') // 31 objects
-const februaryDays = divide(temporal, months[1], 'day') // 28/29 objects
+const januaryDays = divide(temporal.adapter, months[0], 'day') // 31 objects
+const februaryDays = divide(temporal.adapter, months[1], 'day') // 28/29 objects
 ```
 
 ### Efficient Updates
@@ -370,10 +425,10 @@ When using computed properties, subdivisions update efficiently:
 
 ```typescript
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 // Navigate to next month
-temporal.browsing.value = next(temporal, month.value)
+temporal.browsing.value = next(temporal.adapter, month.value)
 
 // Only the days array is recalculated, not the entire time tree
 ```
@@ -385,12 +440,12 @@ temporal.browsing.value = next(temporal, month.value)
 ```typescript
 // ✅ Good: Reactive subdivisions
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 // ❌ Avoid: Manual subdivision
-let days = divide(temporal, month.value, 'day')
+let days = divide(temporal.adapter, month.value, 'day')
 watch(month, () => {
-  days = divide(temporal, month.value, 'day')
+  days = divide(temporal.adapter, month.value, 'day')
 })
 ```
 
@@ -398,24 +453,24 @@ watch(month, () => {
 
 ```typescript
 // ✅ Good: Cache subdivisions that don't change
-const year2024 = period(temporal, 'year', new Date(2024, 0, 1))
-const months2024 = divide(temporal, year2024, 'month')
+const year2024 = temporal.period(new Date(2024, 0, 1), 'year')
+const months2024 = divide(temporal.adapter, year2024, 'month')
 
 // Use cached months multiple times
-const januaryDays = divide(temporal, months2024[0], 'day')
-const februaryDays = divide(temporal, months2024[1], 'day')
+const januaryDays = divide(temporal.adapter, months2024[0], 'day')
+const februaryDays = divide(temporal.adapter, months2024[1], 'day')
 ```
 
 ### 3. Use Appropriate Granularity
 
 ```typescript
 // ✅ Good: Only divide to the level you need
-const hours = divide(temporal, day, 'hour')
+const hours = divide(temporal.adapter, day, 'hour')
 
 // ❌ Avoid: Unnecessary deep subdivision
 const seconds = hours
-  .flatMap(hour => divide(temporal, hour, 'minute'))
-  .flatMap(minute => divide(temporal, minute, 'second'))
+  .flatMap(hour => divide(temporal.adapter, hour, 'minute'))
+  .flatMap(minute => divide(temporal.adapter, minute, 'second'))
 ```
 
 ## Framework Integration
@@ -433,7 +488,7 @@ The divide() pattern works seamlessly across all frameworks:
         :key="j"
         class="day"
         :class="{ 
-          today: day && isSame(temporal, day.date, new Date(), 'day'),
+          today: day && isSame(temporal.adapter, day.date, new Date(), 'day'),
           empty: !day 
         }"
       >
@@ -445,15 +500,15 @@ The divide() pattern works seamlessly across all frameworks:
 
 <script setup>
 import { computed } from 'vue'
-import { createTemporal, usePeriod, divide, isSame } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide, isSame } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const temporal = createTemporal({
   adapter: createNativeAdapter()
 })
 
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 const weeks = computed(() => {
   const allDays = days.value
@@ -482,8 +537,8 @@ const weeks = computed(() => {
 
 ```tsx [React]
 import { useMemo } from 'react'
-import { createTemporal, usePeriod, divide, isSame } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal, usePeriod, divide, isSame } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 function Calendar() {
   const temporal = useMemo(() => createTemporal({
@@ -492,7 +547,7 @@ function Calendar() {
   
   const month = usePeriod(temporal, 'month')
   const days = useMemo(() => 
-    divide(temporal, month.value, 'day'),
+    divide(temporal.adapter, month.value, 'day'),
     [month.value]
   )
   
@@ -526,7 +581,7 @@ function Calendar() {
             <div
               key={j}
               className={`day ${
-                day && isSame(temporal, day.date, new Date(), 'day') 
+                day && isSame(temporal.adapter, day.date, new Date(), 'day') 
                   ? 'today' 
                   : ''
               } ${!day ? 'empty' : ''}`}
@@ -543,15 +598,15 @@ function Calendar() {
 
 ```svelte [Svelte]
 <script>
-  import { createTemporal, usePeriod, divide, isSame } from 'usetemporal'
-  import { createNativeAdapter } from '@usetemporal/adapter-native'
+  import { createTemporal, usePeriod, divide, isSame } from '@allystudio/usetemporal'
+  import { createNativeAdapter } from '@allystudio/usetemporal/native'
   
   const temporal = createTemporal({
     adapter: createNativeAdapter()
   })
   
   const month = usePeriod(temporal, 'month')
-  $: days = divide(temporal, $month, 'day')
+  $: days = divide(temporal.adapter, $month, 'day')
   
   $: firstDay = days[0]
   $: startPadding = (firstDay.date.getDay() + 6) % 7
@@ -582,7 +637,7 @@ function Calendar() {
       {#each week as day, j}
         <div 
           class="day"
-          class:today={day && isSame(temporal, day.date, new Date(), 'day')}
+          class:today={day && isSame(temporal.adapter, day.date, new Date(), 'day')}
           class:empty={!day}
         >
           {day?.date.getDate() || ''}

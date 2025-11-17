@@ -25,14 +25,15 @@ The `isWeekend` function checks if a period's reference date falls on a weekend.
 ### Basic Usage
 
 ```typescript
-import { isWeekend, toPeriod, createTemporal } from 'usetemporal'
+import { period, isWeekend } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
 
 // Check specific dates
-const friday = toPeriod(temporal, new Date('2024-03-15'), 'day')
-const saturday = toPeriod(temporal, new Date('2024-03-16'), 'day')
-const sunday = toPeriod(temporal, new Date('2024-03-17'), 'day')
+const friday = period(adapter, new Date('2024-03-15'), 'day')
+const saturday = period(adapter, new Date('2024-03-16'), 'day')
+const sunday = period(adapter, new Date('2024-03-17'), 'day')
 
 console.log(isWeekend(friday))   // false
 console.log(isWeekend(saturday)) // true
@@ -61,9 +62,14 @@ function DayCell({ day }) {
 ### Filtering Business Days
 
 ```typescript
+import { period, divide, isWeekend } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
 // Get only business days from a month
-const month = toPeriod(temporal, new Date(), 'month')
-const days = divide(temporal, month, 'day')
+const month = period(adapter, new Date(), 'month')
+const days = divide(adapter, month, 'day')
 
 const businessDays = days.filter(day => !isWeekend(day))
 console.log(`${businessDays.length} business days this month`)
@@ -74,29 +80,36 @@ console.log(`${businessDays.length} business days this month`)
 ### Weekend Counter
 
 ```typescript
+import { period, divide, isWeekend } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Count weekends in a period
-function countWeekends(period: Period, temporal: Temporal): number {
-  const days = divide(temporal, period, 'day')
+function countWeekends(p: Period, adapter: Adapter): number {
+  const days = divide(adapter, p, 'day')
   return days.filter(isWeekend).length
 }
 
 // Usage
-const year = toPeriod(temporal, new Date(), 'year')
-const weekendDays = countWeekends(year, temporal)
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(), 'year')
+const weekendDays = countWeekends(year, adapter)
 console.log(`${weekendDays} weekend days this year`)
 ```
 
 ### Combined with Other Checks
 
 ```typescript
-import { isWeekend, isToday, isPast } from 'usetemporal'
+import { isWeekend, isToday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
 
-function getDayStatus(day: Period, temporal: Temporal) {
+function getDayStatus(day: Period, adapter: Adapter) {
+  const now = new Date()
+
   return {
     isWeekend: isWeekend(day),
-    isToday: isToday(day, temporal),
-    isPast: isPast(day, temporal),
-    isAvailable: !isWeekend(day) && !isPast(day, temporal)
+    isToday: isToday(adapter, now, day),
+    isAvailable: !isWeekend(day) && day.start.getTime() > now.getTime()
   }
 }
 ```
@@ -104,15 +117,18 @@ function getDayStatus(day: Period, temporal: Temporal) {
 ### Calendar Grid Generation
 
 ```typescript
+import { divide, isWeekend, isSame } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Generate calendar grid with weekend information
-function generateCalendarGrid(month: Period, temporal: Temporal) {
-  const days = divide(temporal, month, 'day')
-  
+function generateCalendarGrid(month: Period, adapter: Adapter) {
+  const days = divide(adapter, month, 'day')
+
   return days.map(day => ({
     date: day.date,
     dayNumber: day.date.getDate(),
     isWeekend: isWeekend(day),
-    isCurrentMonth: isSame(temporal, day, month, 'month')
+    isCurrentMonth: isSame(adapter, day, month, 'month')
   }))
 }
 ```
@@ -154,10 +170,15 @@ export function isWeekend(period: Period): boolean {
 While typically used with day periods, `isWeekend` works with any period type by checking its reference date:
 
 ```typescript
-const hourPeriod = toPeriod(temporal, new Date('2024-03-16T14:00:00'), 'hour')
+import { period, isWeekend } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+const hourPeriod = period(adapter, new Date('2024-03-16T14:00:00'), 'hour')
 console.log(isWeekend(hourPeriod)) // true (Saturday)
 
-const monthPeriod = toPeriod(temporal, new Date('2024-03-16'), 'month')
+const monthPeriod = period(adapter, new Date('2024-03-16'), 'month')
 console.log(isWeekend(monthPeriod)) // true (reference date is Saturday)
 ```
 

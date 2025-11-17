@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createTemporal, period, divide } from "../index";
+import { divide } from "../index";
 import { createNativeAdapter } from "../adapters/native";
 import { createDateFnsAdapter } from "../adapters/date-fns";
 import { createLuxonAdapter } from "../adapters/luxon";
@@ -15,12 +15,12 @@ describe("stableYear unit", () => {
   adapters.forEach(({ name, create }) => {
     describe(`with ${name} adapter`, () => {
       const adapter = create();
-      const temporal = createTemporal({ adapter, weekStartsOn: 1 }); // Monday
+      const weekStartsOn = 1; // Monday
 
       describe("basic functionality", () => {
         it("should create a stableYear period", () => {
           const date = new Date(2024, 5, 15); // June 15, 2024
-          const stableYear = period(temporal, date, "stableYear");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           expect(stableYear).toBeDefined();
           expect(stableYear.type).toBe("stableYear");
@@ -30,15 +30,15 @@ describe("stableYear unit", () => {
 
         it("should have 52 or 53 weeks", () => {
           const date = new Date(2024, 0, 1); // Jan 1, 2024
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           expect([52, 53]).toContain(weeks.length);
         });
 
         it("should start on the configured weekStartsOn day", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           // Monday = 1
           expect(stableYear.start.getDay()).toBe(1);
@@ -46,7 +46,7 @@ describe("stableYear unit", () => {
 
         it("should end on the day before weekStartsOn", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           // Should end on Sunday (0) if week starts on Monday (1)
           expect(stableYear.end.getDay()).toBe(0);
@@ -56,8 +56,8 @@ describe("stableYear unit", () => {
       describe("different year boundaries", () => {
         it("should handle 2024 (leap year, starts on Monday)", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           // 2024 starts on Monday, ends on Tuesday
           // Grid: Dec 25, 2023 (Mon) to Dec 29, 2024 (Sun) = 53 weeks
@@ -69,8 +69,8 @@ describe("stableYear unit", () => {
 
         it("should handle 2023 (non-leap year, starts on Sunday)", () => {
           const date = new Date(2023, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           // 2023 starts on Sunday, ends on Sunday
           // Grid needs to include Dec 26, 2022 (Mon) to Jan 1, 2024 (Mon) for full weeks
@@ -82,8 +82,8 @@ describe("stableYear unit", () => {
 
         it("should handle 2025 (starts on Wednesday)", () => {
           const date = new Date(2025, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           // 2025 starts on Wednesday, ends on Wednesday
           // Grid: Dec 30, 2024 (Mon) to Jan 4, 2026 (Sun)
@@ -96,18 +96,16 @@ describe("stableYear unit", () => {
 
       describe("different weekStartsOn values", () => {
         it("should handle weekStartsOn = 0 (Sunday)", () => {
-          const sundayTemporal = createTemporal({ adapter, weekStartsOn: 0 });
           const date = new Date(2024, 0, 1);
-          const stableYear = createStableYear(sundayTemporal, date);
+          const stableYear = createStableYear(adapter, 0, date);
           
           expect(stableYear.start.getDay()).toBe(0); // Sunday
           expect(stableYear.end.getDay()).toBe(6); // Saturday
         });
 
         it("should handle weekStartsOn = 6 (Saturday)", () => {
-          const saturdayTemporal = createTemporal({ adapter, weekStartsOn: 6 });
           const date = new Date(2024, 0, 1);
-          const stableYear = createStableYear(saturdayTemporal, date);
+          const stableYear = createStableYear(adapter, 6, date);
           
           expect(stableYear.start.getDay()).toBe(6); // Saturday
           expect(stableYear.end.getDay()).toBe(5); // Friday
@@ -117,8 +115,8 @@ describe("stableYear unit", () => {
       describe("divide operations", () => {
         it("should divide into weeks", () => {
           const date = new Date(2024, 5, 15);
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           expect(weeks.length).toBeGreaterThanOrEqual(52);
           expect(weeks.length).toBeLessThanOrEqual(53);
@@ -126,15 +124,15 @@ describe("stableYear unit", () => {
           // Each week should be a proper week period
           weeks.forEach(week => {
             expect(week.type).toBe("week");
-            const days = divide(temporal, week, "day");
+            const days = divide(adapter, week, "day");
             expect(days.length).toBe(7);
           });
         });
 
         it("should divide into days", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
-          const days = divide(temporal, stableYear, "day");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const days = divide(adapter, stableYear, "day");
           
           // Should have 52 * 7 = 364 or 53 * 7 = 371 days
           expect([364, 371]).toContain(days.length);
@@ -153,7 +151,7 @@ describe("stableYear unit", () => {
       describe("validation", () => {
         it("should validate correct stableYear periods", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           // Period should pass validation
           expect(stableYear.type).toBe("stableYear");
@@ -169,19 +167,18 @@ describe("stableYear unit", () => {
       describe("helper function", () => {
         it("should create stableYear with createStableYear helper", () => {
           const date = new Date(2024, 5, 15);
-          const stableYear = createStableYear(temporal, date);
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           expect(stableYear.type).toBe("stableYear");
-          expect(stableYear.start.getDay()).toBe(1); // Monday (temporal's weekStartsOn)
+          expect(stableYear.start.getDay()).toBe(1); // Monday (weekStartsOn)
           
-          const weeks = divide(temporal, stableYear, "week");
+          const weeks = divide(adapter, stableYear, "week");
           expect([52, 53]).toContain(weeks.length);
         });
 
         it("should respect temporal's weekStartsOn in helper", () => {
-          const tuesdayTemporal = createTemporal({ adapter, weekStartsOn: 2 });
           const date = new Date(2024, 0, 1);
-          const stableYear = createStableYear(tuesdayTemporal, date);
+          const stableYear = createStableYear(adapter, 2, date);
           
           expect(stableYear.start.getDay()).toBe(2); // Tuesday
         });
@@ -192,27 +189,27 @@ describe("stableYear unit", () => {
           // 2020 is a leap year that starts on Wednesday
           // This typically results in 53 weeks when week starts on Monday
           const date = new Date(2020, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
-          const weeks = divide(temporal, stableYear, "week");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const weeks = divide(adapter, stableYear, "week");
           
           expect(weeks.length).toBe(53);
         });
 
         it("should include partial weeks at year boundaries", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = period(temporal, date, "stableYear");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
           
           // First week should include days from previous year if needed
-          const firstWeek = divide(temporal, stableYear, "week")[0];
-          const firstWeekDays = divide(temporal, firstWeek, "day");
+          const firstWeek = divide(adapter, stableYear, "week")[0];
+          const firstWeekDays = divide(adapter, firstWeek, "day");
           
           // Should have 7 days
           expect(firstWeekDays.length).toBe(7);
           
           // Last week should include days from next year if needed
-          const weeks = divide(temporal, stableYear, "week");
+          const weeks = divide(adapter, stableYear, "week");
           const lastWeek = weeks[weeks.length - 1];
-          const lastWeekDays = divide(temporal, lastWeek, "day");
+          const lastWeekDays = divide(adapter, lastWeek, "day");
           
           expect(lastWeekDays.length).toBe(7);
         });
@@ -221,8 +218,8 @@ describe("stableYear unit", () => {
       describe("GitHub-style contribution grid scenario", () => {
         it("should create a proper year grid for contributions", () => {
           const date = new Date(2024, 0, 1);
-          const stableYear = createStableYear(temporal, date);
-          const days = divide(temporal, stableYear, "day");
+          const stableYear = createStableYear(adapter, weekStartsOn, date);
+          const days = divide(adapter, stableYear, "day");
           
           // Should have exactly 52 or 53 weeks worth of days
           expect([364, 371]).toContain(days.length);
@@ -249,8 +246,8 @@ describe("stableYear unit", () => {
           
           years.forEach(year => {
             const date = new Date(year, 0, 1);
-            const stableYear = createStableYear(temporal, date);
-            const days = divide(temporal, stableYear, "day");
+            const stableYear = createStableYear(adapter, weekStartsOn, date);
+            const days = divide(adapter, stableYear, "day");
             
             // First day should always be Monday (weekStartsOn = 1)
             expect(days[0].date.getDay()).toBe(1);

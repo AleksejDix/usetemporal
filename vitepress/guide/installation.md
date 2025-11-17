@@ -66,7 +66,7 @@ import { createTemporal, period } from '@allystudio/usetemporal'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const temporal = createTemporal({ adapter: createNativeAdapter() })
-const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value)
+const stableMonth = temporal.period( 'stableMonth', temporal.browsing.value)
 ```
 
 Calendar units provide:
@@ -87,7 +87,7 @@ See [Calendar Units](/extensions/calendar-units) for more information.
 Create a simple test file to verify everything is working:
 
 ```typescript
-import { createTemporal } from 'usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
 
 const temporal = createTemporal()
 console.log('useTemporal installed successfully!')

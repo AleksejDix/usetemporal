@@ -2,7 +2,11 @@
 export { createTemporal } from "./createTemporal";
 export type { CreateTemporalOptions } from "./createTemporal";
 
-// Period composables - module exports
+// Builder (Level 2 API)
+export { createTemporalBuilder } from "./builder";
+export type { TemporalBuilder } from "./builder";
+
+// Period composables - module exports (Level 3 API)
 export { usePeriod } from "./composables/usePeriods";
 
 // Operations - functional API
@@ -51,21 +55,3 @@ export {
   SECOND,
   CUSTOM,
 } from "./types";
-
-// Unit registry functionality
-export { 
-  defineUnit, 
-  getUnitDefinition, 
-  hasUnit, 
-  getRegisteredUnits,
-  type UnitDefinition 
-} from "./unit-registry";
-
-// Initialize core unit definitions
-import "./units/definitions";
-
-// Initialize calendar units
-import "./calendar";
-
-// Calendar helper functions
-export { createStableMonth, createStableYear } from "./calendar";

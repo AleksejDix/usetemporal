@@ -358,7 +358,7 @@ defineUnit('empty', {}) // Warning: Unit has no behavior
 
 ## See Also
 
-- [UnitRegistry](/api/types/unit-registry) - Type declarations
+-  - Type declarations
 - [hasUnit](/api/unit-system/has-unit) - Check registration
 - [getUnitDefinition](/api/unit-system/get-unit-definition) - Get definition
 - [Custom Units Guide](/guide/custom-units) - Complete tutorial

@@ -57,7 +57,7 @@ Building reactive time-based UIs.
 ### Find Working Days
 ```typescript
 const month = usePeriod(temporal, 'month')
-const days = divide(temporal, month.value, 'day')
+const days = divide(temporal.adapter, month.value, 'day')
 const workDays = days.filter(d => {
   const dow = d.date.getDay()
   return dow >= 1 && dow <= 5
@@ -67,7 +67,7 @@ const workDays = days.filter(d => {
 ### Generate Time Slots
 ```typescript
 const day = usePeriod(temporal, 'day')
-const hours = divide(temporal, day.value, 'hour')
+const hours = divide(temporal.adapter, day.value, 'hour')
 const slots = hours.filter(h => 
   h.date.getHours() >= 9 && h.date.getHours() < 17
 )
@@ -76,7 +76,7 @@ const slots = hours.filter(h =>
 ### Compare Periods
 ```typescript
 const thisMonth = usePeriod(temporal, 'month')
-const lastMonth = previous(temporal, thisMonth.value)
+const lastMonth = previous(temporal.adapter, thisMonth.value)
 const growth = compareGrowth(thisMonth, lastMonth)
 ```
 

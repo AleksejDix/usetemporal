@@ -17,14 +17,32 @@ const monthPeriod = toPeriod(temporal, date, 'month');
 ```
 
 #### After (v2.0.0)
-```typescript
-import { period } from '@allystudio/usetemporal';
 
-const dayPeriod = period(temporal, new Date(), 'day');
-const monthPeriod = period(temporal, date, 'month');
+**Level 1 (Pure Functions):**
+```typescript
+import { period } from '@allystudio/usetemporal/operations';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const adapter = createNativeAdapter();
+const dayPeriod = period(adapter, new Date(), 'day');
+const monthPeriod = period(adapter, date, 'month');
 ```
 
-This is a simple find-and-replace migration - just replace all occurrences of `toPeriod` with `period`. The function signatures are identical.
+**Level 2 (Builder):**
+```typescript
+import { createTemporal } from '@allystudio/usetemporal';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+});
+
+const dayPeriod = temporal.period(new Date(), 'day');
+const monthPeriod = temporal.period(date, 'month');
+```
+
+This requires updating the function signature - `toPeriod` doesn't exist in v2.0.
 
 ### Rename of createPeriod to period
 
@@ -39,14 +57,32 @@ const monthPeriod = createPeriod(temporal, date, 'month');
 ```
 
 #### After (v2.0.0)
-```typescript
-import { period } from '@allystudio/usetemporal';
 
-const dayPeriod = period(temporal, new Date(), 'day');
-const monthPeriod = period(temporal, date, 'month');
+**Level 1 (Pure Functions):**
+```typescript
+import { period } from '@allystudio/usetemporal/operations';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const adapter = createNativeAdapter();
+const dayPeriod = period(adapter, new Date(), 'day');
+const monthPeriod = period(adapter, date, 'month');
 ```
 
-This is a simple find-and-replace migration - just replace all occurrences of `createPeriod` with `period`. The function signatures are identical.
+**Level 2 (Builder):**
+```typescript
+import { createTemporal } from '@allystudio/usetemporal';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+});
+
+const dayPeriod = temporal.period(new Date(), 'day');
+const monthPeriod = temporal.period(date, 'month');
+```
+
+Note: The function signature has changed - adapter is now the first parameter for pure functions.
 
 ### Merge of createCustomPeriod into period
 
@@ -60,25 +96,42 @@ const customPeriod = createCustomPeriod(startDate, endDate);
 ```
 
 #### After (v2.0.0)
-```typescript
-import { period } from '@allystudio/usetemporal';
 
-const customPeriod = period(temporal, { start: startDate, end: endDate });
+**Level 1 (Pure Functions):**
+```typescript
+import { period } from '@allystudio/usetemporal/operations';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const adapter = createNativeAdapter();
+const customPeriod = period(adapter, { start: startDate, end: endDate });
+```
+
+**Level 2 (Builder):**
+```typescript
+import { createTemporal } from '@allystudio/usetemporal';
+import { createNativeAdapter } from '@allystudio/usetemporal/native';
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+});
+
+const customPeriod = temporal.period({ start: startDate, end: endDate });
 ```
 
 The `period` function now accepts two signatures:
-- `period(temporal, date, unit)` - Creates a standard period of a specific unit type
-- `period(temporal, { start, end })` - Creates a custom period with arbitrary dates
-
-This is a simple migration - replace `createCustomPeriod(start, end)` with `period(temporal, { start, end })`.
+- `period(adapter, date, unit)` - Creates a standard period (Level 1)
+- `period(adapter, { start, end })` - Creates a custom period (Level 1)
+- `temporal.period(date, unit)` - Builder API (Level 2)
+- `temporal.period({ start, end })` - Builder API (Level 2)
 
 ### StableMonth Moved to Calendar Units Package
 
-The `stableMonth` unit has been moved from the core library to the `@usetemporal/calendar-units` package in v2.0.0. This keeps the core library focused on fundamental operations while providing calendar-specific features as an optional enhancement.
+The `stableMonth` unit has been moved from the core library to the `@allystudio/usetemporal/calendar` package in v2.0.0. This keeps the core library focused on fundamental operations while providing calendar-specific features as an optional enhancement.
 
 #### Before (v1.x)
 ```typescript
-import { period, STABLE_MONTH } from '@usetemporal/core';
+import { period, STABLE_MONTH } from '@allystudio/usetemporal';
 
 const stableMonth = period(temporal, 'stableMonth', date);
 // or
@@ -90,38 +143,38 @@ const stableMonth = period(temporal, STABLE_MONTH, date);
 Install the calendar units package:
 
 ```bash
-npm install @usetemporal/calendar-units
+npm install @allystudio/usetemporal/calendar
 ```
 
 Then use it:
 
 ```typescript
-import { period } from '@usetemporal/core';
-import '@usetemporal/calendar-units'; // Registers stableMonth unit
+import { period } from '@allystudio/usetemporal';
+import '@allystudio/usetemporal/calendar'; // Registers stableMonth unit
 
 const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value);
-const days = divide(temporal, stableMonth, 'day'); // Always 42 days
+const days = divide(temporal.adapter, stableMonth, 'day'); // Always 42 days
 ```
 
 #### Manual Implementation (if not using calendar-units)
 ```typescript
 // Generate 6-week calendar grid manually
 const month = period(temporal, 'month', date);
-const weeks = divide(temporal, month, 'week');
+const weeks = divide(temporal.adapter, month, 'week');
 
 // Get all weeks that touch this month
 const firstWeek = weeks[0];
-const prevWeek = previous(temporal, firstWeek);
+const prevWeek = previous(temporal.adapter, firstWeek);
 const allWeeks = [prevWeek, ...weeks];
 
 // Ensure 6 weeks total
 while (allWeeks.length < 6) {
   const lastWeek = allWeeks[allWeeks.length - 1];
-  allWeeks.push(next(temporal, lastWeek));
+  allWeeks.push(next(temporal.adapter, lastWeek));
 }
 
 // Get all days
-const days = allWeeks.flatMap(week => divide(temporal, week, 'day'));
+const days = allWeeks.flatMap(week => divide(temporal.adapter, week, 'day'));
 ```
 
 See [Calendar Units](/extensions/calendar-units) for more details.
@@ -152,8 +205,8 @@ const yesterday = moment().subtract(1, "day");
 #### useTemporal
 
 ```javascript
-import { createTemporal } from "@usetemporal/core";
-import { createNativeAdapter } from "@usetemporal/core/native";
+import { createTemporal } from "@allystudio/usetemporal";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
 const temporal = createTemporal({ adapter: createNativeAdapter() });
 
@@ -329,8 +382,8 @@ const days = temporal.divide(month, "day");
 For a smoother migration, use the date-fns adapter:
 
 ```javascript
-import { createTemporal } from "@usetemporal/core";
-import { createDateFnsAdapter } from "@usetemporal/core/date-fns";
+import { createTemporal } from "@allystudio/usetemporal";
+import { createDateFnsAdapter } from "@allystudio/usetemporal/date-fns";
 import { format } from "date-fns";
 
 const temporal = createTemporal({
@@ -430,8 +483,8 @@ const tomorrow = now.plus({ days: 1 });
 #### useTemporal with Luxon Adapter
 
 ```javascript
-import { createTemporal } from "@usetemporal/core";
-import { createLuxonAdapter } from "@usetemporal/core/luxon";
+import { createTemporal } from "@allystudio/usetemporal";
+import { createLuxonAdapter } from "@allystudio/usetemporal/luxon";
 
 const temporal = createTemporal({
   adapter: createLuxonAdapter(),
@@ -634,11 +687,11 @@ When migrating to useTemporal:
 1. **Install useTemporal and choose an adapter**
 
    ```bash
-   npm install @usetemporal/core
+   npm install @allystudio/usetemporal
    # or with your preferred adapter (luxon or date-fns)
-   npm install @usetemporal/core luxon
+   npm install @allystudio/usetemporal luxon
    # or
-   npm install @usetemporal/core date-fns
+   npm install @allystudio/usetemporal date-fns
    ```
 
 2. **Update imports**

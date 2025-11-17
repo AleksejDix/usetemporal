@@ -2,36 +2,6 @@
 
 All operations in useTemporal are pure functions that work with Period objects.
 
-## Using the UNITS Constant
-
-For better type safety and autocomplete support, use the UNITS constant instead of string literals:
-
-```typescript
-import { UNITS, divide, period, isSame } from 'usetemporal'
-
-// ✅ Recommended - with autocomplete and type safety
-const year = period(temporal, UNITS.YEAR, date)
-const months = divide(temporal, year, UNITS.MONTH)
-const isSameDay = isSame(temporal, date1, date2, UNITS.DAY)
-
-// ❌ Still works but less ideal
-const year = period(temporal, 'year', date)
-const months = divide(temporal, year, 'month')
-```
-
-### Benefits of UNITS
-
-1. **Autocomplete Support**: IDEs will suggest available units when you type `UNITS.`
-2. **Type Safety**: Typos are caught at compile time
-3. **Consistency**: Ensures consistent unit references across your codebase
-4. **Refactoring**: Easier to rename units if needed
-
-```typescript
-// See all available units with autocomplete
-const period = period(temporal, UNITS.█)
-// IDE shows: YEAR, QUARTER, MONTH, WEEK, DAY, HOUR, MINUTE, SECOND
-```
-
 ## Navigation Operations
 
 Move through time periods:
@@ -41,10 +11,10 @@ Move through time periods:
 Move to the next period of the same type:
 
 ```typescript
-import { next, UNITS } from 'usetemporal'
+import { next } from '@allystudio/usetemporal/operations'
 
-const month = usePeriod(temporal, UNITS.MONTH)
-const nextMonth = next(temporal, month.value)
+const month = usePeriod(temporal, 'month')
+const nextMonth = next(temporal.adapter, month.value)
 
 // Update browsing to navigate
 temporal.browsing.value = nextMonth
@@ -55,9 +25,9 @@ temporal.browsing.value = nextMonth
 Move to the previous period:
 
 ```typescript
-import { previous } from 'usetemporal'
+import { previous } from '@allystudio/usetemporal'
 
-const prevMonth = previous(temporal, month.value)
+const prevMonth = previous(temporal.adapter, month.value)
 ```
 
 ### go()
@@ -65,13 +35,13 @@ const prevMonth = previous(temporal, month.value)
 Navigate by multiple steps:
 
 ```typescript
-import { go } from 'usetemporal'
+import { go } from '@allystudio/usetemporal'
 
 // Move forward 3 months
-const future = go(temporal, month.value, 3)
+const future = go(temporal.adapter, month.value, 3)
 
 // Move backward 2 months
-const past = go(temporal, month.value, -2)
+const past = go(temporal.adapter, month.value, -2)
 ```
 
 ## Comparison Operations
@@ -81,7 +51,7 @@ const past = go(temporal, month.value, -2)
 Check if a date or period is within another period:
 
 ```typescript
-import { contains } from 'usetemporal'
+import { contains } from '@allystudio/usetemporal'
 
 const month = usePeriod(temporal, 'month')
 const today = new Date()
@@ -102,14 +72,14 @@ if (contains(month.value, day.value)) {
 Check if two dates fall within the same period:
 
 ```typescript
-import { isSame, UNITS } from 'usetemporal'
+import { isSame } from '@allystudio/usetemporal/operations'
 
 const date1 = new Date('2024-01-15')
 const date2 = new Date('2024-01-20')
 
-console.log(isSame(temporal, date1, date2, UNITS.DAY))   // false
-console.log(isSame(temporal, date1, date2, UNITS.MONTH)) // true
-console.log(isSame(temporal, date1, date2, UNITS.YEAR))  // true
+console.log(isSame(temporal.adapter, date1, date2, 'day'))   // false
+console.log(isSame(temporal.adapter, date1, date2, 'month')) // true
+console.log(isSame(temporal.adapter, date1, date2, 'year'))  // true
 ```
 
 ## Division Operations
@@ -119,16 +89,16 @@ console.log(isSame(temporal, date1, date2, UNITS.YEAR))  // true
 The signature operation - divide any period into smaller units:
 
 ```typescript
-import { divide, UNITS } from 'usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
 
-const year = usePeriod(temporal, UNITS.YEAR)
-const months = divide(temporal, year.value, UNITS.MONTH)     // 12 periods
+const year = usePeriod(temporal, 'year')
+const months = divide(temporal.adapter, year.value, 'month')     // 12 periods
 
 const month = months[0]
-const days = divide(temporal, month, UNITS.DAY)              // 28-31 periods
+const days = divide(temporal.adapter, month, 'day')              // 28-31 periods
 
 const day = days[0]  
-const hours = divide(temporal, day, 'hour')              // 24 periods
+const hours = divide(temporal.adapter, day, 'hour')              // 24 periods
 ```
 
 ## Zooming Operations
@@ -141,12 +111,12 @@ The zoom operations have been removed in v2.0.0. Use these patterns instead:
 
 **Zoom In Pattern:**
 ```typescript
-import { divide, contains } from 'usetemporal'
+import { divide, contains } from '@allystudio/usetemporal'
 
 const year = usePeriod(temporal, 'year')
 
 // Get all months in the year
-const months = divide(temporal, year.value, 'month')
+const months = divide(temporal.adapter, year.value, 'month')
 
 // Find March (3rd month, 0-indexed)
 const march = months[2]
@@ -157,28 +127,31 @@ const targetMonth = months.find(m => contains(m, someDate)) || months[0]
 
 **Zoom Out Pattern:**
 ```typescript
-import { period, toPeriod } from 'usetemporal'
+import { period } from '@allystudio/usetemporal/operations'
 
 const day = usePeriod(temporal, 'day')
 
-// Zoom out to the containing month
-const month = period(temporal, day.value.date, 'month')
+// Zoom out to the containing month (Builder API)
+const month = temporal.period(day.value.date, 'month')
 
 // Zoom out to the containing year
-const year = toPeriod(temporal, day.value.date, 'year')
+const year = temporal.period(day.value.date, 'year')
+
+// Or using pure functions (Level 1)
+const month = period(temporal.adapter, day.value.date, 'month')
 ```
 
 **Direct Navigation Pattern:**
 ```typescript
-import { period } from 'usetemporal'
+import { period } from '@allystudio/usetemporal/operations'
 
 const hour = usePeriod(temporal, 'hour')
 
-// Navigate from hour to its year
-const year = period(temporal, hour.value.date, 'year')
+// Navigate from hour to its year (Builder API)
+const year = temporal.period(hour.value.date, 'year')
 
 // Navigate from hour to its month
-const month = period(temporal, hour.value.date, 'month')
+const month = temporal.period(hour.value.date, 'month')
 ```
 
 ## Advanced Operations
@@ -188,7 +161,7 @@ const month = period(temporal, hour.value.date, 'month')
 Split a period into custom segments:
 
 ```typescript
-import { split } from 'usetemporal'
+import { split } from '@allystudio/usetemporal'
 
 const month = usePeriod(temporal, 'month')
 
@@ -206,26 +179,32 @@ const biweekly = split(temporal, month.value, {
 Combine adjacent periods:
 
 ```typescript
-import { merge } from 'usetemporal'
+import { merge } from '@allystudio/usetemporal'
 
 const week1 = usePeriod(temporal, 'week')
-const week2 = next(temporal, week1.value)
+const week2 = next(temporal.adapter, week1.value)
 
-const fortnight = merge(temporal, [week1.value, week2.value])
+const fortnight = merge(temporal.adapter, [week1.value, week2.value])
 ```
 
 ## Creating Periods
 
-### toPeriod()
+### period()
 
 Create a period from any date:
 
 ```typescript
-import { toPeriod } from 'usetemporal'
+import { period } from '@allystudio/usetemporal/operations'
 
 const someDate = new Date('2024-06-15')
-const june = toPeriod(temporal, someDate, 'month')
-const year2024 = toPeriod(temporal, someDate, 'year')
+
+// Level 1: Pure function
+const june = period(adapter, someDate, 'month')
+const year2024 = period(adapter, someDate, 'year')
+
+// Level 2: Builder API
+const june = temporal.period(someDate, 'month')
+const year2024 = temporal.period(someDate, 'year')
 ```
 
 ## Best Practices

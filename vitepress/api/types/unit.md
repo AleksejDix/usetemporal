@@ -47,21 +47,28 @@ The `Unit` type represents all possible time units in useTemporal. It includes s
 ### With Operations
 
 ```typescript
+import { divide, period, isSame } from '@allystudio/usetemporal/operations'
+
 // All operations accept Unit type
-divide(temporal, yearPeriod, 'month')
-split(temporal, yearPeriod, { by: 'week' })
-period(temporal, monthPeriod.date, 'day')
-period(temporal, dayPeriod.date, 'month')
-isSame(temporal, periodA, periodB, 'day')
+divide(adapter, yearPeriod, 'month')
+period(adapter, new Date(), 'month')
+isSame(adapter, periodA, periodB, 'day')
 ```
 
-### With Factory Functions
+### With Period Creation
 
 ```typescript
-// Create periods of specific units
-period(temporal, 'year', somePeriod)
-toPeriod(temporal, new Date(), 'month')
-usePeriod(temporal, 'week')
+import { period } from '@allystudio/usetemporal/operations'
+import { usePeriod } from '@allystudio/usetemporal'
+
+// Level 1: Pure function
+period(adapter, new Date(), 'month')
+
+// Level 2: Builder
+temporal.period(new Date(), 'week')
+
+// Level 3: Composable
+usePeriod(temporal, 'day')
 ```
 
 ### Type Safety
@@ -97,7 +104,7 @@ The Unit type is extensible through TypeScript module augmentation:
 
 ```typescript
 // Register a custom unit
-declare module '@usetemporal/core' {
+declare module '@allystudio/usetemporal' {
   interface UnitRegistry {
     'fiscal-year': true
     'sprint': true
@@ -109,17 +116,6 @@ const fiscalYear: Unit = 'fiscal-year' // ✓
 const sprint: Unit = 'sprint'           // ✓
 ```
 
-## Unit Constants
-
-For type safety and better developer experience, use the UNITS constants:
-
-```typescript
-import { UNITS } from '@usetemporal/core'
-
-// Use constants instead of strings
-divide(temporal, year, UNITS.MONTH)
-toPeriod(temporal, date, UNITS.DAY)
-```
 
 ## Special Unit Behaviors
 
@@ -128,11 +124,13 @@ toPeriod(temporal, date, UNITS.DAY)
 The `custom` unit represents arbitrary date ranges:
 
 ```typescript
-const customPeriod = period(temporal, { start, end })
+import { period, next } from '@allystudio/usetemporal/operations'
+
+const customPeriod = period(adapter, { start, end })
 console.log(customPeriod.type) // 'custom'
 
 // Custom periods maintain their duration when navigating
-const next = next(temporal, customPeriod)
+const nextPeriod = next(adapter, customPeriod)
 // Same duration, shifted forward
 ```
 
@@ -141,11 +139,13 @@ const next = next(temporal, customPeriod)
 Operations validate unit compatibility:
 
 ```typescript
+import { divide } from '@allystudio/usetemporal/operations'
+
 // Valid: can divide year into months
-divide(temporal, yearPeriod, 'month') // ✓
+divide(adapter, yearPeriod, 'month') // ✓
 
 // Invalid: can't divide day into months
-divide(temporal, dayPeriod, 'month') // ✗ Error
+divide(adapter, dayPeriod, 'month') // ✗ Error
 ```
 
 ## Adapter Units
@@ -168,7 +168,6 @@ Custom units are handled by useTemporal internally.
 
 ## See Also
 
-- [UnitRegistry](/api/types/unit-registry) - Unit registration system
-- [UNITS Constants](/api/unit-system/constants) - Type-safe unit constants
-- [Period Type](/api/types/period) - Period interface
-- [Custom Units Guide](/guide/custom-units) - Creating custom units
+- [Period](/api/types/period) - Period type
+- [Temporal](/api/types/temporal) - Temporal type
+- [Adapter](/api/types/adapter) - Adapter interface

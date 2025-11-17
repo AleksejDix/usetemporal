@@ -51,7 +51,7 @@ Leverage date-fns formatting alongside useTemporal:
 ```typescript
 import { format, formatDistance, formatRelative } from 'date-fns'
 
-const month = period(temporal, new Date(), 'month')
+const month = temporal.period( new Date(), 'month')
 
 // Various formatting options
 format(month.start, 'MMMM yyyy') // "July 2025"
@@ -71,7 +71,7 @@ Full internationalization support:
 import { format } from 'date-fns'
 import { es, fr, de, ja } from 'date-fns/locale'
 
-const period = period(temporal, new Date(), 'month')
+const period = temporal.period( new Date(), 'month')
 
 // Format in different locales
 format(period.start, 'MMMM yyyy', { locale: es }) // "julio 2025"
@@ -95,13 +95,13 @@ import {
 } from 'date-fns'
 
 // Business day calculations
-const today = period(temporal, new Date(), 'day')
+const today = temporal.period( new Date(), 'day')
 const nextBusinessDay = addBusinessDays(today.start, 1)
 
 // Validate dates
 const userInput = '2025-07-25'
 if (isValid(parseISO(userInput))) {
-  const period = period(temporal, parseISO(userInput), 'day')
+  const period = temporal.period( parseISO(userInput), 'day')
 }
 
 // Quarter operations
@@ -124,8 +124,8 @@ const date2 = parseISO('2025-07-25T10:30:00Z')
 const date3 = parseJSON('2025-07-25T10:30:00.000Z')
 
 // Create periods from parsed dates
-const period1 = period(temporal, date1, 'day')
-const period2 = period(temporal, date2, 'hour')
+const period1 = temporal.period( date1, 'day')
+const period2 = temporal.period( date2, 'hour')
 ```
 
 ### 2. Date Validation
@@ -144,7 +144,7 @@ function validateAndCreatePeriod(temporal, input, unit) {
     console.warn('Date is in the past')
   }
   
-  return period(temporal, date, unit)
+  return temporal.period( date, unit)
 }
 ```
 
@@ -157,8 +157,8 @@ import {
   compareAsc, compareDesc
 } from 'date-fns'
 
-const period1 = period(temporal, '2025-07-01', 'week')
-const period2 = period(temporal, '2025-07-15', 'week')
+const period1 = temporal.period( '2025-07-01', 'week')
+const period2 = temporal.period( '2025-07-15', 'week')
 
 // Check relationships
 isBefore(period1.start, period2.start) // true
@@ -181,14 +181,14 @@ import { format, getDay } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 
 function createFormattedCalendar(temporal, date, locale = enUS) {
-  const month = period(temporal, date, 'month')
-  const weeks = divide(temporal, month, 'week')
+  const month = temporal.period( date, 'month')
+  const weeks = divide(temporal.adapter, month, 'week')
   
   return {
     title: format(month.start, 'MMMM yyyy', { locale }),
     weeks: weeks.map(week => ({
       weekNumber: format(week.start, 'w', { locale }),
-      days: divide(temporal, week, 'day').map(day => ({
+      days: divide(temporal.adapter, week, 'day').map(day => ({
         date: day.date,
         dayNumber: format(day.start, 'd', { locale }),
         dayName: format(day.start, 'EEEE', { locale }),
@@ -210,17 +210,17 @@ import {
 } from 'date-fns'
 
 function getWorkingDaysInPeriod(temporal, period) {
-  const days = divide(temporal, period, 'day')
+  const days = divide(temporal.adapter, period, 'day')
   return days.filter(day => !isWeekend(day.start))
 }
 
 function getNextWorkingDay(temporal, date) {
   const nextDay = addBusinessDays(date, 1)
-  return period(temporal, nextDay, 'day')
+  return temporal.period( nextDay, 'day')
 }
 
 // Calculate project timeline
-const project = period(temporal, '2025-07-01', 'month')
+const project = temporal.period( '2025-07-01', 'month')
 const workingDays = getWorkingDaysInPeriod(temporal, project)
 console.log(`Project has ${workingDays.length} working days`)
 ```
@@ -243,7 +243,7 @@ function formatDateRange(start, end, locale) {
   }
 }
 
-const period = period(temporal, new Date(), 'quarter')
+const period = temporal.period( new Date(), 'quarter')
 console.log(formatDateRange(period.start, period.end, enUS))
 ```
 
@@ -293,8 +293,8 @@ const end = endOfMonth(new Date())
 const days = eachDayOfInterval({ start, end })
 
 // After: useTemporal with date-fns
-const month = period(temporal, new Date(), 'month')
-const days = divide(temporal, month, 'day')
+const month = temporal.period( new Date(), 'month')
+const days = divide(temporal.adapter, month, 'day')
 
 // You can still use date-fns utilities!
 const formatted = days.map(day => format(day.start, 'yyyy-MM-dd'))
@@ -308,8 +308,8 @@ Use useTemporal for structure, date-fns for utilities:
 
 ```typescript
 // useTemporal for time hierarchy
-const year = period(temporal, new Date(), 'year')
-const quarters = divide(temporal, year, 'quarter')
+const year = temporal.period( new Date(), 'year')
+const quarters = divide(temporal.adapter, year, 'quarter')
 
 // date-fns for formatting and utilities
 const quarterReports = quarters.map(q => ({
@@ -372,7 +372,7 @@ import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz'
 
 // Convert to specific timezone
 const utcDate = zonedTimeToUtc('2025-07-25 10:00:00', 'America/New_York')
-const period = period(temporal, utcDate, 'hour')
+const period = temporal.period( utcDate, 'hour')
 ```
 
 ### Quarter Handling

@@ -236,5 +236,5 @@ function canDivide(parent: Unit, child: Unit): boolean {
 ## See Also
 
 - [Unit](/api/types/unit) - Unit type definition
-- [UnitRegistry](/api/types/unit-registry) - Unit registration
+-  - Unit registration
 - [Operations](/api/operations/) - Using units with operations

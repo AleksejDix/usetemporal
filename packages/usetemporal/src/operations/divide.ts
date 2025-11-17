@@ -1,52 +1,19 @@
-import type { Period, Unit, Temporal, AdapterUnit } from "../types";
-import { getUnitDefinition } from "../unit-registry";
+import type { Period, Adapter, AdapterUnit } from "../types";
 
 /**
  * Divide a period into smaller units
  */
 export function divide(
-  temporal: Temporal,
+  adapter: Adapter,
   period: Period,
-  unit: Unit
+  unit: AdapterUnit
 ): Period[] {
-  const { adapter } = temporal;
-
-  if (unit === "custom") {
-    throw new Error(
-      "Cannot divide by custom unit. Custom periods have arbitrary boundaries."
-    );
-  }
-
-  // Check if the parent period type has division info
-  const parentUnitDef = getUnitDefinition(period.type);
-  if (parentUnitDef?.divisions && !parentUnitDef.divisions.includes(unit)) {
-    throw new Error(
-      `Unit '${period.type}' cannot be divided into '${unit}'. Valid divisions: ${parentUnitDef.divisions.join(", ")}`
-    );
-  }
-
-  // Standard division - calculate intervals manually
   const periods: Period[] = [];
   let current = new Date(period.start);
 
-  // Check if this is a custom unit with definition
-  const unitDef = getUnitDefinition(unit);
-
   while (current <= period.end) {
-    let start: Date;
-    let end: Date;
-
-    if (unitDef) {
-      // Use custom unit definition
-      const { start: unitStart, end: unitEnd } = unitDef.period(current, adapter);
-      start = unitStart;
-      end = unitEnd;
-    } else {
-      // Use adapter built-in units
-      const safeUnit = unit as AdapterUnit;
-      start = adapter.startOf(current, safeUnit);
-      end = adapter.endOf(current, safeUnit);
-    }
+    const start = adapter.startOf(current, unit);
+    const end = adapter.endOf(current, unit);
 
     // Only include periods that overlap with the parent period
     if (end >= period.start && start <= period.end) {
@@ -58,18 +25,23 @@ export function divide(
       });
     }
 
-    // Move to next period
-    if (unitDef) {
-      // For custom units, move to the day after the end
-      current = new Date(end.getTime() + 24 * 60 * 60 * 1000);
+    // Move to the start of the next unit to avoid issues with variable length units
+    const nextDate = adapter.add(start, 1, unit);
+    
+    // If the next date is the same as the current one (e.g. DST), we must advance manually
+    if (nextDate.getTime() <= current.getTime()) {
+      current = new Date(start.getTime() + 24 * 60 * 60 * 1000); // Move to next day
     } else {
-      const safeUnit = unit as AdapterUnit;
-      current = adapter.add(current, 1, safeUnit);
+      current = nextDate;
     }
 
     // For safety, break if we've gone too far (prevent infinite loops)
-    if (periods.length > 1000) {
-      throw new Error("Too many periods generated in divide operation");
+    if (periods.length > 2000) {
+      // This limit might need to be adjusted depending on expected use cases.
+      // For example, dividing a year by minutes would exceed this.
+      // For now, keeping it as a safeguard.
+      console.warn("divide operation generated over 2000 periods, aborting.");
+      break;
     }
   }
 

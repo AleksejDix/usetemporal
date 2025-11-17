@@ -44,7 +44,6 @@ TypeScript type definitions.
 - [`Unit`](/api/types/unit) - Time unit types
 - [`Temporal`](/api/types/temporal) - Temporal instance type
 - [`Adapter`](/api/types/adapter) - Date adapter interface
-- [`UnitRegistry`](/api/types/unit-registry) - Unit plugin system types
 
 ## [Composables](/api/composables/)
 

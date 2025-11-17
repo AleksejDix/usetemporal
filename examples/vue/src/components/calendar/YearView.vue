@@ -51,11 +51,22 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Temporal, Period } from '@allystudio/usetemporal'
-import { usePeriod, divide, isSame, period, MONTH, YEAR, DAY } from '@allystudio/usetemporal'
+import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
+import { usePeriod } from '@allystudio/usetemporal'
+
+/**
+ * YearView Component
+ *
+ * This component uses the v2.0 Builder API (Level 2):
+ * - usePeriod() for reactive year/month tracking (Level 3)
+ * - temporal.divide() for period operations (Level 2)
+ * - temporal.isSame() for comparisons (Level 2)
+ * - temporal.period() for creating periods (Level 2)
+ * - String literals 'year', 'month', 'day' instead of constants
+ */
 
 const props = defineProps<{
-  temporal: Temporal
+  temporal: TemporalBuilder
 }>()
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,8 +74,8 @@ const emit = defineEmits<{
   selectMonth: [month: Period]
 }>()
 
-const year = usePeriod(props.temporal, YEAR)
-const months = computed(() => divide(props.temporal, year.value, MONTH))
+const year = usePeriod(props.temporal, 'year')
+const months = computed(() => props.temporal.divide(year.value, 'month'))
 
 // Weekdays starting with Monday if configured
 const weekdays =
@@ -73,17 +84,17 @@ const weekdays =
     : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 // Get current month to check against
-const currentMonth = usePeriod(props.temporal, MONTH)
+const currentMonth = usePeriod(props.temporal, 'month')
 
 // Check if a month is the current month
 function isCurrentMonth(month: Period): boolean {
-  return isSame(props.temporal, month, currentMonth.value, MONTH)
+  return props.temporal.isSame(month, currentMonth.value, 'month')
 }
 
 // Check if a day is today
 function isToday(day: Date): boolean {
-  const dayPeriod = period(props.temporal, day, DAY)
-  return isSame(props.temporal, dayPeriod, props.temporal.now.value, DAY)
+  const dayPeriod = props.temporal.period(day, 'day')
+  return props.temporal.isSame(dayPeriod, props.temporal.now.value, 'day')
 }
 
 // Get weeks for a month showing the full calendar grid

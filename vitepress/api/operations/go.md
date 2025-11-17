@@ -1,20 +1,53 @@
 # go
 
-Navigate forward or backward by multiple periods.
+Navigate forward or backward by multiple periods at once.
 
-## Signature
+## API Levels
+
+This function is available in multiple API levels:
+
+### Level 1: Pure Function
 
 ```typescript
-function go(
-  temporal: Temporal,
-  period: Period,
-  steps: number
-): Period
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
+const threeMonthsLater = go(adapter, month, 3)
+```
+
+### Level 2: Builder Method
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const month = temporal.period(new Date(), 'month')
+const threeMonthsLater = temporal.go(month, 3)
+```
+
+## Signatures
+
+```typescript
+// Level 1 (Pure Function)
+function go(adapter: Adapter, period: Period, steps: number): Period
+
+// Level 2 (Builder Method)
+temporal.go(period: Period, steps: number): Period
 ```
 
 ## Parameters
 
-- `temporal` - `Temporal` - The temporal instance containing adapter
+### Level 1 (Pure Function)
+
+- `adapter` - `Adapter` - The date adapter instance
+- `period` - `Period` - The current period to navigate from
+- `steps` - `number` - Number of steps to move (positive = forward, negative = backward, 0 = no change)
+
+### Level 2 (Builder Method)
+
 - `period` - `Period` - The current period to navigate from
 - `steps` - `number` - Number of steps to move (positive = forward, negative = backward, 0 = no change)
 
@@ -24,18 +57,143 @@ function go(
 
 ## Description
 
-Allows navigation by multiple periods in a single operation. It's equivalent to calling `next` or `previous` multiple times but more efficient.
+Allows navigation by multiple periods in a single operation. More efficient than calling `next()` or `previous()` multiple times.
 
-## Example
+- **Positive steps**: Navigate forward (like calling `next()` multiple times)
+- **Negative steps**: Navigate backward (like calling `previous()` multiple times)
+- **Zero steps**: Returns the same period (no change)
+
+## Examples
+
+### Basic Usage (Level 1)
 
 ```typescript
-const threeMonthsLater = go(temporal, month, 3)
-const weekAgo = go(temporal, today, -7)
-const sameMonth = go(temporal, month, 0)
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
+
+// Navigate forward
+const threeMonthsLater = go(adapter, month, 3)
+const nextYear = go(adapter, month, 12)
+
+// Navigate backward
+const twoMonthsAgo = go(adapter, month, -2)
+const lastYear = go(adapter, month, -12)
+
+// No change
+const sameMonth = go(adapter, month, 0)
+```
+
+### Builder API (Level 2)
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+
+const day = temporal.period(new Date(), 'day')
+const nextWeek = temporal.go(day, 7)
+const lastWeek = temporal.go(day, -7)
+```
+
+### Quarters and Years
+
+```typescript
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Navigate quarters
+const quarter = period(adapter, new Date(), 'quarter')
+const nextQuarter = go(adapter, quarter, 1)
+const nextYear = go(adapter, quarter, 4) // 4 quarters = 1 year
+
+// Navigate years
+const year = period(adapter, new Date(), 'year')
+const fiveYearsLater = go(adapter, year, 5)
+const decade Ago = go(adapter, year, -10)
+```
+
+### Custom Period Navigation
+
+```typescript
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Custom period (e.g., 2-week sprint)
+const sprint = period(adapter, {
+  start: new Date('2024-01-01'),
+  end: new Date('2024-01-14')
+})
+
+// Navigate sprints (preserves duration)
+const sprint3 = go(adapter, sprint, 3) // 3 sprints later
+const sprintBefore = go(adapter, sprint, -1) // 1 sprint before
+```
+
+### Practical Example: Date Range Selector
+
+```typescript
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+function getDateRange(baseDate: Date, offset: number, unit: 'day' | 'week' | 'month') {
+  const basePeriod = period(adapter, baseDate, unit)
+  return go(adapter, basePeriod, offset)
+}
+
+// Get last month
+const lastMonth = getDateRange(new Date(), -1, 'month')
+
+// Get next week
+const nextWeek = getDateRange(new Date(), 1, 'week')
+
+// Get 30 days from now
+const thirtyDaysLater = getDateRange(new Date(), 30, 'day')
+```
+
+## TypeScript
+
+Full type safety:
+
+```typescript
+import type { Adapter, Period } from '@allystudio/usetemporal'
+import { period, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter: Adapter = createNativeAdapter()
+const month: Period = period(adapter, new Date(), 'month')
+
+// Type-safe navigation
+const future: Period = go(adapter, month, 5)
+const past: Period = go(adapter, month, -3)
+```
+
+## Performance
+
+`go()` is more efficient than chaining multiple `next()` or `previous()` calls:
+
+```typescript
+// Less efficient
+const result1 = next(adapter, next(adapter, next(adapter, month)))
+
+// More efficient
+const result2 = go(adapter, month, 3)
 ```
 
 ## See Also
 
-- [next](/api/operations/next) - Navigate one step forward
-- [previous](/api/operations/previous) - Navigate one step backward
-- [Navigation Patterns](/guide/patterns/navigation) - Navigation examples and patterns
+- [next()](/api/operations/next) - Navigate one step forward
+- [previous()](/api/operations/previous) - Navigate one step backward
+- [period()](/api/operations/period) - Create periods
+- [Choosing API Level](/guide/choosing-api-level) - Which level to use
+- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
+- [Level 2 API](/api/level-2-builder) - Builder pattern documentation

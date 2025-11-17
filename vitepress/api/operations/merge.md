@@ -2,42 +2,138 @@
 
 Merge multiple periods into a single larger period.
 
-## Signature
+## API Levels
+
+This function is available in multiple API levels:
+
+### Level 1: Pure Function
 
 ```typescript
+import { period, divide, merge } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const week = period(adapter, new Date(), 'week')
+const days = divide(adapter, week, 'day')
+const merged = merge(adapter, days)
+```
+
+### Level 2: Builder Method
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const week = temporal.period(new Date(), 'week')
+const days = temporal.divide(week, 'day')
+const merged = temporal.merge(days)
+```
+
+## Signatures
+
+```typescript
+// Level 1 (Pure Function)
 function merge(
-  temporal: Temporal,
-  periods: Period[]
+  adapter: Adapter,
+  periods: Period[],
+  targetUnit?: Unit
 ): Period | null
+
+// Level 2 (Builder Method)
+temporal.merge(periods: Period[], targetUnit?: Unit): Period | null
 ```
 
 ## Parameters
 
-- `temporal` - `Temporal` - The temporal instance containing adapter
+### Level 1 (Pure Function)
+
+- `adapter` - `Adapter` - The date adapter instance
 - `periods` - `Period[]` - Array of periods to merge
+- `targetUnit` - `Unit` (optional) - Force the resulting period to have this unit type
+
+### Level 2 (Builder Method)
+
+- `periods` - `Period[]` - Array of periods to merge
+- `targetUnit` - `Unit` (optional) - Force the resulting period to have this unit type
 
 ## Returns
 
-`Period | null` - A merged period, or null if the array is empty
+`Period | null` - A merged period, or the current day period if array is empty
 
 ## Description
 
 The `merge` function combines multiple periods into a single period. It intelligently detects when periods form natural units (like 7 days forming a week) and creates the appropriate period type. Otherwise, it creates a custom period spanning from the earliest start to the latest end.
 
-## Basic Usage
+## Examples
+
+### Basic Usage (Level 1)
 
 ```typescript
-import { createTemporal, merge, divide } from 'usetemporal'
+import { period, divide, merge } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
 
 // Get all days in a week
-const week = toPeriod(temporal, new Date(), 'week')
-const days = divide(temporal, week, 'day')
+const week = period(adapter, new Date(), 'week')
+const days = divide(adapter, week, 'day')
 
 // Merge back into a week
-const mergedWeek = merge(temporal, days)
-// Result: Period with type 'week'
+const mergedWeek = merge(adapter, days)
+// Result: Period with type 'week' (natural unit detected)
+
+console.log(mergedWeek.type) // 'week'
+```
+
+### Builder API (Level 2)
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+
+const week = temporal.period(new Date(), 'week')
+const days = temporal.divide(week, 'day')
+const mergedWeek = temporal.merge(days)
+
+console.log(mergedWeek.type) // 'week'
+```
+
+### Custom Period Merge
+
+```typescript
+import { period, merge } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Merge arbitrary periods
+const period1 = period(adapter, { start: new Date('2024-01-01'), end: new Date('2024-01-10') })
+const period2 = period(adapter, { start: new Date('2024-01-11'), end: new Date('2024-01-20') })
+
+const merged = merge(adapter, [period1, period2])
+console.log(merged.type) // 'custom'
+console.log(merged.start) // 2024-01-01
+console.log(merged.end) // 2024-01-20
+```
+
+### Force Target Unit
+
+```typescript
+import { period, divide, merge } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Get 3 days
+const week = period(adapter, new Date(), 'week')
+const days = divide(adapter, week, 'day').slice(0, 3)
+
+// Force merge as 'week' unit (even though it's only 3 days)
+const merged = merge(adapter, days, 'week')
+console.log(merged.type) // 'week'
 ```
 
 ## Natural Unit Detection
@@ -52,7 +148,10 @@ The function recognizes these patterns:
 
 ## See Also
 
-- [divide](/api/operations/divide) - Split periods into smaller units
-- [split](/api/operations/split) - Flexible period splitting
-- [Time Analysis Patterns](/guide/patterns/time-analysis) - Advanced merging examples
-- [Period Type](/api/types/period) - Period interface documentation
+- [divide()](/api/operations/divide) - Split periods into smaller units
+- [period()](/api/operations/period) - Create periods
+- [split()](/api/operations/split) - Split period at specific point
+- [Period Type](/api/types/period) - Period interface
+- [Choosing API Level](/guide/choosing-api-level) - Which level to use
+- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
+- [Level 2 API](/api/level-2-builder) - Builder pattern documentation

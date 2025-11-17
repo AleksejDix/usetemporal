@@ -7,7 +7,7 @@ Common patterns for implementing business logic with useTemporal.
 ### Checking Business Days
 
 ```typescript
-import { isWeekend, isWeekday } from 'usetemporal'
+import { isWeekend, isWeekday } from '@allystudio/usetemporal'
 
 function isBusinessDay(period: Period, holidays: Date[] = []): boolean {
   // Not a business day if weekend
@@ -15,8 +15,8 @@ function isBusinessDay(period: Period, holidays: Date[] = []): boolean {
   
   // Check if it's a holiday
   const isHoliday = holidays.some(holiday => 
-    isSame(temporal, 
-      toPeriod(temporal, holiday, 'day'), 
+    isSame(temporal.adapter, 
+      temporal.period( holiday, 'day'), 
       period, 
       'day'
     )
@@ -34,7 +34,7 @@ function countBusinessDays(
   temporal: Temporal,
   holidays: Date[] = []
 ): number {
-  const days = divide(temporal, period, 'day')
+  const days = divide(temporal.adapter, period, 'day')
   return days.filter(day => isBusinessDay(day, holidays)).length
 }
 
@@ -51,10 +51,10 @@ function nextBusinessDay(
   temporal: Temporal,
   holidays: Date[] = []
 ): Period {
-  let nextDay = next(temporal, day)
+  let nextDay = next(temporal.adapter, day)
   
   while (!isBusinessDay(nextDay, holidays)) {
-    nextDay = next(temporal, nextDay)
+    nextDay = next(temporal.adapter, nextDay)
   }
   
   return nextDay
@@ -70,8 +70,8 @@ function businessDaysBetween(
   temporal: Temporal,
   holidays: Date[] = []
 ): number {
-  const startDay = toPeriod(temporal, start, 'day')
-  const endDay = toPeriod(temporal, end, 'day')
+  const startDay = temporal.period( start, 'day')
+  const endDay = temporal.period( end, 'day')
   
   let count = 0
   let current = startDay
@@ -80,7 +80,7 @@ function businessDaysBetween(
     if (isBusinessDay(current, holidays)) {
       count++
     }
-    current = next(temporal, current)
+    current = next(temporal.adapter, current)
   }
   
   return count
@@ -103,7 +103,7 @@ function generateTimeSlots(
     breakEnd?: number
   }
 ): Period[] {
-  const hours = divide(temporal, day, 'hour')
+  const hours = divide(temporal.adapter, day, 'hour')
   const slots: Period[] = []
   
   hours.forEach(hour => {
@@ -120,7 +120,7 @@ function generateTimeSlots(
     if (options.slotDuration === 60) {
       slots.push(hour)
     } else {
-      const minutes = divide(temporal, hour, 'minute')
+      const minutes = divide(temporal.adapter, hour, 'minute')
       for (let i = 0; i < 60; i += options.slotDuration) {
         const slotStart = minutes[i]
         const slotEnd = minutes[Math.min(i + options.slotDuration - 1, 59)]
@@ -197,32 +197,32 @@ function generateRecurringDates(
   temporal: Temporal
 ): Date[] {
   const dates: Date[] = [start]
-  let current = toPeriod(temporal, start, 'day')
+  let current = temporal.period( start, 'day')
   
   for (let i = 1; i < count; i++) {
     switch (pattern.type) {
       case 'daily':
-        current = go(temporal, current, pattern.interval)
+        current = go(temporal.adapter, current, pattern.interval)
         break
         
       case 'weekly':
         // Find next occurrence based on days of week
         do {
-          current = next(temporal, current)
+          current = next(temporal.adapter, current)
         } while (!pattern.daysOfWeek.includes(current.date.getDay()))
         break
         
       case 'monthly':
         // Navigate to same day next month
-        const monthPeriod = toPeriod(temporal, current.date, 'month')
-        const nextMonth = go(temporal, monthPeriod, pattern.interval)
+        const monthPeriod = temporal.period( current.date, 'month')
+        const nextMonth = go(temporal.adapter, monthPeriod, pattern.interval)
         const targetDate = new Date(nextMonth.date)
         targetDate.setDate(pattern.dayOfMonth)
-        current = toPeriod(temporal, targetDate, 'day')
+        current = temporal.period( targetDate, 'day')
         break
         
       case 'yearly':
-        current = go(temporal, current, 365 * pattern.interval)
+        current = go(temporal.adapter, current, 365 * pattern.interval)
         break
     }
     
@@ -248,7 +248,7 @@ function calculateWorkingHours(
     holidays: [] as Date[]
   }
 ): number {
-  const days = divide(temporal, period, 'day')
+  const days = divide(temporal.adapter, period, 'day')
   let totalHours = 0
   
   days.forEach(day => {
@@ -257,7 +257,7 @@ function calculateWorkingHours(
     
     // Skip holidays
     const isHoliday = options.holidays.some(holiday =>
-      isSame(temporal, toPeriod(temporal, holiday, 'day'), day, 'day')
+      isSame(temporal.adapter, temporal.period( holiday, 'day'), day, 'day')
     )
     if (isHoliday) return
     
@@ -299,8 +299,8 @@ function timeUntilDeadline(
   }
   
   // Calculate working time only
-  const deadlinePeriod = toPeriod(temporal, deadline, 'day')
-  const todayPeriod = toPeriod(temporal, now, 'day')
+  const deadlinePeriod = temporal.period( deadline, 'day')
+  const todayPeriod = temporal.period( now, 'day')
   
   const workingHours = calculateWorkingHours(
     { start: now, end: deadline, type: 'custom', date: now },

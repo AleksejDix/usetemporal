@@ -17,6 +17,6 @@ export function usePeriod(
 ): ComputedRef<Period> {
   return computed(() => {
     const unitValue = typeof unit === "string" ? unit : unit.value;
-    return period(temporal, temporal.browsing.value.date, unitValue);
+    return period(temporal.adapter, temporal.browsing.value.date, unitValue);
   });
 }

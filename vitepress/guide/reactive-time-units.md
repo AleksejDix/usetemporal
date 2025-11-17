@@ -33,7 +33,7 @@ const month = usePeriod(temporal, 'month')
 // month is a ComputedRef<Period>
 
 // Automatically updates when browsing changes
-temporal.browsing.value = next(temporal, temporal.browsing.value)
+temporal.browsing.value = next(temporal.adapter, temporal.browsing.value)
 // month.value now reflects the new month
 ```
 
@@ -45,13 +45,13 @@ Works seamlessly with Vue's reactivity:
 
 ```vue
 <script setup>
-import { usePeriod, divide } from 'usetemporal'
+import { usePeriod, divide } from '@allystudio/usetemporal'
 import { computed } from 'vue'
 
 const props = defineProps(['temporal'])
 
 const month = usePeriod(props.temporal, 'month')
-const days = computed(() => divide(props.temporal, month.value, 'day'))
+const days = computed(() => divide(props.temporal.adapter, month.value, 'day'))
 </script>
 
 <template>
@@ -70,7 +70,7 @@ Use with React's state management:
 
 ```typescript
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { usePeriod, divide } from 'usetemporal'
+import { usePeriod, divide } from '@allystudio/usetemporal'
 
 function useReactivePeriod(temporal, unit) {
   return useSyncExternalStore(
@@ -88,7 +88,7 @@ function Calendar({ temporal }) {
   const [days, setDays] = useState([])
   
   useEffect(() => {
-    setDays(divide(temporal, month, 'day'))
+    setDays(divide(temporal.adapter, month, 'day'))
   }, [month, temporal])
   
   return (
@@ -109,7 +109,7 @@ Integration with Svelte stores:
 
 ```javascript
 import { writable, derived } from 'svelte/store'
-import { usePeriod, divide } from 'usetemporal'
+import { usePeriod, divide } from '@allystudio/usetemporal'
 
 // Create a Svelte store from temporal
 function createTemporalStore(temporal) {
@@ -122,8 +122,8 @@ function createTemporalStore(temporal) {
   
   return {
     subscribe,
-    next: () => temporal.browsing.value = next(temporal, temporal.browsing.value),
-    previous: () => temporal.browsing.value = previous(temporal, temporal.browsing.value)
+    next: () => temporal.browsing.value = next(temporal.adapter, temporal.browsing.value),
+    previous: () => temporal.browsing.value = previous(temporal.adapter, temporal.browsing.value)
   }
 }
 
@@ -139,7 +139,7 @@ const month = derived(browsing, $browsing =>
 Use without any framework:
 
 ```javascript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 
 const temporal = createTemporal({ date: new Date() })
 const month = usePeriod(temporal, 'month')
@@ -152,7 +152,7 @@ let unwatch = month.watch((newMonth) => {
 
 // Update browsing
 document.getElementById('next').addEventListener('click', () => {
-  temporal.browsing.value = next(temporal, month.value)
+  temporal.browsing.value = next(temporal.adapter, month.value)
 })
 
 // Cleanup when done
@@ -167,12 +167,12 @@ Build reactive computation chains:
 
 ```typescript
 const year = usePeriod(temporal, 'year')
-const months = computed(() => divide(temporal, year.value, 'month'))
+const months = computed(() => divide(temporal.adapter, year.value, 'month'))
 const currentMonth = computed(() => 
-  months.value.find(m => isSame(temporal, m, temporal.now.value, 'month'))
+  months.value.find(m => isSame(temporal.adapter, m, temporal.now.value, 'month'))
 )
 const days = computed(() => 
-  currentMonth.value ? divide(temporal, currentMonth.value, 'day') : []
+  currentMonth.value ? divide(temporal.adapter, currentMonth.value, 'day') : []
 )
 ```
 
@@ -182,7 +182,7 @@ Filter periods reactively:
 
 ```typescript
 const month = usePeriod(temporal, 'month')
-const allDays = computed(() => divide(temporal, month.value, 'day'))
+const allDays = computed(() => divide(temporal.adapter, month.value, 'day'))
 const weekdays = computed(() => allDays.value.filter(isWeekday))
 const weekends = computed(() => allDays.value.filter(isWeekend))
 const today = computed(() => 
@@ -221,7 +221,7 @@ Reactive computations are automatically memoized:
 const month = usePeriod(temporal, 'month')
 const days = computed(() => {
   console.log('Computing days...') // Only runs when month changes
-  return divide(temporal, month.value, 'day')
+  return divide(temporal.adapter, month.value, 'day')
 })
 
 // Access multiple times - computation only runs once
@@ -236,7 +236,7 @@ Computations are lazy - only run when accessed:
 ```typescript
 const expensiveComputation = computed(() => {
   console.log('This only runs if accessed')
-  return divide(temporal, year.value, 'hour') // 8760+ periods
+  return divide(temporal.adapter, year.value, 'hour') // 8760+ periods
 })
 
 // Computation hasn't run yet
@@ -271,12 +271,12 @@ Create your own reactive time utilities:
 function useTimeRange(temporal, startDate, endDate) {
   return computed(() => {
     const periods = []
-    let current = toPeriod(temporal, startDate, 'day')
-    const end = toPeriod(temporal, endDate, 'day')
+    let current = temporal.period( startDate, 'day')
+    const end = temporal.period( endDate, 'day')
     
     while (current.start <= end.start) {
       periods.push(current)
-      current = next(temporal, current)
+      current = next(temporal.adapter, current)
     }
     
     return periods
@@ -300,7 +300,7 @@ function useMonthStats(temporal) {
   const month = usePeriod(temporal, 'month')
   
   return computed(() => {
-    const days = divide(temporal, month.value, 'day')
+    const days = divide(temporal.adapter, month.value, 'day')
     
     return {
       totalDays: days.length,

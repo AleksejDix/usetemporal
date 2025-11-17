@@ -1,31 +1,24 @@
 import { describe, it, expect } from "vitest";
 import { isSame } from "./isSame";
 import { period } from "./period";
-import { createTemporal } from "../createTemporal";
 import { withAllAdapters, getAdapterTestCases } from "../test/shared-adapter-tests";
-import { TEST_DATE, testDates } from "../test/testDates";
+import { testDates } from "../test/testDates";
 
 // Example using withAllAdapters wrapper
 withAllAdapters("isSame operation", (adapter) => {
-  const temporal = createTemporal({
-    date: TEST_DATE,
-    adapter,
-    weekStartsOn: 1,
-  });
-
   describe("year comparison", () => {
     it("should return true for same year", () => {
-      const period1 = period(temporal, testDates.jan1, "year");
-      const period2 = period(temporal, testDates.dec31, "year");
+      const period1 = period(adapter, testDates.jan1, "year");
+      const period2 = period(adapter, testDates.dec31, "year");
 
-      expect(isSame(temporal, period1, period2, "year")).toBe(true);
+      expect(isSame(adapter, period1, period2, "year")).toBe(true);
     });
 
     it("should return false for different years", () => {
-      const period1 = period(temporal, testDates.dec31, "year");
-      const period2 = period(temporal, testDates.year2025, "year");
+      const period1 = period(adapter, testDates.dec31, "year");
+      const period2 = period(adapter, testDates.year2025, "year");
 
-      expect(isSame(temporal, period1, period2, "year")).toBe(false);
+      expect(isSame(adapter, period1, period2, "year")).toBe(false);
     });
   });
 
@@ -45,7 +38,7 @@ withAllAdapters("isSame operation", (adapter) => {
         date: date,
       };
 
-      expect(isSame(temporal, period1, period2, "custom")).toBe(true);
+      expect(isSame(adapter, period1, period2, "custom")).toBe(true);
     });
   });
 });
@@ -54,24 +47,18 @@ withAllAdapters("isSame operation", (adapter) => {
 const adapters = getAdapterTestCases();
 
 describe.each(adapters)("isSame with %s adapter", (_, adapter) => {
-  const temporal = createTemporal({
-    date: TEST_DATE,
-    adapter,
-    weekStartsOn: 1,
-  });
-
   it("should handle month comparison correctly", () => {
-    const period1 = period(temporal, testDates.jun1, "month");
-    const period2 = period(temporal, testDates.jun30, "month");
+    const period1 = period(adapter, testDates.jun1, "month");
+    const period2 = period(adapter, testDates.jun30, "month");
 
-    expect(isSame(temporal, period1, period2, "month")).toBe(true);
+    expect(isSame(adapter, period1, period2, "month")).toBe(true);
   });
 
   it("should handle null/undefined correctly", () => {
-    const p = period(temporal, testDates.jun15, "day");
+    const p = period(adapter, testDates.jun15, "day");
 
-    expect(isSame(temporal, null, p, "day")).toBe(false);
-    expect(isSame(temporal, p, null, "day")).toBe(false);
-    expect(isSame(temporal, null, null, "day")).toBe(false);
+    expect(isSame(adapter, null, p, "day")).toBe(false);
+    expect(isSame(adapter, p, null, "day")).toBe(false);
+    expect(isSame(adapter, null, null, "day")).toBe(false);
   });
 });

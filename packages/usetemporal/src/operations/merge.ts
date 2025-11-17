@@ -1,20 +1,20 @@
-import type { Period, Temporal, Unit } from "../types";
+import type { Period, Adapter, AdapterUnit } from "../types";
 import { period } from "./period";
 
 /**
  * Merge multiple periods into a single period
  */
-export function merge(temporal: Temporal, periods: Period[], targetUnit?: Unit): Period | null {
+export function merge(adapter: Adapter, periods: Period[], targetUnit?: AdapterUnit): Period | null {
   if (periods.length === 0) {
     // Return current period with the target unit (or 'day' if not specified)
     const unit = targetUnit || "day";
     const now = new Date();
-    return period(temporal, now, unit);
+    return period(adapter, now, unit);
   }
   if (periods.length === 1) {
     // If target unit is specified, promote the single period to that unit
     if (targetUnit && targetUnit !== periods[0].type) {
-      return period(temporal, periods[0].date, targetUnit);
+      return period(adapter, periods[0].date, targetUnit);
     }
     return periods[0];
   }
@@ -30,14 +30,14 @@ export function merge(temporal: Temporal, periods: Period[], targetUnit?: Unit):
   // Check for natural units
   if (periods.length === 7 && periods.every((p) => p.type === "day")) {
     // Check if these 7 days form a complete week
-    const startOfWeek = temporal.adapter.startOf(periods[0].date, "week");
-    const endOfWeek = temporal.adapter.endOf(periods[6].date, "week");
+    const startOfWeek = adapter.startOf(periods[0].date, "week");
+    const endOfWeek = adapter.endOf(periods[6].date, "week");
 
     if (
       start.getTime() === startOfWeek.getTime() &&
       end.getTime() === endOfWeek.getTime()
     ) {
-      return period(temporal, periods[3].date, "week"); // Middle day
+      return period(adapter, periods[3].date, "week"); // Middle day
     }
   }
 
@@ -52,7 +52,7 @@ export function merge(temporal: Temporal, periods: Period[], targetUnit?: Unit):
       months[1] === firstMonth + 1 &&
       months[2] === firstMonth + 2
     ) {
-      return period(temporal, periods[1].date, "quarter");
+      return period(adapter, periods[1].date, "quarter");
     }
   }
 
@@ -63,7 +63,7 @@ export function merge(temporal: Temporal, periods: Period[], targetUnit?: Unit):
     return {
       start,
       end,
-      type: targetUnit as any,
+      type: targetUnit,
       date: referenceDate,
     };
   }

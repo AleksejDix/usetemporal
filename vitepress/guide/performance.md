@@ -252,8 +252,8 @@ function getCalendarDays(month) {
 import '@usetemporal/calendar-units';
 
 function getCalendarDays() {
-  const stableMonth = period(temporal, 'stableMonth', temporal.browsing.value);
-  return divide(temporal, stableMonth, 'day'); // Always 42 days
+  const stableMonth = temporal.period( 'stableMonth', temporal.browsing.value);
+  return divide(temporal.adapter, stableMonth, 'day'); // Always 42 days
 }
 
 // ✅ Alternative: Manual 6-week grid implementation

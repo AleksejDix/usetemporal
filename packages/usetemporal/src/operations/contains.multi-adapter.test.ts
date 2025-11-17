@@ -2,14 +2,11 @@ import { describe, it, expect } from "vitest";
 import { contains } from "./contains";
 import { period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
-import { createTemporal } from "../createTemporal";
 
 withAllAdapters("contains", (adapter) => {
-  const temporal = createTemporal({ adapter, date: new Date(2024, 0, 1) });
-
   describe("period containment", () => {
     it("should detect when a period contains a date", () => {
-      const p = period(temporal, new Date(2024, 0, 1), "month");
+      const p = period(adapter, new Date(2024, 0, 1), "month");
       
       expect(contains(p, new Date(2024, 0, 15))).toBe(true);
       expect(contains(p, new Date(2024, 0, 1))).toBe(true);
@@ -19,9 +16,9 @@ withAllAdapters("contains", (adapter) => {
     });
 
     it("should detect when a period contains another period", () => {
-      const year = period(temporal, new Date(2024, 5, 15), "year");
-      const month = period(temporal, new Date(2024, 5, 15), "month");
-      const day = period(temporal, new Date(2024, 5, 15), "day");
+      const year = period(adapter, new Date(2024, 5, 15), "year");
+      const month = period(adapter, new Date(2024, 5, 15), "month");
+      const day = period(adapter, new Date(2024, 5, 15), "day");
       
       expect(contains(year, month)).toBe(true);
       expect(contains(year, day)).toBe(true);
@@ -31,8 +28,8 @@ withAllAdapters("contains", (adapter) => {
     });
 
     it("should handle cross-year boundaries", () => {
-      const december = period(temporal, new Date(2023, 11, 15), "month");
-      const january = period(temporal, new Date(2024, 0, 15), "month");
+      const december = period(adapter, new Date(2023, 11, 15), "month");
+      const january = period(adapter, new Date(2024, 0, 15), "month");
       
       expect(contains(december, new Date(2023, 11, 31))).toBe(true);
       expect(contains(december, new Date(2024, 0, 1))).toBe(false);
@@ -41,7 +38,7 @@ withAllAdapters("contains", (adapter) => {
     });
 
     it("should handle week containment", () => {
-      const week = period(temporal, new Date(2024, 0, 15), "week");
+      const week = period(adapter, new Date(2024, 0, 15), "week");
       const weekStart = adapter.startOf(new Date(2024, 0, 15), "week");
       const weekEnd = adapter.endOf(new Date(2024, 0, 15), "week");
       
@@ -75,7 +72,7 @@ withAllAdapters("contains", (adapter) => {
     });
 
     it("should handle exact boundary matches", () => {
-      const day = period(temporal, new Date(2024, 0, 15), "day");
+      const day = period(adapter, new Date(2024, 0, 15), "day");
       const dayStart = adapter.startOf(new Date(2024, 0, 15), "day");
       const dayEnd = adapter.endOf(new Date(2024, 0, 15), "day");
       
@@ -86,7 +83,7 @@ withAllAdapters("contains", (adapter) => {
     });
 
     it("should handle hour and minute containment", () => {
-      const hour = period(temporal, new Date(2024, 0, 15, 14, 30), "hour");
+      const hour = period(adapter, new Date(2024, 0, 15, 14, 30), "hour");
       
       expect(contains(hour, new Date(2024, 0, 15, 14, 0))).toBe(true);
       expect(contains(hour, new Date(2024, 0, 15, 14, 30))).toBe(true);

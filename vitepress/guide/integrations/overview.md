@@ -30,11 +30,11 @@ The core library has zero framework dependencies. It only uses `@vue/reactivity`
 
 ```typescript
 // Works in any environment
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 
 const temporal = createTemporal({ date: new Date() })
 const month = usePeriod(temporal, 'month')
-const days = divide(temporal, month.value, 'day')
+const days = divide(temporal.adapter, month.value, 'day')
 ```
 
 ### 2. Reactive by Design

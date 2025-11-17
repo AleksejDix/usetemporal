@@ -38,11 +38,20 @@
 
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue'
-import type { Temporal, Period } from '@allystudio/usetemporal'
-import { usePeriod, divide, isSame, period } from '@allystudio/usetemporal'
+import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
+import { usePeriod } from '@allystudio/usetemporal'
+
+/**
+ * DayView Component
+ *
+ * Uses v2.0 Builder API (Level 2):
+ * - temporal.divide() instead of divide(temporal, ...)
+ * - temporal.period() instead of period(temporal, ...)
+ * - temporal.isSame() instead of isSame(temporal, ...)
+ */
 
 const props = defineProps<{
-  temporal: Temporal
+  temporal: TemporalBuilder
   initialDay?: ComputedRef<Period>
 }>()
 
@@ -56,7 +65,7 @@ const dayInfo = computed(() => {
   return getDayOfWeek(day.value.date)
 })
 
-const hours = computed(() => divide(props.temporal, day.value, 'hour'))
+const hours = computed(() => props.temporal.divide(day.value, 'hour'))
 
 // Use temporal's reactive now value which updates automatically
 const currentTime = computed(() => props.temporal.now.value.date)
@@ -79,9 +88,9 @@ function formatDate(date: Date) {
 }
 
 function getDayOfWeek(date: Date) {
-  const dayPeriod = period(props.temporal, date, 'day')
+  const dayPeriod = props.temporal.period(date, 'day')
 
-  if (isSame(props.temporal, dayPeriod, props.temporal.now.value, 'day')) return 'Today'
+  if (props.temporal.isSame(dayPeriod, props.temporal.now.value, 'day')) return 'Today'
 
   const diffTime = date.getTime() - props.temporal.now.value.date.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
@@ -93,11 +102,11 @@ function getDayOfWeek(date: Date) {
 }
 
 function isToday(day: Period): boolean {
-  return isSame(props.temporal, day, props.temporal.now.value, 'day')
+  return props.temporal.isSame(day, props.temporal.now.value, 'day')
 }
 
 function isCurrentHour(hour: Period): boolean {
-  return isSame(props.temporal, hour, props.temporal.now.value, 'hour')
+  return props.temporal.isSame(hour, props.temporal.now.value, 'hour')
 }
 
 function formatHour(hour: number) {
