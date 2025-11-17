@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { usePeriod, go, type Period, DAY } from '@allystudio/usetemporal'
+import { usePeriod, type Period, DAY } from '@allystudio/usetemporal'
 import { temporal } from '@/composables/useTemporal'
 import YearView from './YearView.vue'
 import MonthView from './MonthView.vue'
@@ -183,12 +183,12 @@ function goToToday() {
 }
 
 function navigatePrevious() {
-  const prevPeriod = go(temporal, currentPeriod.value, -1)
+  const prevPeriod = temporal.go(currentPeriod.value, -1)
   navigateToDate(prevPeriod.date, currentView.value)
 }
 
 function navigateNext() {
-  const nextPeriod = go(temporal, currentPeriod.value, 1)
+  const nextPeriod = temporal.go(currentPeriod.value, 1)
   navigateToDate(nextPeriod.date, currentView.value)
 }
 

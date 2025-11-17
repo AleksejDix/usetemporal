@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { computed, ref, type ComputedRef } from 'vue'
-import type { Temporal, Period } from '@allystudio/usetemporal'
+import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
 import { usePeriod } from '@allystudio/usetemporal'
 
 /**
@@ -43,7 +43,7 @@ import { usePeriod } from '@allystudio/usetemporal'
  */
 
 const props = defineProps<{
-  temporal: Temporal
+  temporal: TemporalBuilder
   initialMonth?: ComputedRef<Period>
 }>()
 
