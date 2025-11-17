@@ -25,14 +25,15 @@ The `isWeekday` function checks if a period's reference date falls on a weekday.
 ### Basic Usage
 
 ```typescript
-import { isWeekday, toPeriod, createTemporal } from 'usetemporal'
+import { period, isWeekday } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
 
 // Check specific dates
-const monday = toPeriod(temporal, new Date('2024-03-18'), 'day')
-const wednesday = toPeriod(temporal, new Date('2024-03-20'), 'day')
-const saturday = toPeriod(temporal, new Date('2024-03-16'), 'day')
+const monday = period(adapter, new Date('2024-03-18'), 'day')
+const wednesday = period(adapter, new Date('2024-03-20'), 'day')
+const saturday = period(adapter, new Date('2024-03-16'), 'day')
 
 console.log(isWeekday(monday))    // true
 console.log(isWeekday(wednesday)) // true
@@ -42,9 +43,14 @@ console.log(isWeekday(saturday))  // false
 ### Business Day Filtering
 
 ```typescript
+import { period, divide, isWeekday } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
 // Get only weekdays from a month
-const month = toPeriod(temporal, new Date(), 'month')
-const days = divide(temporal, month, 'day')
+const month = period(adapter, new Date(), 'month')
+const days = divide(adapter, month, 'day')
 
 const weekdays = days.filter(isWeekday)
 console.log(`${weekdays.length} weekdays this month`)
@@ -53,14 +59,17 @@ console.log(`${weekdays.length} weekdays this month`)
 ### Appointment Scheduling
 
 ```typescript
+import { divide, isWeekday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Only show weekday slots for appointments
-function getAvailableSlots(week: Period, temporal: Temporal) {
-  const days = divide(temporal, week, 'day')
-  
+function getAvailableSlots(week: Period, adapter: Adapter) {
+  const days = divide(adapter, week, 'day')
+
   return days
     .filter(isWeekday)
     .flatMap(day => {
-      const hours = divide(temporal, day, 'hour')
+      const hours = divide(adapter, day, 'hour')
       // Business hours: 9 AM to 5 PM
       return hours.filter(hour => {
         const h = hour.date.getHours()
@@ -75,21 +84,24 @@ function getAvailableSlots(week: Period, temporal: Temporal) {
 ### Business Days Calculation
 
 ```typescript
+import { period, next, isWeekday } from '@allystudio/usetemporal/operations'
+import type { Adapter } from '@allystudio/usetemporal'
+
 // Calculate business days between two dates
-function getBusinessDays(startDate: Date, endDate: Date, temporal: Temporal) {
-  const start = toPeriod(temporal, startDate, 'day')
-  const end = toPeriod(temporal, endDate, 'day')
-  
+function getBusinessDays(startDate: Date, endDate: Date, adapter: Adapter) {
+  const start = period(adapter, startDate, 'day')
+  const end = period(adapter, endDate, 'day')
+
   let count = 0
   let current = start
-  
+
   while (current.start <= end.start) {
     if (isWeekday(current)) {
       count++
     }
-    current = next(temporal, current)
+    current = next(adapter, current)
   }
-  
+
   return count
 }
 ```
@@ -97,37 +109,43 @@ function getBusinessDays(startDate: Date, endDate: Date, temporal: Temporal) {
 ### Workday Navigation
 
 ```typescript
+import { next, previous, isWeekday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Navigate to next/previous workday
-function nextWorkday(day: Period, temporal: Temporal): Period {
-  let next = next(temporal, day)
-  while (!isWeekday(next)) {
-    next = next(temporal, next)
+function nextWorkday(day: Period, adapter: Adapter): Period {
+  let nextDay = next(adapter, day)
+  while (!isWeekday(nextDay)) {
+    nextDay = next(adapter, nextDay)
   }
-  return next
+  return nextDay
 }
 
-function previousWorkday(day: Period, temporal: Temporal): Period {
-  let prev = previous(temporal, day)
-  while (!isWeekday(prev)) {
-    prev = previous(temporal, prev)
+function previousWorkday(day: Period, adapter: Adapter): Period {
+  let prevDay = previous(adapter, day)
+  while (!isWeekday(prevDay)) {
+    prevDay = previous(adapter, prevDay)
   }
-  return prev
+  return prevDay
 }
 ```
 
 ### Calendar Highlighting
 
 ```typescript
+import { isWeekday, isToday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Different styling for weekdays vs weekends
-function CalendarDay({ day, temporal }) {
+function CalendarDay({ day, adapter }: { day: Period; adapter: Adapter }) {
+  const now = new Date()
   const classes = {
     'day': true,
     'weekday': isWeekday(day),
     'weekend': !isWeekday(day),
-    'today': isToday(day, temporal),
-    'past': isPast(day, temporal)
+    'today': isToday(adapter, now, day)
   }
-  
+
   return (
     <div className={cn(classes)}>
       {day.date.getDate()}
@@ -149,7 +167,11 @@ export function isWeekday(period: Period): boolean {
 This ensures consistency - a day is either a weekday or weekend, never both:
 
 ```typescript
-const day = toPeriod(temporal, new Date(), 'day')
+import { period, isWeekday, isWeekend } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const day = period(adapter, new Date(), 'day')
 
 // Always opposite values
 console.log(isWeekday(day))  // true
@@ -182,22 +204,23 @@ const slots = hours.filter(hour =>
 For complete business day calculation, you may need to consider holidays:
 
 ```typescript
+import { isWeekday, isSame, period } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Business day checker with holidays
 function isBusinessDay(
-  period: Period, 
+  day: Period,
+  adapter: Adapter,
   holidays: Date[] = []
 ): boolean {
-  if (!isWeekday(period)) return false
-  
+  if (!isWeekday(day)) return false
+
   // Check if it's a holiday
-  const isHoliday = holidays.some(holiday => 
-    isSame(temporal, 
-      toPeriod(temporal, holiday, 'day'), 
-      period, 
-      'day'
-    )
-  )
-  
+  const isHoliday = holidays.some(holiday => {
+    const holidayPeriod = period(adapter, holiday, 'day')
+    return isSame(adapter, holidayPeriod, day, 'day')
+  })
+
   return !isHoliday
 }
 ```

@@ -5,20 +5,18 @@ Check if a period represents today.
 ## Signature
 
 ```typescript
-function isToday(
-  temporal: Temporal,
-  period: Period
-): boolean
+function isToday(adapter: Adapter, now: Date, period: Period): boolean
 ```
 
 ## Parameters
 
-- `temporal` - `Temporal` - The temporal instance for accessing current time
+- `adapter` - `Adapter` - The date adapter instance
+- `now` - `Date` - The current date/time to compare against
 - `period` - `Period` - The period to check
 
 ## Returns
 
-`boolean` - True if the period is a day period that represents today
+`boolean` - `true` if the period is a day period representing today, `false` otherwise
 
 ## Description
 
@@ -29,35 +27,43 @@ The `isToday` function checks if a period is a day period that represents today.
 ### Basic Usage
 
 ```typescript
-import { isToday, toPeriod, createTemporal } from 'usetemporal'
+import { isToday } from '@allystudio/usetemporal/operations'
+import { period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
+const now = new Date()
 
 // Check if a date is today
-const somePeriod = toPeriod(temporal, new Date(), 'day')
-console.log(isToday(temporal, somePeriod)) // true
+const somePeriod = period(adapter, new Date(), 'day')
+console.log(isToday(adapter, now, somePeriod)) // true
 
 // Check a different date
-const yesterday = toPeriod(temporal, 
-  new Date(Date.now() - 24 * 60 * 60 * 1000), 
+const yesterday = period(adapter,
+  new Date(Date.now() - 24 * 60 * 60 * 1000),
   'day'
 )
-console.log(isToday(temporal, yesterday)) // false
+console.log(isToday(adapter, now, yesterday)) // false
 ```
 
 ### Calendar Highlighting
 
 ```typescript
+import { isToday, isWeekend } from '@allystudio/usetemporal/operations'
+import type { Adapter, Period } from '@allystudio/usetemporal'
+
 // Highlight today in calendar
-function CalendarDay({ day, temporal }) {
+function CalendarDay({ day, adapter }: { day: Period; adapter: Adapter }) {
+  const now = new Date()
+
   return (
     <div className={`
-      calendar-day 
-      ${isToday(temporal, day) ? 'today' : ''}
+      calendar-day
+      ${isToday(adapter, now, day) ? 'today' : ''}
       ${isWeekend(day) ? 'weekend' : ''}
     `}>
       <span className="day-number">{day.date.getDate()}</span>
-      {isToday(temporal, day) && <span className="today-indicator">●</span>}
+      {isToday(adapter, now, day) && <span className="today-indicator">●</span>}
     </div>
   )
 }
@@ -73,24 +79,29 @@ function CalendarDay({ day, temporal }) {
 ### Filtering Today's Items
 
 ```typescript
+import { isToday, period } from '@allystudio/usetemporal/operations'
+import type { Adapter } from '@allystudio/usetemporal'
+
 // Get today's appointments
-function getTodaysAppointments(appointments: Appointment[], temporal: Temporal) {
+function getTodaysAppointments(appointments: Appointment[], adapter: Adapter) {
+  const now = new Date()
   return appointments.filter(apt => {
-    const aptPeriod = toPeriod(temporal, apt.date, 'day')
-    return isToday(temporal, aptPeriod)
+    const aptPeriod = period(adapter, apt.date, 'day')
+    return isToday(adapter, now, aptPeriod)
   })
 }
 
 // Dashboard widget
-function TodayWidget({ temporal }) {
+function TodayWidget({ adapter, events }: { adapter: Adapter; events: Event[] }) {
+  const now = new Date()
   const todaysEvents = events.filter(event => {
-    const eventPeriod = toPeriod(temporal, event.date, 'hour')
-    return isToday(temporal, eventPeriod)
+    const eventPeriod = period(adapter, event.date, 'day')
+    return isToday(adapter, now, eventPeriod)
   })
-  
+
   return (
     <div className="today-widget">
-      <h3>Today - {temporal.now.value.date.toLocaleDateString()}</h3>
+      <h3>Today - {now.toLocaleDateString()}</h3>
       <ul>
         {todaysEvents.map(event => (
           <li key={event.id}>
@@ -108,17 +119,30 @@ function TodayWidget({ temporal }) {
 ### Today Button
 
 ```typescript
+import { isToday, period } from '@allystudio/usetemporal/operations'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
 // Navigate to today
-function TodayButton({ temporal }) {
+function TodayButton() {
+  const temporal = createTemporal({
+    adapter: createNativeAdapter(),
+    date: new Date()
+  })
+
   const handleClick = () => {
-    const today = toPeriod(temporal, new Date(), temporal.browsing.value.type)
+    const today = period(temporal.adapter, new Date(), temporal.browsing.value.type)
     temporal.browsing.value = today
   }
-  
-  const alreadyToday = isToday(temporal, temporal.browsing.value)
-  
+
+  const alreadyToday = isToday(
+    temporal.adapter,
+    new Date(),
+    temporal.browsing.value
+  )
+
   return (
-    <button 
+    <button
       onClick={handleClick}
       disabled={alreadyToday}
       className="today-button"
@@ -132,20 +156,20 @@ function TodayButton({ temporal }) {
 ### Relative Time Display
 
 ```typescript
+import { isToday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Show relative time for recent dates
-function formatRelativeDate(period: Period, temporal: Temporal): string {
-  if (isToday(temporal, period)) {
+function formatRelativeDate(period: Period, adapter: Adapter): string {
+  const now = new Date()
+
+  if (isToday(adapter, now, period)) {
     return 'Today'
   }
-  
-  if (isYesterday(period, temporal)) {
-    return 'Yesterday'
-  }
-  
-  if (isTomorrow(period, temporal)) {
-    return 'Tomorrow'
-  }
-  
+
+  // For yesterday/tomorrow, you'd need to implement similar utilities
+  // or use period comparison
+
   // Default to full date
   return period.date.toLocaleDateString()
 }
@@ -154,17 +178,20 @@ function formatRelativeDate(period: Period, temporal: Temporal): string {
 ### Daily Summary
 
 ```typescript
+import { isToday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
+
 // Generate daily summary
-function getDailySummary(temporal: Temporal) {
-  const allPeriods = getAllPeriods() // Your data
-  
-  const todaysPeriods = allPeriods.filter(p => isToday(temporal, p))
-  
+function getDailySummary(adapter: Adapter, allPeriods: Period[]) {
+  const now = new Date()
+
+  const todaysPeriods = allPeriods.filter(p => isToday(adapter, now, p))
+
   return {
-    date: temporal.now.value.date,
+    date: now,
     totalEvents: todaysPeriods.length,
-    completedEvents: todaysPeriods.filter(p => p.completed).length,
-    upcomingEvents: todaysPeriods.filter(p => 
+    completedEvents: todaysPeriods.filter((p: any) => p.completed).length,
+    upcomingEvents: todaysPeriods.filter(p =>
       p.date.getTime() > Date.now()
     ).length
   }
@@ -176,27 +203,33 @@ function getDailySummary(temporal: Temporal) {
 The `isToday` function only returns `true` for day periods. Other period types will always return `false`:
 
 ```typescript
+import { isToday, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const now = new Date()
+
 // Day period - works as expected
-const todayDay = toPeriod(temporal, new Date(), 'day')
-console.log(isToday(temporal, todayDay)) // true
+const todayDay = period(adapter, new Date(), 'day')
+console.log(isToday(adapter, now, todayDay)) // true
 
 // Hour period - returns false (not a day period)
-const currentHour = toPeriod(temporal, new Date(), 'hour')
-console.log(isToday(temporal, currentHour)) // false
+const currentHour = period(adapter, new Date(), 'hour')
+console.log(isToday(adapter, now, currentHour)) // false
 
 // Month period - returns false (not a day period)
-const currentMonth = toPeriod(temporal, new Date(), 'month')
-console.log(isToday(temporal, currentMonth)) // false
+const currentMonth = period(adapter, new Date(), 'month')
+console.log(isToday(adapter, now, currentMonth)) // false
 
 // Custom period - returns false (type is 'custom')
 const customPeriod = period(
-  temporal,
-  { 
+  adapter,
+  {
     start: new Date(new Date().setHours(0, 0, 0, 0)),
     end: new Date(new Date().setHours(23, 59, 59, 999))
   }
 )
-console.log(isToday(temporal, customPeriod)) // false
+console.log(isToday(adapter, now, customPeriod)) // false
 ```
 
 ## Time Zone Considerations
@@ -204,47 +237,59 @@ console.log(isToday(temporal, customPeriod)) // false
 The function uses the local time zone of the JavaScript Date objects:
 
 ```typescript
+import { isToday, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
 // The comparison happens in local time
-const now = temporal.now.value.date       // Local time
-const period = toPeriod(temporal, someDate, 'day')  // Local time
+const now = new Date()                           // Local time
+const somePeriod = period(adapter, someDate, 'day')  // Local time
 
 // Both are compared at day level in local time zone
-const result = isToday(period, temporal)
+const result = isToday(adapter, now, somePeriod)
 ```
 
 ## Implementation Details
 
-The function is implemented using `isSame`:
+The function checks if the period is a day period and compares dates:
 
 ```typescript
-export function isToday(temporal: Temporal, period: Period): boolean {
+export function isToday(adapter: Adapter, now: Date, p: Period): boolean {
   // Only day periods can be "today"
-  if (period.type !== "day") {
+  if (p.type !== "day") {
     return false;
   }
-  return isSame(temporal, period, temporal.now.value, 'day')
+
+  // Compare the period's date with now at the day level
+  const nowStart = adapter.startOf(now, "day");
+  const periodStart = adapter.startOf(p.date, "day");
+
+  return nowStart.getTime() === periodStart.getTime();
 }
 ```
 
-This ensures consistency with other comparison operations.
+This ensures consistent day-level comparison using the adapter's date manipulation.
 
 ## Testing Considerations
 
 When testing code that uses `isToday`, you can provide a fixed `now` value:
 
 ```typescript
-// Create temporal with fixed "now" for testing
-const testTemporal = createTemporal({
-  now: new Date('2024-03-15T12:00:00'),
-  date: new Date('2024-03-15')
-})
+import { isToday, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Use a fixed "now" for testing
+const fixedNow = new Date('2024-03-15T12:00:00')
 
 // This will always be "today" relative to the fixed now
-const march15 = toPeriod(testTemporal, new Date('2024-03-15'), 'day')
-expect(isToday(testTemporal, march15)).toBe(true)
+const march15 = period(adapter, new Date('2024-03-15'), 'day')
+expect(isToday(adapter, fixedNow, march15)).toBe(true)
 
-const march16 = toPeriod(testTemporal, new Date('2024-03-16'), 'day')
-expect(isToday(testTemporal, march16)).toBe(false)
+const march16 = period(adapter, new Date('2024-03-16'), 'day')
+expect(isToday(adapter, fixedNow, march16)).toBe(false)
 ```
 
 ## See Also

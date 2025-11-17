@@ -8,8 +8,12 @@ Factory functions are used to create temporal instances.
 Creates a new temporal instance with date adapter and configuration.
 
 ```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
 const temporal = createTemporal({
-  adapter: nativeAdapter,
+  date: new Date(),
+  adapter: createNativeAdapter(),
   weekStartsOn: 1 // Monday
 })
 ```
@@ -18,15 +22,17 @@ const temporal = createTemporal({
 
 ```typescript
 import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/adapters/native'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 // Create temporal instance with native adapter
 const temporal = createTemporal({
+  date: new Date(),
   adapter: createNativeAdapter()
 })
 
 // Create temporal instance with custom week start
 const temporalWithMonday = createTemporal({
+  date: new Date(),
   adapter: createNativeAdapter(),
   weekStartsOn: 1
 })

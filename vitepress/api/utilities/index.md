@@ -30,10 +30,11 @@ const businessDays = days.filter(day => isWeekday(day))
 Check if a period represents today.
 
 ```typescript
-function isToday(period: Period, temporal: Temporal): boolean
+function isToday(adapter: Adapter, now: Date, period: Period): boolean
 
 // Example
-if (isToday(dayPeriod, temporal)) {
+const now = new Date()
+if (isToday(adapter, now, dayPeriod)) {
   element.classList.add('today')
 }
 ```
@@ -53,14 +54,17 @@ More utility functions are planned:
 ## Usage Example
 
 ```typescript
-import { isWeekend, isWeekday, isToday } from 'usetemporal'
+import { isWeekend, isWeekday, isToday } from '@allystudio/usetemporal/operations'
+import type { Period, Adapter } from '@allystudio/usetemporal'
 
 // In a calendar component
-function getDayClasses(day: Period, temporal: Temporal) {
+function getDayClasses(day: Period, adapter: Adapter) {
+  const now = new Date()
+
   return {
     'weekend': isWeekend(day),
     'weekday': isWeekday(day),
-    'today': isToday(day, temporal),
+    'today': isToday(adapter, now, day),
   }
 }
 ```
