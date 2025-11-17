@@ -11,13 +11,23 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "useTemporal",
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        operations: resolve(__dirname, "src/operations.ts"),
+        calendar: resolve(__dirname, "src/calendar.ts"),
+        native: resolve(__dirname, "src/native.ts"),
+        "date-fns": resolve(__dirname, "src/date-fns.ts"),
+        "date-fns-tz": resolve(__dirname, "src/date-fns-tz.ts"),
+        luxon: resolve(__dirname, "src/luxon.ts"),
+        temporal: resolve(__dirname, "src/temporal.ts"),
+      },
       formats: ["es"],
-      fileName: () => "index.js",
     },
     rollupOptions: {
-      external: ["@usetemporal/core", "@usetemporal/adapter-native"],
+      external: ["@usetemporal/core", "@usetemporal/adapter-native", "@vue/reactivity"],
+      output: {
+        preserveModules: false,
+      },
     },
   },
 });

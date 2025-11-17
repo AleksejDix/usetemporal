@@ -4,21 +4,28 @@
 
 ```typescript
 // Divide any time unit into smaller units
-const months = divide(temporal, year, 'month')
-const days = divide(temporal, month, 'day')
-const hours = divide(temporal, day, 'hour')
+const months = divide(adapter, year, 'month')
+const days = divide(adapter, month, 'day')
+const hours = divide(adapter, day, 'hour')
 ```
 
 ## 🚀 Features
 
 - **🧩 Revolutionary divide() Pattern**: Infinitely subdivide time units with perfect synchronization
+- **📦 Three API Levels**: Choose between pure functions (5-7KB), builder (8-12KB), or composables (15-20KB)
+- **🌳 Optimal Tree-Shaking**: 60-76% bundle size reduction through modular architecture
 - **🌍 Framework Agnostic**: Works with Vue, React, Angular, Svelte, and vanilla JavaScript
 - **⚡ Zero Dependencies**: Native adapter provides full functionality without external libraries
 - **🔄 Reactive by Design**: Built on `@vue/reactivity` for automatic updates
 - **🎯 TypeScript First**: Full type safety and excellent IDE support
-- **📦 Tree Shakeable**: Import only what you need
 
-## 📦 Installation
+## 📦 Bundle Size
+
+- **Level 1 (Pure Functions):** 5-7KB gzipped
+- **Level 2 (Builder):** 8-12KB gzipped
+- **Level 3 (Composables):** 15-20KB gzipped
+
+## 📥 Installation
 
 ```bash
 npm install @allystudio/usetemporal
@@ -26,28 +33,54 @@ npm install @allystudio/usetemporal
 
 ## 🎯 Quick Start
 
-### Basic Usage
+### Three API Levels - Choose What Fits Your Needs
 
+**Level 1: Pure Functions (Smallest Bundle - 5-7KB)**
 ```typescript
-import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { period, divide } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// Create temporal instance with adapter
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  weekStartsOn: 1 // Monday
-})
-
-// Create reactive periods
-const year = usePeriod(temporal, 'year')
-const month = usePeriod(temporal, 'month')
-
-// Use the revolutionary divide() pattern
-const months = divide(temporal, year.value, 'month')
-const days = divide(temporal, month.value, 'day')
+const adapter = createNativeAdapter({ weekStartsOn: 1 })
+const year = period(adapter, new Date(), 'year')
+const months = divide(adapter, year, 'month')
 ```
 
-### Vue Example
+**Level 2: Builder (Balanced - 8-12KB)** - Recommended for most users
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  weekStartsOn: 1
+})
+
+const year = temporal.period(new Date(), 'year')
+const months = temporal.divide(year, 'month')
+```
+
+**Level 3: Composables (Full DX - 15-20KB)**
+```typescript
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+const month = usePeriod(temporal, 'month')
+// month.value is reactive - automatically updates
+```
+
+[Learn how to choose the right API level →](./vitepress/guide/choosing-api-level.md)
+
+## 🔄 Migrating from v1.x or alpha.1?
+
+See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions. The v2.0 architecture delivers 60-76% bundle size reduction!
+
+### Vue Example (Level 3 - Composables)
 
 ```vue
 <template>
@@ -61,46 +94,46 @@ const days = divide(temporal, month.value, 'day')
 
 <script setup>
 import { computed } from 'vue'
-import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const temporal = createTemporal({
-  adapter: createNativeAdapter()
+  adapter: createNativeAdapter(),
+  date: new Date()
 })
 
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
-const monthLabel = computed(() => 
+const monthLabel = computed(() =>
   month.value.date.toLocaleDateString('en', { month: 'long', year: 'numeric' })
 )
 </script>
 ```
 
-### React Example
+### React Example (Level 2 - Builder)
 
 ```tsx
 import { useMemo } from 'react'
-import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 function Calendar() {
   const temporal = useMemo(() => createTemporal({
-    adapter: createNativeAdapter()
+    adapter: createNativeAdapter(),
+    weekStartsOn: 1
   }), [])
-  
-  const month = usePeriod(temporal, 'month')
-  const days = useMemo(() => 
-    divide(temporal, month.value, 'day'),
-    [month.value]
-  )
-  
+
+  const month = temporal.period(new Date(), 'month')
+  const days = temporal.divide(month, 'day')
+
   return (
     <div>
       <h2>
-        {month.value.date.toLocaleDateString('en', { 
-          month: 'long', 
-          year: 'numeric' 
+        {month.date.toLocaleDateString('en', {
+          month: 'long',
+          year: 'numeric'
         })}
       </h2>
       {days.map(day => (
@@ -115,28 +148,50 @@ function Calendar() {
 
 ## 🔧 Core API
 
-### Factory Function
+### Choose Your API Level
 
+**Level 1: Pure Functions**
 ```typescript
-import { createTemporal } from 'usetemporal'
-import { createNativeAdapter } from '@usetemporal/core/native'
+import { period, divide, next } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(), 'year')
+const months = divide(adapter, year, 'month')
+```
+
+**Level 2: Builder** (Recommended)
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const temporal = createTemporal({
   adapter: createNativeAdapter(), // Required
-  date: new Date(),              // Initial browsing date
-  weekStartsOn: 1                // 0 = Sunday, 1 = Monday
+  date: new Date(),              // Optional: initial browsing date
+  weekStartsOn: 1                // Optional: 0 = Sunday, 1 = Monday
 })
+
+const year = temporal.period(new Date(), 'year')
+const months = temporal.divide(year, 'month')
 ```
 
-### Period Composable
+**Level 3: Composables**
+```typescript
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+// Reactive period
+const month = usePeriod(temporal, 'month')
+```
+
+### Period Structure
 
 ```typescript
-// Create reactive periods that update with navigation
-const year = usePeriod(temporal, 'year')
-const month = usePeriod(temporal, 'month')
-const day = usePeriod(temporal, 'day')
-
-// Period structure
 interface Period {
   type: Unit    // 'year' | 'month' | 'week' | 'day' | etc.
   date: Date    // Representative date
@@ -145,33 +200,32 @@ interface Period {
 }
 ```
 
-### Operations
+### Available Operations
 
-All operations are pure functions:
+All operations work across all API levels:
 
-```typescript
-import { 
-  divide,    // Subdivide periods
-  next,      // Get next period
-  previous,  // Get previous period
-  go,        // Navigate by steps
-  contains,  // Check containment
-  isSame,    // Compare periods
-  zoomIn,    // Zoom into smaller unit
-  zoomOut,   // Zoom to larger unit
-} from 'usetemporal'
-
-// Examples
-const months = divide(temporal, year.value, 'month')
-const nextMonth = next(temporal, month.value)
-const isInMonth = contains(month.value, new Date())
-```
+- `period(adapter, date, unit)` - Create a period
+- `divide(adapter, period, unit)` - Subdivide periods
+- `merge(adapter, periods)` - Merge multiple periods
+- `next(adapter, period, count?)` - Get next period
+- `previous(adapter, period, count?)` - Get previous period
+- `go(adapter, period, direction, count)` - Navigate by steps
+- `contains(period, date | period)` - Check containment
+- `isSame(adapter, period1, period2, unit)` - Compare periods
+- `split(period, date)` - Split period at date
+- `isToday(period)`, `isWeekday(period)`, `isWeekend(period)` - Utility checks
 
 ## 📚 Documentation
 
 Visit our [documentation site](https://usetemporal.dev) for:
 
 - [Getting Started Guide](https://usetemporal.dev/guide/getting-started)
+- [Choosing an API Level](./vitepress/guide/choosing-api-level.md)
+- [Migration Guide](./MIGRATION.md) - v2.0 breaking changes
+- [Level 1: Pure Functions API](./vitepress/api/level-1-pure-functions.md)
+- [Level 2: Builder API](./vitepress/api/level-2-builder.md)
+- [Level 3: Composables API](./vitepress/api/level-3-composables.md)
+- [Bundle Size Optimization](./vitepress/guide/bundle-size-optimization.md)
 - [The divide() Pattern](https://usetemporal.dev/guide/divide-pattern)
 - [API Reference](https://usetemporal.dev/api/)
 - [Examples](https://usetemporal.dev/examples/)
@@ -223,10 +277,20 @@ for (let i = 0; i < 12; i++) {
 With useTemporal's divide() pattern:
 
 ```typescript
-// useTemporal approach 🎉
-const year = usePeriod(temporal, 'year')
-const months = divide(temporal, year.value, 'month')
-// That's it! Full reactivity included!
+// useTemporal approach 🎉 (Level 2 - Builder)
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const year = temporal.period(new Date(2024, 0, 1), 'year')
+const months = temporal.divide(year, 'month')
+// That's it! 12 perfect months, automatically calculated!
+```
+
+Or even smaller bundle with Level 1:
+
+```typescript
+// Level 1 - Pure Functions (5-7KB bundle)
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(2024, 0, 1), 'year')
+const months = divide(adapter, year, 'month')
 ```
 
 ## 🤝 Contributing

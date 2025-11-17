@@ -304,5 +304,5 @@ const def2 = getUnitDefinition('day')
 
 - [defineUnit](/api/unit-system/define-unit) - Register units
 - [hasUnit](/api/unit-system/has-unit) - Check registration
-- [UnitRegistry](/api/types/unit-registry) - Registry types
+-  - Registry types
 - [Unit](/api/types/unit) - Unit type definition

@@ -7,7 +7,7 @@ Understanding these core concepts will help you use useTemporal effectively.
 The temporal instance is your central time controller:
 
 ```typescript
-import { createTemporal } from 'usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
 
 const temporal = createTemporal({
   adapter: createNativeAdapter(),   // Required: date adapter
@@ -50,7 +50,7 @@ Instead of separate types for each time unit, useTemporal uses a unified Period 
 Create reactive periods that update automatically:
 
 ```typescript
-import { usePeriod } from 'usetemporal'
+import { usePeriod } from '@allystudio/usetemporal'
 
 const month = usePeriod(temporal, 'month')
 const year = usePeriod(temporal, 'year')
@@ -65,14 +65,14 @@ console.log(month.value.end)    // First millisecond of next month
 This is what makes useTemporal unique - any period can be divided into smaller units:
 
 ```typescript
-import { divide } from 'usetemporal'
+import { divide } from '@allystudio/usetemporal'
 
 const year = usePeriod(temporal, 'year')
-const months = divide(temporal, year.value, 'month')  // Array of 12 Period objects
+const months = divide(temporal.adapter, year.value, 'month')  // Array of 12 Period objects
 
 // Chain divisions for granular control
 const january = months[0]
-const days = divide(temporal, january, 'day')        // Array of 31 Period objects
+const days = divide(temporal.adapter, january, 'day')        // Array of 31 Period objects
 ```
 
 ## Functional Operations
@@ -80,13 +80,13 @@ const days = divide(temporal, january, 'day')        // Array of 31 Period objec
 All operations are pure functions that work with Period objects:
 
 ```typescript
-import { next, previous, contains } from 'usetemporal'
+import { next, previous, contains } from '@allystudio/usetemporal'
 
 const month = usePeriod(temporal, 'month')
 
 // Navigation
-const nextMonth = next(temporal, month.value)
-const prevMonth = previous(temporal, month.value)
+const nextMonth = next(temporal.adapter, month.value)
+const prevMonth = previous(temporal.adapter, month.value)
 
 // Comparison
 const today = new Date()
@@ -99,7 +99,7 @@ useTemporal uses `@vue/reactivity` (not the Vue framework) for reactive state:
 
 ```typescript
 // When browsing changes, all dependent periods update
-temporal.browsing.value = next(temporal, month.value)
+temporal.browsing.value = next(temporal.adapter, month.value)
 
 // In Vue/React/Svelte, these updates trigger re-renders automatically
 ```

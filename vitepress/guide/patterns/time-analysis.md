@@ -11,7 +11,7 @@ The `split` operation provides three powerful approaches for dividing periods:
 Divide any period into equal parts:
 
 ```typescript
-import { createTemporal, split, period } from 'usetemporal'
+import { createTemporal, split, period } from '@allystudio/usetemporal'
 
 const temporal = createTemporal({ date: new Date() })
 
@@ -28,7 +28,7 @@ const thirds = split(temporal, quarter, { count: 3 })
 // Result: 3 custom periods of ~30 days each
 
 // Split a day into 4 parts (6-hour chunks)
-const day = toPeriod(temporal, new Date(), 'day')
+const day = temporal.period( new Date(), 'day')
 const quarters = split(temporal, day, { count: 4 })
 // Result: 4 custom periods of 6 hours each
 ```
@@ -39,21 +39,21 @@ Create chunks of specific duration:
 
 ```typescript
 // Split a year into 2-month chunks
-const year = toPeriod(temporal, new Date(), 'year')
+const year = temporal.period( new Date(), 'year')
 const bimonthly = split(temporal, year, { 
   duration: { months: 2 } 
 })
 // Result: 6 periods of 2 months each
 
 // Split a month into weekly chunks
-const month = toPeriod(temporal, new Date(), 'month')
+const month = temporal.period( new Date(), 'month')
 const weeks = split(temporal, month, { 
   duration: { weeks: 1 } 
 })
 // Result: 4-5 week periods
 
 // Split a day into 90-minute intervals
-const day = toPeriod(temporal, new Date(), 'day')
+const day = temporal.period( new Date(), 'day')
 const intervals = split(temporal, day, { 
   duration: { hours: 1, minutes: 30 } 
 })
@@ -177,7 +177,7 @@ const parts = split(temporal, timePeriod, { count: 3 })
 When splitting by duration, the last period may be shorter:
 
 ```typescript
-const month = toPeriod(temporal, new Date('2024-02-01'), 'month')
+const month = temporal.period( new Date('2024-02-01'), 'month')
 const weeks = split(temporal, month, { 
   duration: { weeks: 1 } 
 })
@@ -210,7 +210,7 @@ const period = split(temporal, year, {
 
 ```typescript
 // These are equivalent:
-divide(temporal, year, 'month')
+divide(temporal.adapter, year, 'month')
 split(temporal, year, { by: 'month' })
 
 // But split offers more:
@@ -224,12 +224,12 @@ Combine multiple periods into larger units:
 
 ```typescript
 // Merge weeks into a month
-const weeks = divide(temporal, month, 'week')
-const mergedMonth = merge(temporal, weeks)
+const weeks = divide(temporal.adapter, month, 'week')
+const mergedMonth = merge(temporal.adapter, weeks)
 
 // Combine business days
 const workDays = days.filter(day => !isWeekend(day))
-const workPeriod = merge(temporal, workDays)
+const workPeriod = merge(temporal.adapter, workDays)
 ```
 
 ## Advanced Analysis Patterns
@@ -242,7 +242,7 @@ function rollingAverage(data: Period[], windowSize: number) {
   
   for (let i = windowSize - 1; i < data.length; i++) {
     const window = data.slice(i - windowSize + 1, i + 1)
-    const merged = merge(temporal, window)
+    const merged = merge(temporal.adapter, window)
     
     results.push({
       period: merged,
@@ -254,7 +254,7 @@ function rollingAverage(data: Period[], windowSize: number) {
 }
 
 // 7-day rolling average
-const days = divide(temporal, month, 'day')
+const days = divide(temporal.adapter, month, 'day')
 const rolling7Day = rollingAverage(days, 7)
 ```
 
@@ -266,8 +266,8 @@ function findOverlaps(periods: Period[]): Array<[Period, Period]> {
   
   for (let i = 0; i < periods.length - 1; i++) {
     for (let j = i + 1; j < periods.length; j++) {
-      if (contains(temporal, periods[i], periods[j].start) ||
-          contains(temporal, periods[j], periods[i].start)) {
+      if (contains(temporal.adapter, periods[i], periods[j].start) ||
+          contains(temporal.adapter, periods[j], periods[i].start)) {
         overlaps.push([periods[i], periods[j]])
       }
     }
@@ -294,13 +294,13 @@ function findGaps(periods: Period[], container: Period): Period[] {
   
   for (const period of sorted) {
     if (period.start > lastEnd) {
-      gaps.push(period(temporal, { start: lastEnd, end: period.start }))
+      gaps.push(temporal.period({ start: lastEnd, end: period.start }))
     }
     lastEnd = period.end > lastEnd ? period.end : lastEnd
   }
-  
+
   if (lastEnd < container.end) {
-    gaps.push(period(temporal, { start: lastEnd, end: container.end }))
+    gaps.push(temporal.period({ start: lastEnd, end: container.end }))
   }
   
   return gaps

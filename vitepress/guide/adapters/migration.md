@@ -28,10 +28,10 @@ tomorrow.setDate(tomorrow.getDate() + 1)
 import { createTemporal, period, next } from '@allystudio/usetemporal'
 
 const temporal = createTemporal()
-const month = period(temporal, new Date(), 'month')
+const month = temporal.period( new Date(), 'month')
 const startOfMonth = month.start
 const endOfMonth = new Date(month.end.getTime() - 1) // end is exclusive
-const tomorrow = next(temporal, period(temporal, new Date(), 'day'))
+const tomorrow = next(temporal.adapter, period(temporal, new Date(), 'day'))
 ```
 
 ### Date Comparisons
@@ -52,11 +52,11 @@ function isDateInRange(date, start, end) {
 import { isSame, contains } from '@allystudio/usetemporal'
 
 function isSameDay(temporal, date1, date2) {
-  return isSame(temporal, date1, date2, 'day')
+  return isSame(temporal.adapter, date1, date2, 'day')
 }
 
 function isDateInRange(temporal, date, period) {
-  return contains(temporal, period, date)
+  return contains(temporal.adapter, period, date)
 }
 ```
 
@@ -78,8 +78,8 @@ function getMonthDays(year, month) {
 import { divide } from '@allystudio/usetemporal'
 
 function getMonthDays(temporal, date) {
-  const month = period(temporal, date, 'month')
-  return divide(temporal, month, 'day')
+  const month = temporal.period( date, 'month')
+  return divide(temporal.adapter, month, 'day')
 }
 ```
 
@@ -109,9 +109,9 @@ import { createDateFnsAdapter } from '@allystudio/usetemporal-adapter-date-fns'
 import { format } from 'date-fns' // Keep using for formatting!
 
 const temporal = createTemporal({ adapter: createDateFnsAdapter() })
-const month = period(temporal, new Date(), 'month')
-const nextWeek = go(temporal, period(temporal, new Date(), 'day'), 1, 'week')
-const days = divide(temporal, month, 'day')
+const month = temporal.period( new Date(), 'month')
+const nextWeek = go(temporal.adapter, period(temporal, new Date(), 'day'), 1, 'week')
+const days = divide(temporal.adapter, month, 'day')
 const formatted = format(new Date(), 'yyyy-MM-dd') // Still use date-fns!
 ```
 
@@ -126,7 +126,7 @@ const spanish = format(new Date(), 'MMMM', { locale: es })
 const french = format(new Date(), 'MMMM', { locale: fr })
 
 // After: Same! Keep using date-fns for formatting
-const period = period(temporal, new Date(), 'month')
+const period = temporal.period( new Date(), 'month')
 const spanish = format(period.start, 'MMMM', { locale: es })
 const french = format(period.start, 'MMMM', { locale: fr })
 ```
@@ -147,9 +147,9 @@ const months = eachMonthOfInterval(year)
 const weeks = eachWeekOfInterval(year)
 
 // After: useTemporal patterns
-const year = period(temporal, date, 'year')
-const months = divide(temporal, year, 'month')
-const weeks = divide(temporal, year, 'week')
+const year = temporal.period( date, 'year')
+const months = divide(temporal.adapter, year, 'month')
+const weeks = divide(temporal.adapter, year, 'week')
 
 // Still use date-fns for specific utilities
 import { isWithinInterval } from 'date-fns'
@@ -180,8 +180,8 @@ import { DateTime } from 'luxon' // Keep for formatting!
 const temporal = createTemporal({ 
   adapter: createLuxonAdapter({ zone: 'local' }) 
 })
-const now = period(temporal, new Date(), 'day')
-const month = period(temporal, new Date(), 'month')
+const now = temporal.period( new Date(), 'day')
+const month = temporal.period( new Date(), 'month')
 
 // For timezone operations, create new temporal
 const tokyoTemporal = createTemporal({
@@ -243,7 +243,7 @@ const temporal = createTemporal({
   adapter: createDateFnsTzAdapter({ timezone: 'America/New_York' })
 })
 
-const nyPeriod = period(temporal, new Date(), 'hour')
+const nyPeriod = temporal.period( new Date(), 'hour')
 // The period is already in NY timezone
 
 // Still use date-fns-tz for formatting
@@ -273,7 +273,7 @@ function showMeetingTimes(date) {
     const temporal = createTemporal({
       adapter: createDateFnsTzAdapter({ timezone: zone })
     })
-    const period = period(temporal, date, 'hour')
+    const period = temporal.period( date, 'hour')
     return {
       zone,
       time: format(period.start, 'PPpp', { timeZone: zone })
@@ -298,7 +298,7 @@ function enableTimezoneSupport(timezone: string) {
 }
 
 // All code continues to work!
-const period = period(temporal, new Date(), 'day')
+const period = temporal.period( new Date(), 'day')
 ```
 
 ### Gradual Migration Strategy
@@ -372,7 +372,7 @@ while (current <= endDate) {
 
 // After: Clean divide pattern
 const period = { start: startDate, end: endDate }
-const days = divide(temporal, period, 'day')
+const days = divide(temporal.adapter, period, 'day')
 ```
 
 ### Replace Complex Calculations
@@ -387,8 +387,8 @@ function getWeeksInMonth(year, month) {
 
 // After: Simple divide
 function getWeeksInMonth(temporal, date) {
-  const month = period(temporal, date, 'month')
-  return divide(temporal, month, 'week').length
+  const month = temporal.period( date, 'month')
+  return divide(temporal.adapter, month, 'week').length
 }
 ```
 
@@ -405,7 +405,7 @@ function getLastMonday() {
 
 // After: Clear intent
 function getThisMonday(temporal) {
-  const week = period(temporal, new Date(), 'week')
+  const week = temporal.period( new Date(), 'week')
   return week.start // Weeks start on configured day
 }
 ```
@@ -431,8 +431,8 @@ adapters.forEach(({ name, temporal }) => {
   console.time(name)
   // Run same operations
   for (let i = 0; i < 1000; i++) {
-    const period = period(temporal, new Date(), 'month')
-    const days = divide(temporal, period, 'day')
+    const period = temporal.period( new Date(), 'month')
+    const days = divide(temporal.adapter, period, 'day')
   }
   console.timeEnd(name)
 })

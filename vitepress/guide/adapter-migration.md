@@ -19,14 +19,14 @@ We've consolidated all adapters into the core package for several important bene
 Remove the old adapter packages and ensure you have the latest core:
 
 ```bash
-# Remove old packages
+# Remove old packages (if you had separate adapter packages)
 npm uninstall @usetemporal/adapter-native
 npm uninstall @usetemporal/adapter-temporal
 npm uninstall @usetemporal/adapter-luxon
 npm uninstall @usetemporal/adapter-date-fns
 
-# Update core
-npm install @usetemporal/core@latest
+# Install latest version
+npm install @allystudio/usetemporal@latest
 ```
 
 ### Step 2: Update Your Imports
@@ -35,10 +35,10 @@ npm install @usetemporal/core@latest
 
 ```typescript
 // Old (deprecated)
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 // New (recommended)
-import { createNativeAdapter } from '@usetemporal/core/native'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 ```
 
 #### Temporal Adapter
@@ -48,7 +48,7 @@ import { createNativeAdapter } from '@usetemporal/core/native'
 import { createTemporalAdapter } from '@usetemporal/adapter-temporal'
 
 // New (recommended)
-import { createTemporalAdapter } from '@usetemporal/core/temporal'
+import { createTemporalAdapter } from '@allystudio/usetemporal/temporal'
 // Note: Polyfill still loads automatically
 ```
 
@@ -56,10 +56,10 @@ import { createTemporalAdapter } from '@usetemporal/core/temporal'
 
 ```typescript
 // Old (deprecated)
-import { createLuxonAdapter } from '@usetemporal/adapter-luxon'
+import { createLuxonAdapter } from '@allystudio/usetemporal/luxon'
 
 // New (recommended)
-import { createLuxonAdapter } from '@usetemporal/core/luxon'
+import { createLuxonAdapter } from '@allystudio/usetemporal/luxon'
 // Note: You still need to install luxon separately
 ```
 
@@ -67,10 +67,10 @@ import { createLuxonAdapter } from '@usetemporal/core/luxon'
 
 ```typescript
 // Old (deprecated)
-import { createDateFnsAdapter } from '@usetemporal/adapter-date-fns'
+import { createDateFnsAdapter } from '@allystudio/usetemporal/date-fns'
 
 // New (recommended)
-import { createDateFnsAdapter } from '@usetemporal/core/date-fns'
+import { createDateFnsAdapter } from '@allystudio/usetemporal/date-fns'
 // Note: You still need to install date-fns separately
 ```
 
@@ -96,25 +96,25 @@ During the transition period, the old adapter packages still work as re-export f
 
 ```typescript
 // This still works but shows a deprecation warning
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 ```
 
 You'll see a console warning:
 ```
-[@usetemporal/adapter-native] DEPRECATED: This package has been moved to @usetemporal/core/native.
-Please update your imports to use '@usetemporal/core/native' instead.
+[@usetemporal/adapter-native] DEPRECATED: This package has been moved to @allystudio/usetemporal/native.
+Please update your imports to use '@allystudio/usetemporal/native' instead.
 ```
 
 ## Common Issues
 
 ### Issue: TypeScript Can't Find Types
 
-Make sure you're using the latest version of @usetemporal/core:
+Make sure you're using the latest version of @allystudio/usetemporal:
 
 ```json
 {
   "dependencies": {
-    "@usetemporal/core": "^2.1.0"
+    "@allystudio/usetemporal": "^2.1.0"
   }
 }
 ```
@@ -156,7 +156,7 @@ npm run build
 
 The migration is straightforward:
 
-1. Update your imports to use `@usetemporal/core/[adapter-name]`
+1. Update your imports to use `@allystudio/usetemporal/[adapter-name]`
 2. Remove old adapter packages from dependencies
 3. Enjoy better tree-shaking and accurate coverage metrics
 

@@ -51,40 +51,40 @@ All standard useTemporal operations work seamlessly:
 
 ```typescript
 // Create periods
-const year = period(temporal, new Date(), 'year')
-const month = period(temporal, new Date(), 'month')
-const week = period(temporal, new Date(), 'week')
+const year = temporal.period( new Date(), 'year')
+const month = temporal.period( new Date(), 'month')
+const week = temporal.period( new Date(), 'week')
 
 // Divide operations
-const months = divide(temporal, year, 'month') // 12 months
-const weeks = divide(temporal, month, 'week') // 4-6 weeks
-const days = divide(temporal, week, 'day')    // 7 days
+const months = divide(temporal.adapter, year, 'month') // 12 months
+const weeks = divide(temporal.adapter, month, 'week') // 4-6 weeks
+const days = divide(temporal.adapter, week, 'day')    // 7 days
 
 // Navigation
-const nextMonth = next(temporal, month)
-const prevWeek = previous(temporal, week)
-const futureDate = go(temporal, month, 3) // 3 months ahead
+const nextMonth = next(temporal.adapter, month)
+const prevWeek = previous(temporal.adapter, week)
+const futureDate = go(temporal.adapter, month, 3) // 3 months ahead
 ```
 
 ### Date Creation
 
 ```typescript
 // From various inputs
-const period1 = period(temporal, new Date(), 'day')
-const period2 = period(temporal, '2025-07-25', 'day')
-const period3 = period(temporal, Date.now(), 'day')
+const period1 = temporal.period( new Date(), 'day')
+const period2 = temporal.period( '2025-07-25', 'day')
+const period3 = temporal.period( Date.now(), 'day')
 ```
 
 ### Comparisons
 
 ```typescript
-const today = period(temporal, new Date(), 'day')
-const tomorrow = next(temporal, today)
+const today = temporal.period( new Date(), 'day')
+const tomorrow = next(temporal.adapter, today)
 
 // Check relationships
-contains(temporal, today, new Date())              // true
-isSame(temporal, today, new Date(), 'day')       // true
-contains(temporal, today, tomorrow.start)         // false
+contains(temporal.adapter, today, new Date())              // true
+isSame(temporal.adapter, today, new Date(), 'day')       // true
+contains(temporal.adapter, today, tomorrow.start)         // false
 ```
 
 ## Limitations
@@ -95,7 +95,7 @@ The native adapter only works with the system's local timezone:
 
 ```typescript
 // Always uses local timezone
-const period = period(temporal, new Date(), 'day')
+const period = temporal.period( new Date(), 'day')
 console.log(period.start) // Local midnight
 ```
 
@@ -104,7 +104,7 @@ console.log(period.start) // Local midnight
 Limited formatting options compared to other adapters:
 
 ```typescript
-const period = period(temporal, new Date(), 'month')
+const period = temporal.period( new Date(), 'month')
 
 // Basic string representation
 console.log(period.start.toLocaleDateString()) // "7/1/2025"
@@ -132,8 +132,8 @@ const start = performance.now()
 
 // Create 10,000 periods
 for (let i = 0; i < 10000; i++) {
-  const period = period(temporal, new Date(), 'day')
-  const hours = divide(temporal, period, 'hour')
+  const period = temporal.period( new Date(), 'day')
+  const hours = divide(temporal.adapter, period, 'hour')
 }
 
 const end = performance.now()
@@ -146,12 +146,12 @@ console.log(`Time: ${end - start}ms`) // Typically < 50ms
 
 ```typescript
 function generateMonthCalendar(temporal, date) {
-  const month = period(temporal, date, 'month')
-  const weeks = divide(temporal, month, 'week')
+  const month = temporal.period( date, 'month')
+  const weeks = divide(temporal.adapter, month, 'week')
   
   return weeks.map(week => ({
     week,
-    days: divide(temporal, week, 'day')
+    days: divide(temporal.adapter, week, 'day')
   }))
 }
 ```
@@ -160,12 +160,12 @@ function generateMonthCalendar(temporal, date) {
 
 ```typescript
 function* dateRange(temporal, start, end, unit = 'day') {
-  let current = period(temporal, start, unit)
-  const endPeriod = period(temporal, end, unit)
+  let current = temporal.period( start, unit)
+  const endPeriod = temporal.period( end, unit)
   
   while (current.start <= endPeriod.start) {
     yield current
-    current = next(temporal, current)
+    current = next(temporal.adapter, current)
   }
 }
 
@@ -181,13 +181,13 @@ for (const day of dateRange(temporal, '2025-01-01', '2025-01-31')) {
 const temporal = createTemporal()
 
 // Various "today" operations
-const today = period(temporal, new Date(), 'day')
-const thisWeek = period(temporal, new Date(), 'week')
-const thisMonth = period(temporal, new Date(), 'month')
+const today = temporal.period( new Date(), 'day')
+const thisWeek = temporal.period( new Date(), 'week')
+const thisMonth = temporal.period( new Date(), 'month')
 
 // Check if a date is today
 function isToday(temporal, date) {
-  return isSame(temporal, date, new Date(), 'day')
+  return isSame(temporal.adapter, date, new Date(), 'day')
 }
 ```
 
@@ -197,7 +197,7 @@ function isToday(temporal, date) {
 
 ```typescript
 // ✅ Good: Local dates
-const meeting = period(temporal, meetingDate, 'hour')
+const meeting = temporal.period( meetingDate, 'hour')
 
 // ❌ Bad: Timezone-sensitive operations
 // const nycTime = ... // Not possible with native
@@ -220,8 +220,8 @@ import { createTemporal } from '@allystudio/usetemporal'
 const createCalendar = (temporal) => {
   // All logic uses temporal parameter
   return {
-    getMonth: (date) => period(temporal, date, 'month'),
-    getWeeks: (month) => divide(temporal, month, 'week')
+    getMonth: (date) => temporal.period( date, 'month'),
+    getWeeks: (month) => divide(temporal.adapter, month, 'week')
   }
 }
 

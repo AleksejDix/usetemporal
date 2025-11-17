@@ -70,7 +70,7 @@ const zonedDateTime = Temporal.ZonedDateTime.from({
 })
 
 // Use with useTemporal
-const period = period(temporal, zonedDateTime.toInstant(), 'day')
+const period = temporal.period( zonedDateTime.toInstant(), 'day')
 ```
 
 ### Advanced Timezone Support
@@ -333,7 +333,7 @@ const temporal = createTemporal({
   adapter: createTemporalAdapter({ timeZone: 'America/New_York' })
 })
 
-const period = period(temporal, new Date(), 'day')
+const period = temporal.period( new Date(), 'day')
 const representations = convertTimeRepresentations(period.start)
 ```
 

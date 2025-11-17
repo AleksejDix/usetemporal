@@ -39,11 +39,9 @@ The central state container for time navigation.
 ```typescript
 interface Temporal {
   adapter: Adapter
-  weekStartsOn: number
   browsing: Ref<Period>
-  now: ComputedRef<Period>
-  divide: (period: Period, unit: Unit) => Period[]
-  split: (period: Period, options: SplitOptions) => Period[]
+  now: Ref<Period>
+  weekStartsOn: number
 }
 ```
 
@@ -84,34 +82,3 @@ interface SplitOptions {
 }
 ```
 
-## Plugin System Types
-
-### [UnitRegistry](/api/types/unit-registry)
-Registry for custom unit types.
-
-```typescript
-interface UnitRegistry {
-  year: true
-  quarter: true
-  month: true
-  week: true
-  day: true
-  hour: true
-  minute: true
-  second: true
-  custom: true
-  // Extended by plugins
-}
-```
-
-### [UnitDefinition](/api/types/unit-definition)
-Definition for custom units.
-
-```typescript
-interface UnitDefinition {
-  period(date: Date, adapter: Adapter): { start: Date; end: Date }
-  validate?(period: { start: Date; end: Date; type: string }): boolean
-  divisions?: string[]
-  mergesTo?: string
-}
-```

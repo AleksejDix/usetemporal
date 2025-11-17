@@ -15,61 +15,65 @@ interface Period {
 
 ## Creating Periods
 
-Periods are created through various operations:
-
-### usePeriod()
-
-The primary way to create a period for the current browsing date:
+### Level 1: Pure Functions
 
 ```typescript
-import { createTemporal, usePeriod } from 'usetemporal'
+import { period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const adapter = createNativeAdapter()
 
+// Create standard periods
+const year = period(adapter, new Date(), 'year')
+const month = period(adapter, new Date(), 'month')
+const day = period(adapter, new Date(), 'day')
+
+// Create custom periods
+const customPeriod = period(adapter, {
+  start: new Date(2024, 0, 1),
+  end: new Date(2024, 11, 31)
+})
+```
+
+### Level 2: Builder API
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+// Create periods
+const year = temporal.period(new Date(), 'year')
+const month = temporal.period(new Date(), 'month')
+const day = temporal.period(new Date(), 'day')
+
+// Custom periods
+const customPeriod = temporal.period({
+  start: new Date(2024, 0, 1),
+  end: new Date(2024, 11, 31)
+})
+```
+
+### Level 3: Reactive Composables
+
+```typescript
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
+
+// Reactive periods that track browsing.value
 const year = usePeriod(temporal, 'year')
 const month = usePeriod(temporal, 'month')
-const week = usePeriod(temporal, 'week')
 const day = usePeriod(temporal, 'day')
-const hour = usePeriod(temporal, 'hour')
 ```
-
-### toPeriod()
-
-Convert any date to a period of a specific unit:
-
-```typescript
-import { toPeriod } from 'usetemporal'
-
-const christmas = new Date(2024, 11, 25)
-const christmasWeek = toPeriod(temporal, christmas, 'week')
-const christmasMonth = toPeriod(temporal, christmas, 'month')
-```
-
-### period()
-
-Create a period with specific start and end dates:
-
-```typescript
-// Create a custom period manually
-const customPeriod: Period = {
-  type: 'custom',
-  date: new Date(2024, 0, 1),
-  start: new Date(2024, 0, 1),    // Start: Jan 1, 2024
-  end: new Date(2024, 11, 31)     // End: Dec 31, 2024
-}
-```
-
-### Custom Periods
-
-Create custom periods manually:
-
-```typescript
-const vacation: Period = {
-  type: 'vacation',
-  date: new Date(2024, 6, 15),
-  start: new Date(2024, 6, 15),   // July 15
-  end: new Date(2024, 6, 22)      // July 22
-}
 
 ## Period Properties
 
@@ -107,17 +111,19 @@ console.log(day.value.end) // First moment of the next day
 Navigate between periods using navigation functions:
 
 ```typescript
-import { next, previous, go } from 'usetemporal'
+import { next, previous, go } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const today = usePeriod(temporal, 'day')
+const adapter = createNativeAdapter()
+const today = period(adapter, new Date(), 'day')
 
 // Get adjacent periods
-const tomorrow = next(temporal, today.value)
-const yesterday = previous(temporal, today.value)
+const tomorrow = next(adapter, today)
+const yesterday = previous(adapter, today)
 
 // Jump multiple periods
-const nextWeek = go(temporal, today.value, 7)
-const lastMonth = go(temporal, today.value, -30)
+const nextWeek = go(adapter, today, 'next', 7)
+const lastWeek = go(adapter, today, 'previous', 7)
 ```
 
 ### Division
@@ -125,11 +131,14 @@ const lastMonth = go(temporal, today.value, -30)
 Divide periods into smaller units:
 
 ```typescript
-import { divide } from 'usetemporal'
+import { divide, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const month = usePeriod(temporal, 'month')
-const days = divide(temporal, month.value, 'day')
-const weeks = divide(temporal, month.value, 'week')
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
+
+const days = divide(adapter, month, 'day')
+const weeks = divide(adapter, month, 'week')
 
 console.log(`This month has ${days.length} days`)
 console.log(`This month spans ${weeks.length} weeks`)
@@ -140,20 +149,22 @@ console.log(`This month spans ${weeks.length} weeks`)
 Compare periods and check containment:
 
 ```typescript
-import { contains, isSame } from 'usetemporal'
+import { contains, isSame, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const month = usePeriod(temporal, 'month')
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
 const today = new Date()
 
 // Check if date is within period
-if (contains(month.value, today)) {
+if (contains(month, today)) {
   console.log('Today is in the current month')
 }
 
-// Check if two dates are in the same period
-const date1 = new Date(2024, 5, 15)
-const date2 = new Date(2024, 5, 20)
-console.log(isSame(temporal, date1, date2, 'month')) // true
+// Check if two periods are the same
+const period1 = period(adapter, new Date(2024, 5, 15), 'month')
+const period2 = period(adapter, new Date(2024, 5, 20), 'month')
+console.log(isSame(adapter, period1, period2, 'month')) // true
 ```
 
 ### Navigating Period Hierarchies
@@ -161,17 +172,19 @@ console.log(isSame(temporal, date1, date2, 'month')) // true
 Navigate between different period levels using composition:
 
 ```typescript
-import { divide, contains, period } from 'usetemporal'
+import { divide, period } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const year = usePeriod(temporal, 'year')
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(), 'year')
 
 // Navigate to specific month (June)
-const months = divide(temporal, year.value, 'month')
+const months = divide(adapter, year, 'month')
 const june = months[5] // 0-indexed
 
 // Navigate from day to its containing month
-const day = usePeriod(temporal, 'day')
-const containingMonth = period(temporal, day.value.date, 'month')
+const day = period(adapter, new Date(), 'day')
+const containingMonth = period(adapter, day.date, 'month')
 ```
 
 ## Examples
@@ -183,10 +196,10 @@ const containingMonth = period(temporal, day.value.date, 'month')
   <div class="calendar">
     <h2>{{ monthName }}</h2>
     <div class="days-grid">
-      <div 
-        v-for="day in days" 
+      <div
+        v-for="day in days"
         :key="day.date.toISOString()"
-        :class="{ today: isToday(day.date) }"
+        :class="{ today: isToday(day) }"
       >
         {{ day.date.getDate() }}
       </div>
@@ -196,22 +209,23 @@ const containingMonth = period(temporal, day.value.date, 'month')
 
 <script setup>
 import { computed } from 'vue'
-import { 
-  createTemporal, 
-  usePeriod, 
-  divide, 
-  isToday 
-} from 'usetemporal'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
+import { isToday } from '@allystudio/usetemporal/utilities'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: new Date()
+})
 
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
-const monthName = computed(() => 
-  month.value.date.toLocaleDateString('en', { 
-    month: 'long', 
-    year: 'numeric' 
+const monthName = computed(() =>
+  month.value.date.toLocaleDateString('en', {
+    month: 'long',
+    year: 'numeric'
   })
 )
 </script>
@@ -220,62 +234,70 @@ const monthName = computed(() =>
 ### Date Range Picker
 
 ```typescript
-function getDateRange(temporal: Temporal, start: Date, end: Date): Period[] {
+import { period, next, divide } from '@allystudio/usetemporal/operations'
+import { isWeekday } from '@allystudio/usetemporal/utilities'
+import type { Adapter, Period } from '@allystudio/usetemporal'
+
+function getDateRange(adapter: Adapter, start: Date, end: Date): Period[] {
   const periods: Period[] = []
-  let current = toPeriod(temporal, start, 'day')
-  const endPeriod = toPeriod(temporal, end, 'day')
-  
+  let current = period(adapter, start, 'day')
+  const endPeriod = period(adapter, end, 'day')
+
   while (current.start <= endPeriod.start) {
     periods.push(current)
-    current = next(temporal, current)
+    current = next(adapter, current)
   }
-  
+
   return periods
 }
 
 // Get all days in current month
-const month = usePeriod(temporal, 'month')
-const monthDays = divide(temporal, month.value, 'day')
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
+const monthDays = divide(adapter, month, 'day')
 
 // Get business days only
-const businessDays = monthDays.filter(day => isWeekday(day.date))
+const businessDays = monthDays.filter(day => isWeekday(day))
 ```
 
 ### Time Slot Generation
 
 ```typescript
+import { divide } from '@allystudio/usetemporal/operations'
+import type { Adapter, Period } from '@allystudio/usetemporal'
+
 function generateTimeSlots(
-  temporal: Temporal, 
-  day: Period, 
+  adapter: Adapter,
+  day: Period,
   slotDuration: number = 30
 ): { time: Date; label: string }[] {
-  const hours = divide(temporal, day, 'hour')
+  const hours = divide(adapter, day, 'hour')
   const slots: { time: Date; label: string }[] = []
-  
+
   hours.forEach(hour => {
     // Add slot at start of hour
     slots.push({
       time: hour.start,
-      label: hour.date.toLocaleTimeString('en', { 
-        hour: 'numeric', 
-        minute: '2-digit' 
+      label: hour.date.toLocaleTimeString('en', {
+        hour: 'numeric',
+        minute: '2-digit'
       })
     })
-    
+
     // Add 30-minute slot if requested
     if (slotDuration === 30) {
       const halfHour = new Date(hour.start)
       halfHour.setMinutes(30)
       slots.push({
         time: halfHour,
-        label: halfHour.toLocaleTimeString('en', { 
-          hour: 'numeric', 
-          minute: '2-digit' 
+        label: halfHour.toLocaleTimeString('en', {
+          hour: 'numeric',
+          minute: '2-digit'
         })
       })
     }
   })
-  
+
   return slots
 }
 ```
@@ -285,30 +307,26 @@ function generateTimeSlots(
 Full type safety with TypeScript:
 
 ```typescript
-import type { Temporal, Period, Unit } from 'usetemporal'
+import type { Adapter, Period, Unit } from '@allystudio/usetemporal'
+import { divide, period } from '@allystudio/usetemporal/operations'
 
 // Period type is fully typed
-const month = usePeriod(temporal, 'month')
-const monthPeriod: Period = month.value
+const month: Period = period(adapter, new Date(), 'month')
 
 // Functions accept and return typed periods
-function getMonthDays(temporal: Temporal, month: Period): Period[] {
-  return divide(temporal, month, 'day')
+function getMonthDays(adapter: Adapter, month: Period): Period[] {
+  return divide(adapter, month, 'day')
 }
 
-// Type-safe period creation
-const customPeriod: Period = {
-  type: 'year',
-  date: new Date(2024, 0, 1),
+// Type-safe custom period creation
+const customPeriod = period(adapter, {
   start: new Date(2024, 0, 1),
   end: new Date(2024, 11, 31)
-}
+})
 ```
 
 ## See Also
 
-- [usePeriod](/api/use-period) - Create reactive periods
-- [divide() Pattern](/api/divide) - Divide periods into smaller units
-- [Navigation Operations](/api/navigation) - Navigate between periods
-- [Comparison Operations](/api/comparison) - Compare periods and dates
-- [Navigation Operations](/api/operations/navigation) - Navigate between periods
+- [Unit](/api/types/unit) - Unit type
+- [Temporal](/api/types/temporal) - Temporal type
+- [Adapter](/api/types/adapter) - Adapter interface

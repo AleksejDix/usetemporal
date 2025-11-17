@@ -12,11 +12,11 @@ The divide() function is powerful but can create many objects if used carelessly
 // Don't create all subdivisions at once
 const year = usePeriod(temporal, 'year')
 const allSeconds = year.value
-  |> (y) => divide(temporal, y, 'month')
-  |> (months) => months.flatMap(m => divide(temporal, m, 'day'))
-  |> (days) => days.flatMap(d => divide(temporal, d, 'hour'))
-  |> (hours) => hours.flatMap(h => divide(temporal, h, 'minute'))
-  |> (minutes) => minutes.flatMap(m => divide(temporal, m, 'second'))
+  |> (y) => divide(temporal.adapter, y, 'month')
+  |> (months) => months.flatMap(m => divide(temporal.adapter, m, 'day'))
+  |> (days) => days.flatMap(d => divide(temporal.adapter, d, 'hour'))
+  |> (hours) => hours.flatMap(h => divide(temporal.adapter, h, 'minute'))
+  |> (minutes) => minutes.flatMap(m => divide(temporal.adapter, m, 'second'))
 // This creates 31,536,000+ objects!
 ```
 
@@ -25,11 +25,11 @@ const allSeconds = year.value
 ```typescript
 // Better: Divide progressively based on view requirements
 const month = usePeriod(temporal, 'month')
-const days = divide(temporal, month.value, 'day')
+const days = divide(temporal.adapter, month.value, 'day')
 
 // Only divide specific days when needed
 if (needHourlyView) {
-  const todayHours = divide(temporal, days[14], 'hour')
+  const todayHours = divide(temporal.adapter, days[14], 'hour')
 }
 ```
 
@@ -44,7 +44,7 @@ import { computed } from '@vue/reactivity'
 
 // Results are cached until dependencies change
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 // days.value is only recalculated when month changes
 ```
@@ -59,7 +59,7 @@ function getCachedDivision(temporal, period, unit) {
   const key = `${period.start.toISOString()}-${unit}`
   
   if (!cache.has(key)) {
-    cache.set(key, divide(temporal, period, unit))
+    cache.set(key, divide(temporal.adapter, period, unit))
   }
   
   return cache.get(key)
@@ -80,7 +80,7 @@ function loadMonth(monthPeriod) {
   const monthKey = monthPeriod.start.toISOString()
   
   if (!visibleMonths.value.has(monthKey)) {
-    const days = divide(temporal, monthPeriod, 'day')
+    const days = divide(temporal.adapter, monthPeriod, 'day')
     visibleMonths.value.add(monthKey)
     // Store days for rendering
   }
@@ -121,10 +121,10 @@ Import only what you need:
 
 ```typescript
 // ❌ Imports everything
-import * as useTemporal from 'usetemporal'
+import * as useTemporal from '@allystudio/usetemporal'
 
 // ✅ Imports only needed functions
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 ```
 
 ### Adapter Selection
@@ -133,11 +133,11 @@ Choose the right adapter for your needs:
 
 ```typescript
 // Smallest bundle: Native adapter (0 dependencies)
-import { createTemporal } from 'usetemporal'
+import { createTemporal } from '@allystudio/usetemporal'
 
 // Larger bundle: External library adapters
-import { createTemporal } from '@usetemporal/core'
-import { createLuxonAdapter } from '@usetemporal/adapter-luxon'
+import { createTemporal } from '@allystudio/usetemporal'
+import { createLuxonAdapter } from '@allystudio/usetemporal/luxon'
 ```
 
 ## Memory Management
@@ -267,8 +267,8 @@ function measureDividePerformance() {
   const year = usePeriod(temporal, 'year')
   
   console.time('divide-year-to-days')
-  const months = divide(temporal, year.value, 'month')
-  const allDays = months.flatMap(m => divide(temporal, m, 'day'))
+  const months = divide(temporal.adapter, year.value, 'month')
+  const allDays = months.flatMap(m => divide(temporal.adapter, m, 'day'))
   console.timeEnd('divide-year-to-days')
   
   console.log(`Created ${allDays.length} day objects`)

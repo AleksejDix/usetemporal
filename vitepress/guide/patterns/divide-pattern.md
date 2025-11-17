@@ -26,10 +26,10 @@ With useTemporal's `divide()`:
 
 ```typescript
 // Universal approach - works for any time unit
-const daysInMonth = divide(temporal, month, 'day')
-const weeksInMonth = divide(temporal, month, 'week')
-const hoursInDay = divide(temporal, day, 'hour')
-const monthsInYear = divide(temporal, year, 'month')
+const daysInMonth = divide(temporal.adapter, month, 'day')
+const weeksInMonth = divide(temporal.adapter, month, 'week')
+const hoursInDay = divide(temporal.adapter, day, 'hour')
+const monthsInYear = divide(temporal.adapter, year, 'month')
 ```
 
 ## Core Concepts
@@ -70,7 +70,7 @@ The most common use of `divide()` is creating calendar grids:
 
 ```typescript
 const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal, month.value, 'day'))
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
 
 // Group days by week for display
 const weeks = computed(() => {
@@ -93,14 +93,14 @@ For performance, divide progressively rather than all at once:
 // Instead of dividing year → hours directly (8760+ periods)
 // Divide progressively as needed
 const year = usePeriod(temporal, 'year')
-const months = computed(() => divide(temporal, year.value, 'month'))
+const months = computed(() => divide(temporal.adapter, year.value, 'month'))
 
 // Only divide the current month into days
 const currentMonth = computed(() => 
-  months.value.find(m => isSame(temporal, m, temporal.now.value, 'month'))
+  months.value.find(m => isSame(temporal.adapter, m, temporal.now.value, 'month'))
 )
 const days = computed(() => 
-  currentMonth.value ? divide(temporal, currentMonth.value, 'day') : []
+  currentMonth.value ? divide(temporal.adapter, currentMonth.value, 'day') : []
 )
 ```
 
@@ -111,12 +111,12 @@ Create complex time structures with nested divisions:
 ```typescript
 // Year overview with months and their weeks
 const yearOverview = computed(() => {
-  const months = divide(temporal, year.value, 'month')
+  const months = divide(temporal.adapter, year.value, 'month')
   
   return months.map(month => ({
     month,
-    weeks: divide(temporal, month, 'week'),
-    dayCount: divide(temporal, month, 'day').length
+    weeks: divide(temporal.adapter, month, 'week'),
+    dayCount: divide(temporal.adapter, month, 'day').length
   }))
 })
 ```
@@ -127,7 +127,7 @@ const yearOverview = computed(() => {
 
 ```typescript
 function getBusinessDays(period: Period, temporal: Temporal): Period[] {
-  const allDays = divide(temporal, period, 'day')
+  const allDays = divide(temporal.adapter, period, 'day')
   return allDays.filter(day => !isWeekend(day))
 }
 
@@ -144,7 +144,7 @@ function getAvailableSlots(
   temporal: Temporal,
   slotDuration: number = 30 // minutes
 ): Period[] {
-  const hours = divide(temporal, day, 'hour')
+  const hours = divide(temporal.adapter, day, 'hour')
   const businessHours = hours.filter(hour => {
     const h = hour.date.getHours()
     return h >= 9 && h < 17 // 9 AM to 5 PM
@@ -154,7 +154,7 @@ function getAvailableSlots(
   return businessHours.flatMap(hour => {
     if (slotDuration === 60) return [hour]
     
-    const minutes = divide(temporal, hour, 'minute')
+    const minutes = divide(temporal.adapter, hour, 'minute')
     const slots = []
     for (let i = 0; i < minutes.length; i += slotDuration) {
       slots.push({
@@ -172,10 +172,10 @@ function getAvailableSlots(
 ```typescript
 // Analyze time distribution
 function analyzeYearDistribution(year: Period, temporal: Temporal) {
-  const months = divide(temporal, year, 'month')
+  const months = divide(temporal.adapter, year, 'month')
   
   return months.map(month => {
-    const days = divide(temporal, month, 'day')
+    const days = divide(temporal.adapter, month, 'day')
     const weekendDays = days.filter(isWeekend)
     const weekdays = days.filter(isWeekday)
     
@@ -184,7 +184,7 @@ function analyzeYearDistribution(year: Period, temporal: Temporal) {
       totalDays: days.length,
       weekends: weekendDays.length,
       weekdays: weekdays.length,
-      weeks: divide(temporal, month, 'week').length
+      weeks: divide(temporal.adapter, month, 'week').length
     }
   })
 }
@@ -200,7 +200,7 @@ For expensive divisions, use memoization:
 import { computed } from 'vue'
 
 // Vue automatically memoizes computed properties
-const yearDays = computed(() => divide(temporal, year.value, 'day'))
+const yearDays = computed(() => divide(temporal.adapter, year.value, 'day'))
 
 // For vanilla JS, use a memoization library or Map
 const divisionCache = new Map()
@@ -208,7 +208,7 @@ function memoizedDivide(period: Period, unit: Unit): Period[] {
   const key = `${period.start.toISOString()}-${period.end.toISOString()}-${unit}`
   
   if (!divisionCache.has(key)) {
-    divisionCache.set(key, divide(temporal, period, unit))
+    divisionCache.set(key, divide(temporal.adapter, period, unit))
   }
   
   return divisionCache.get(key)
@@ -222,7 +222,7 @@ Only divide what's visible:
 ```typescript
 // Calendar with lazy loading
 const visibleMonth = computed(() => temporal.browsing.value)
-const visibleDays = computed(() => divide(temporal, visibleMonth.value, 'day'))
+const visibleDays = computed(() => divide(temporal.adapter, visibleMonth.value, 'day'))
 
 // Don't pre-calculate other months until needed
 ```
@@ -250,8 +250,8 @@ const sprint = period(
   }
 )
 
-const sprintDays = divide(temporal, sprint, 'day')
-const sprintHours = divide(temporal, sprint, 'hour') // 336 hours
+const sprintDays = divide(temporal.adapter, sprint, 'day')
+const sprintHours = divide(temporal.adapter, sprint, 'hour') // 336 hours
 ```
 
 ### Recursive Division
@@ -269,7 +269,7 @@ function buildTimeTree(period: Period, minUnit: Unit = 'day'): TimeNode {
   const nextUnit = getNextSmallerUnit(period.type)
   
   if (nextUnit && isLargerOrEqual(nextUnit, minUnit)) {
-    node.children = divide(temporal, period, nextUnit)
+    node.children = divide(temporal.adapter, period, nextUnit)
       .map(child => buildTimeTree(child, minUnit))
   }
   

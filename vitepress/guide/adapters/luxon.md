@@ -80,12 +80,12 @@ Luxon automatically handles Daylight Saving Time transitions:
 
 ```typescript
 // DST transition example (Spring forward in US)
-const beforeDST = period(temporal, '2025-03-08', 'day')
-const duringDST = period(temporal, '2025-03-09', 'day')
+const beforeDST = temporal.period( '2025-03-08', 'day')
+const duringDST = temporal.period( '2025-03-09', 'day')
 
 // Luxon handles the missing hour correctly
-const hours1 = divide(temporal, beforeDST, 'hour') // 24 hours
-const hours2 = divide(temporal, duringDST, 'hour') // 23 hours (DST)
+const hours1 = divide(temporal.adapter, beforeDST, 'hour') // 24 hours
+const hours2 = divide(temporal.adapter, duringDST, 'hour') // 23 hours (DST)
 ```
 
 ### Zone Conversion
@@ -104,7 +104,7 @@ function convertPeriodToZone(period: Period, fromZone: string, toZone: string) {
   }
 }
 
-const meeting = period(temporal, '2025-07-25 15:00', 'hour')
+const meeting = temporal.period( '2025-07-25 15:00', 'hour')
 const conversion = convertPeriodToZone(
   meeting, 
   'America/New_York', 
@@ -120,7 +120,7 @@ const conversion = convertPeriodToZone(
 ```typescript
 import { DateTime } from 'luxon'
 
-const period = period(temporal, new Date(), 'month')
+const period = temporal.period( new Date(), 'month')
 const dt = DateTime.fromJSDate(period.start)
 
 // Different locale formats
@@ -144,7 +144,7 @@ function getRelativeTime(date: Date, locale = 'en') {
   return dt.setLocale(locale).toRelative()
 }
 
-const yesterday = previous(temporal, period(temporal, new Date(), 'day'))
+const yesterday = previous(temporal.adapter, temporal.period( new Date(), 'day'))
 console.log(getRelativeTime(yesterday.start)) // "1 day ago"
 console.log(getRelativeTime(yesterday.start, 'es')) // "hace 1 día"
 ```
@@ -197,8 +197,8 @@ function periodToInterval(period: Period): Interval {
   )
 }
 
-const week1 = period(temporal, '2025-07-01', 'week')
-const week2 = period(temporal, '2025-07-08', 'week')
+const week1 = temporal.period( '2025-07-01', 'week')
+const week2 = temporal.period( '2025-07-08', 'week')
 
 const interval1 = periodToInterval(week1)
 const interval2 = periodToInterval(week2)
@@ -228,7 +228,7 @@ function addBusinessDays(date: Date, days: number): Date {
 }
 
 // Usage with useTemporal
-const today = period(temporal, new Date(), 'day')
+const today = temporal.period( new Date(), 'day')
 const in5BusinessDays = period(
   temporal, 
   addBusinessDays(today.start, 5), 
@@ -349,7 +349,7 @@ function generateRecurringEvents(
   let current = DateTime.fromJSDate(start).setZone(timezone)
   
   for (let i = 0; i < count; i++) {
-    periods.push(period(temporal, current.toJSDate(), 'day'))
+    periods.push(temporal.period( current.toJSDate(), 'day'))
     
     switch (pattern) {
       case 'daily':
@@ -419,7 +419,7 @@ Luxon is larger than other options:
 ```typescript
 // Consider lazy loading for better performance
 async function loadLuxonTemporal() {
-  const { createLuxonAdapter } = await import('@usetemporal/adapter-luxon')
+  const { createLuxonAdapter } = await import('@allystudio/usetemporal/luxon')
   return createTemporal({
     adapter: createLuxonAdapter()
   })
@@ -497,8 +497,8 @@ const end = DateTime.now().endOf('month')
 const days = end.diff(start, 'days').days
 
 // After: useTemporal with Luxon adapter
-const month = period(temporal, new Date(), 'month')
-const days = divide(temporal, month, 'day').length
+const month = temporal.period( new Date(), 'month')
+const days = divide(temporal.adapter, month, 'day').length
 
 // Still use Luxon for formatting!
 const formatted = DateTime.fromJSDate(month.start).toFormat('MMMM yyyy')

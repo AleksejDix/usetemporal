@@ -2,39 +2,66 @@
 
 The revolutionary `divide()` function is the heart of useTemporal's unique time management pattern. It allows you to split any time period into smaller units with perfect synchronization and consistency.
 
-## Syntax
+## API Levels
+
+This function is available in multiple API levels:
+
+### Level 1: Pure Function
 
 ```typescript
-function divide(
-  temporal: Temporal,
-  period: Period,
-  unit: Unit
-): Period[]
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const month = period(adapter, new Date(), 'month')
+const days = divide(adapter, month, 'day')
+```
+
+### Level 2: Builder Method
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const month = temporal.period(new Date(), 'month')
+const days = temporal.divide(month, 'day')
+```
+
+### Level 3: Composable + Operations
+
+```typescript
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter(), date: new Date() })
+const month = usePeriod(temporal, 'month')
+const days = divide(temporal.adapter, month.value, 'day')
+```
+
+## Signatures
+
+```typescript
+// Level 1 (Pure Function)
+function divide(adapter: Adapter, period: Period, unit: Unit): Period[]
+
+// Level 2 (Builder Method)
+temporal.divide(period: Period, unit: Unit): Period[]
 ```
 
 ## Parameters
 
-### `temporal`
+### Level 1 (Pure Function)
 
-- **Type**: `Temporal`
-- **Description**: The temporal instance created by `createTemporal({ date: new Date() })`.
+- `adapter` - `Adapter` - The date adapter instance
+- `period` - `Period` - The period to divide
+- `unit` - `Unit` - The unit type to divide into
 
-### `period`
+### Level 2 (Builder Method)
 
-- **Type**: `Period`
-- **Description**: The period to divide. Can be any period created by `usePeriod()`, navigation operations, or other functions.
-
-```typescript
-const monthPeriod = usePeriod(temporal, 'month')
-const yearPeriod = usePeriod(temporal, 'year')
-const customPeriod = { type: 'custom', start: date1, end: date2, date: date1 }
-```
-
-### `unit`
-
-- **Type**: `Unit`
-- **Values**: `"year" | "month" | "week" | "day" | "hour" | "minute" | "second"`
-- **Description**: The type of units to divide into. Must be smaller than the period's unit.
+- `period` - `Period` - The period to divide
+- `unit` - `Unit` - The unit type to divide into
 
 ## Return Value
 
@@ -62,62 +89,136 @@ Common division patterns:
 | hour | minute | 60 minutes |
 | minute | second | 60 seconds |
 
-## Basic Example
+## Examples
+
+### Basic Usage (Level 1)
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({ date: new Date() })
-const month = usePeriod(temporal, 'month')
+const adapter = createNativeAdapter()
 
 // Divide a month into days
-const days = divide(temporal, month.value, 'day')
+const month = period(adapter, new Date(), 'month')
+const days = divide(adapter, month, 'day')
 console.log(days.length) // 28-31 depending on month
 
 // Divide a day into hours
-const day = usePeriod(temporal, 'day')
-const hours = divide(temporal, day.value, 'hour')
+const day = period(adapter, new Date(), 'day')
+const hours = divide(adapter, day, 'hour')
 console.log(hours.length) // 24
+
+// Divide a year into months
+const year = period(adapter, new Date(), 'year')
+const months = divide(adapter, year, 'month')
+console.log(months.length) // 12
 ```
 
-
-
-## Custom Period Division
-
-divide() works with any period, not just those from `usePeriod()`:
+### Calendar Grid (Level 1)
 
 ```typescript
-// Custom period
-const customPeriod: Period = {
-  type: 'sprint',
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter({ weekStartsOn: 1 }) // Monday
+
+// Create current month
+const month = period(adapter, new Date(), 'month')
+
+// Divide into weeks
+const weeks = divide(adapter, month, 'week')
+
+// Divide each week into days
+weeks.forEach(week => {
+  const days = divide(adapter, week, 'day')
+  console.log(days.map(d => d.date.getDate()))
+})
+```
+
+### Builder API (Level 2)
+
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  weekStartsOn: 1
+})
+
+// More convenient syntax
+const month = temporal.period(new Date(), 'month')
+const weeks = temporal.divide(month, 'week')
+
+weeks.forEach(week => {
+  const days = temporal.divide(week, 'day')
+  console.log(days.map(d => d.date.getDate()))
+})
+```
+
+### Custom Period Division
+
+divide() works with any period, including custom periods:
+
+```typescript
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+
+// Custom period (e.g., sprint)
+const sprint = period(adapter, {
   start: new Date('2024-01-01'),
-  end: new Date('2024-01-14'),
-  date: new Date('2024-01-01')
-}
+  end: new Date('2024-01-14')
+})
 
 // Divide custom period into days
-const sprintDays = divide(temporal, customPeriod, 'day')
-console.log(sprintDays.length) // 14
+const sprintDays = divide(adapter, sprint, 'day')
+console.log(sprintDays.length) // 14 days
+```
+
+### Reactive Usage (Level 3)
+
+```typescript
+import { ref, computed } from 'vue'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({
+  adapter: createNativeAdapter(),
+  date: ref(new Date())
+})
+
+// Reactive month
+const month = usePeriod(temporal, 'month')
+
+// Automatically updates when month changes
+const days = computed(() => divide(temporal.adapter, month.value, 'day'))
+console.log(days.value.length) // Current month's days
 ```
 
 ## TypeScript
 
-Full type safety:
+Full type safety across all levels:
 
 ```typescript
-import type { Temporal, Period, Unit } from 'usetemporal'
+import type { Adapter, Period, Unit } from '@allystudio/usetemporal'
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// Type-safe division
-const month = usePeriod(temporal, 'month')
-const days: Period[] = divide(temporal, month.value, 'day')
+const adapter: Adapter = createNativeAdapter()
+const month: Period = period(adapter, new Date(), 'month')
+const days: Period[] = divide(adapter, month, 'day')
 
 // TypeScript catches invalid units at compile time
-// const invalid = divide(temporal, month.value, 'invalid-unit')
+// const invalid = divide(adapter, month, 'invalid-unit')
 // Error: Argument of type '"invalid-unit"' is not assignable to parameter of type 'Unit'
 
 // Generic helper
-function getDaysInPeriod(temporal: Temporal, period: Period): Period[] {
-  return divide(temporal, period, 'day')
+function getDaysInPeriod(adapter: Adapter, period: Period): Period[] {
+  return divide(adapter, period, 'day')
 }
 ```
 
@@ -133,8 +234,10 @@ The function also has a safety limit of 1000 periods to prevent memory issues.
 
 ## See Also
 
-- [createTemporal](/api/factory-functions/create-temporal) - Create a temporal instance
-- [usePeriod](/api/composables/use-period) - Create reactive periods
-- [divide() Pattern Guide](/guide/divide-pattern) - In-depth usage patterns
-- [Calendar Examples](/examples/calendars/calendar-grid) - Calendar implementations
-- [Performance Guide](/guide/advanced/performance-optimization) - Optimization tips
+- [period()](/api/operations/period) - Create periods
+- [merge()](/api/operations/merge) - Merge periods
+- [usePeriod()](/api/composables/use-period) - Reactive period composable
+- [Choosing API Level](/guide/choosing-api-level) - Which level to use
+- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
+- [Level 2 API](/api/level-2-builder) - Builder pattern documentation
+- [Level 3 API](/api/level-3-composables) - Composables documentation

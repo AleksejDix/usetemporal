@@ -51,7 +51,7 @@ export function createTemporal(options) {
 Works directly without any framework:
 
 ```javascript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 
 // Create instance
 const temporal = createTemporal({ date: new Date() })
@@ -67,7 +67,7 @@ month.watch((newMonth) => {
 
 // Navigate
 document.getElementById('next').onclick = () => {
-  temporal.browsing.value = next(temporal, month.value)
+  temporal.browsing.value = next(temporal.adapter, month.value)
 }
 ```
 
@@ -77,7 +77,7 @@ Integrate with React's state system:
 
 ```jsx
 import { useState, useEffect, useSyncExternalStore } from 'react'
-import { createTemporal, usePeriod } from 'usetemporal'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
 
 // Create adapter hook
 function useTemporalValue(getValue) {
@@ -101,7 +101,7 @@ function Calendar() {
     <div>
       <h2>{month.date.toLocaleDateString()}</h2>
       <button onClick={() => {
-        temporal.browsing.value = next(temporal, month)
+        temporal.browsing.value = next(temporal.adapter, month)
       }}>
         Next Month
       </button>
@@ -116,7 +116,7 @@ Use with Angular's change detection:
 
 ```typescript
 import { Component, NgZone } from '@angular/core'
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { createTemporal, usePeriod, divide } from '@allystudio/usetemporal'
 
 @Component({
   selector: 'app-calendar',
@@ -159,7 +159,7 @@ Create Svelte stores from temporal:
 ```javascript
 // temporal-store.js
 import { writable } from 'svelte/store'
-import { createTemporal, usePeriod } from 'usetemporal'
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
 
 export function createTemporalStore() {
   const temporal = createTemporal({ date: new Date() })
@@ -180,8 +180,8 @@ export function createTemporalStore() {
   
   return {
     subscribe,
-    next: () => temporal.browsing.value = next(temporal, temporal.browsing.value),
-    previous: () => temporal.browsing.value = previous(temporal, temporal.browsing.value)
+    next: () => temporal.browsing.value = next(temporal.adapter, temporal.browsing.value),
+    previous: () => temporal.browsing.value = previous(temporal.adapter, temporal.browsing.value)
   }
 }
 ```
@@ -190,7 +190,7 @@ export function createTemporalStore() {
 <!-- Calendar.svelte -->
 <script>
   import { createTemporalStore } from './temporal-store'
-  import { divide } from 'usetemporal'
+  import { divide } from '@allystudio/usetemporal'
   
   const temporal = createTemporalStore()
   
@@ -263,7 +263,7 @@ useTemporal works in SSR environments:
 
 ```javascript
 // Node.js / SSR
-import { createTemporal, divide } from 'usetemporal'
+import { createTemporal, divide } from '@allystudio/usetemporal'
 
 export async function getServerSideProps() {
   const temporal = createTemporal({ 
@@ -271,7 +271,7 @@ export async function getServerSideProps() {
   })
   
   const month = usePeriod(temporal, 'month')
-  const days = divide(temporal, month.value, 'day')
+  const days = divide(temporal.adapter, month.value, 'day')
   
   return {
     props: {
@@ -290,7 +290,7 @@ export async function getServerSideProps() {
 Create framework-agnostic web components:
 
 ```javascript
-import { createTemporal, usePeriod, next, previous } from 'usetemporal'
+import { createTemporal, usePeriod, next, previous } from '@allystudio/usetemporal'
 
 class TemporalCalendar extends HTMLElement {
   constructor() {

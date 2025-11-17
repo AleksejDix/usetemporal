@@ -89,7 +89,7 @@ The main temporal instance that manages time state and operations.
 ### [Unit](./api/types/unit.md)
 Time unit types supported by useTemporal.
 
-### [UnitRegistry](./api/types/unit-registry.md)
+### [UnitRegistry](..md)
 Type definitions for the extensible unit registry system.
 
 ## API/Unit System

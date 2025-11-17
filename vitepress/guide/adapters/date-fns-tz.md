@@ -24,7 +24,7 @@ npm install @usetemporal/core date-fns date-fns-tz
 ## Basic Usage
 
 ```typescript
-import { createTemporal } from '@usetemporal/core'
+import { createTemporal } from '@allystudio/usetemporal'
 import { createDateFnsTzAdapter } from '@usetemporal/core/date-fns-tz'
 
 // Create temporal with timezone support
@@ -112,7 +112,7 @@ const temporal = createTemporal({
   adapter: createDateFnsTzAdapter({ timezone: 'America/New_York' })
 })
 
-const meeting = period(temporal, new Date(), 'hour')
+const meeting = temporal.period( new Date(), 'hour')
 
 // Display in different timezones
 const nyTime = formatInTimeZone(meeting.start, 'America/New_York', 'PPpp')
@@ -126,8 +126,8 @@ const londonTime = formatInTimeZone(meeting.start, 'Europe/London', 'PPpp')
 
 ```typescript
 function getBusinessHours(temporal: Temporal, date: Date) {
-  const day = period(temporal, date, 'day')
-  const hours = divide(temporal, day, 'hour')
+  const day = temporal.period( date, 'day')
+  const hours = divide(temporal.adapter, day, 'hour')
   
   // Filter business hours (9 AM - 5 PM local time)
   return hours.filter((hour, index) => index >= 9 && index < 17)
@@ -153,7 +153,7 @@ function scheduleGlobalMeeting(date: Date) {
       adapter: createDateFnsTzAdapter({ timezone: zone })
     })
     
-    const meetingHour = period(temporal, date, 'hour')
+    const meetingHour = temporal.period( date, 'hour')
     
     return {
       location: label,
@@ -177,8 +177,8 @@ const temporal = createTemporal({
 const beforeDST = new Date('2025-03-08T12:00:00')
 const afterDST = new Date('2025-03-10T12:00:00')
 
-const day1 = period(temporal, beforeDST, 'day')
-const day2 = period(temporal, afterDST, 'day')
+const day1 = temporal.period( beforeDST, 'day')
+const day2 = temporal.period( afterDST, 'day')
 
 // day2 will be 23 hours long due to DST
 ```
@@ -211,7 +211,7 @@ const date = new Date()
 // Efficient: Create all periods at once
 const periods = timezones.map(tz => {
   const temporal = getTemporal(tz)
-  return period(temporal, date, 'day')
+  return temporal.period( date, 'day')
 })
 ```
 
@@ -249,7 +249,7 @@ const start = startOfDay(new Date())
 const later = addHours(start, 3)
 
 // After: date-fns-tz adapter
-import { createTemporal } from '@usetemporal/core'
+import { createTemporal } from '@allystudio/usetemporal'
 import { createDateFnsTzAdapter } from '@usetemporal/core/date-fns-tz'
 
 const temporal = createTemporal({
@@ -258,8 +258,8 @@ const temporal = createTemporal({
   })
 })
 
-const day = period(temporal, new Date(), 'day')
-const later = go(temporal, day, 3, 'hour')
+const day = temporal.period( new Date(), 'day')
+const later = go(temporal.adapter, day, 3, 'hour')
 ```
 
 ## Comparison with Other Adapters

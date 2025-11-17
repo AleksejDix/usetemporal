@@ -94,6 +94,7 @@ export default defineConfig({
           text: "Core Concepts",
           collapsed: false,
           items: [
+            { text: "Choosing an API Level", link: "/guide/choosing-api-level" },
             { text: "The divide() Pattern", link: "/guide/divide-pattern" },
             { text: "Reactive Time Units", link: "/guide/reactive-time-units" },
             { text: "Date Adapters", link: "/guide/adapters" },
@@ -121,6 +122,7 @@ export default defineConfig({
           text: "Advanced Topics",
           collapsed: false,
           items: [
+            { text: "Bundle Size Optimization", link: "/guide/bundle-size-optimization" },
             { text: "Performance Optimization", link: "/guide/advanced/performance-optimization" },
             { text: "Testing", link: "/guide/testing" },
             { text: "TypeScript", link: "/guide/typescript" },
@@ -142,6 +144,15 @@ export default defineConfig({
           text: "Overview",
           items: [
             { text: "API Reference", link: "/api/" },
+          ],
+        },
+        {
+          text: "API Levels",
+          collapsed: false,
+          items: [
+            { text: "Level 1: Pure Functions", link: "/api/level-1-pure-functions" },
+            { text: "Level 2: Builder", link: "/api/level-2-builder" },
+            { text: "Level 3: Composables", link: "/api/level-3-composables" },
           ],
         },
         {

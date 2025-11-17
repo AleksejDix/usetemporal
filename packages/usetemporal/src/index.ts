@@ -2,7 +2,11 @@
 export { createTemporal } from "./createTemporal";
 export type { CreateTemporalOptions } from "./createTemporal";
 
-// Period composables - module exports
+// Builder (Level 2 API)
+export { createTemporalBuilder } from "./builder";
+export type { TemporalBuilder } from "./builder";
+
+// Period composables - module exports (Level 3 API)
 export { usePeriod } from "./composables/usePeriods";
 
 // Operations - functional API
@@ -51,6 +55,3 @@ export {
   SECOND,
   CUSTOM,
 } from "./types";
-
-// Calendar helper functions
-export { createStableMonth, createStableYear } from "./calendar";

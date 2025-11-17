@@ -309,4 +309,4 @@ async function ensureUnit(unit: string): Promise<boolean> {
 - [defineUnit](/api/unit-system/define-unit) - Register units
 - [getUnitDefinition](/api/unit-system/get-unit-definition) - Get unit config
 - [Unit](/api/types/unit) - Unit type
-- [UnitRegistry](/api/types/unit-registry) - Registry system
+-  - Registry system

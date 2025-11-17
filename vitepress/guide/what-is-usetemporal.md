@@ -17,8 +17,8 @@ const temporal = createTemporal({
   adapter: createNativeAdapter() 
 });
 const year = usePeriod(temporal, 'year');
-const months = divide(temporal, year.value, 'month');
-const days = divide(temporal, months[0], 'day');
+const months = divide(temporal.adapter, year.value, 'month');
+const days = divide(temporal.adapter, months[0], 'day');
 ```
 
 ## Key Features
@@ -66,8 +66,8 @@ useTemporal follows a modular, monorepo architecture:
 ```
 @usetemporal/core         # Core functionality
 @usetemporal/adapter-native    # Zero-dependency adapter
-@usetemporal/adapter-date-fns  # date-fns integration
-@usetemporal/adapter-luxon     # Luxon integration
+@allystudio/usetemporal/date-fns  # date-fns integration
+@allystudio/usetemporal/luxon     # Luxon integration
 @usetemporal/adapter-temporal  # Temporal API integration
 usetemporal              # Convenience meta-package
 ```

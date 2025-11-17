@@ -1,5 +1,6 @@
 import { ref, isRef, computed, type Ref } from "@vue/reactivity";
 import type { Temporal, Period, Adapter } from "./types";
+import { createTemporalBuilder, type TemporalBuilder } from "./builder";
 
 export interface CreateTemporalOptions {
   date: Date | Ref<Date>;
@@ -9,10 +10,26 @@ export interface CreateTemporalOptions {
 }
 
 /**
- * Creates a temporal instance - a minimal state container
- * for time navigation with reactive browsing and now values
+ * Creates a temporal instance with builder methods (Level 2 API)
+ *
+ * Returns a temporal builder that provides convenience methods
+ * wrapping pure operations. Methods automatically pass the adapter.
+ *
+ * @param options - Configuration options
+ * @returns A temporal builder with convenience methods
+ *
+ * @example
+ * ```typescript
+ * const temporal = createTemporal({
+ *   adapter: nativeAdapter,
+ *   date: new Date()
+ * });
+ *
+ * const year = temporal.period(new Date(), 'year');
+ * const months = temporal.divide(year, 'month');
+ * ```
  */
-export function createTemporal(options: CreateTemporalOptions): Temporal {
+export function createTemporal(options: CreateTemporalOptions): TemporalBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from @usetemporal/adapter-* packages."
@@ -43,10 +60,12 @@ export function createTemporal(options: CreateTemporalOptions): Temporal {
     };
   });
 
-  return {
+  const temporal: Temporal = {
     adapter: options.adapter,
     weekStartsOn: options.weekStartsOn ?? 1, // Default to Monday
     browsing,
     now,
   };
+
+  return createTemporalBuilder(temporal);
 }

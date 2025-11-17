@@ -1,6 +1,4 @@
 import type { Period, Adapter, AdapterUnit, Unit } from "../types";
-import { createStableMonth } from "../calendar/stableMonth";
-import { createStableYear } from "../calendar/stableYear";
 
 // Type for custom period options
 interface CustomPeriodOptions {
@@ -57,17 +55,8 @@ export function period(
   const date = dateOrOptions as Date;
   const type = unit!; // We know unit is defined when dateOrOptions is a Date
 
-  // Handle stableMonth and stableYear explicitly
-  if (type === "stableMonth") {
-    // weekStartsOn is needed for stableMonth, assume 1 (Monday) if not available
-    // In a real scenario, this would come from temporal.weekStartsOn
-    return createStableMonth(adapter, 1, date); 
-  }
-  if (type === "stableYear") {
-    // weekStartsOn is needed for stableYear, assume 1 (Monday) if not available
-    // In a real scenario, this would come from temporal.weekStartsOn
-    return createStableYear(adapter, 1, date);
-  }
+  // For stableMonth and stableYear, users should import from '@allystudio/usetemporal/calendar'
+  // and use createStableMonth() / createStableYear() directly
 
   const start = adapter.startOf(date, type as AdapterUnit);
   const end = adapter.endOf(date, type as AdapterUnit);

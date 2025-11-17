@@ -166,7 +166,7 @@ const date = new Date()
 date.setHours(0, 0, 0, 0)
 
 // After with Native adapter
-const period = period(temporal, new Date(), 'day')
+const period = temporal.period( new Date(), 'day')
 ```
 
 ### From date-fns with Timezones
@@ -179,7 +179,7 @@ const utcDate = zonedTimeToUtc(new Date(), 'America/New_York')
 const temporal = createTemporal({
   adapter: createDateFnsTzAdapter({ timezone: 'America/New_York' })
 })
-const period = period(temporal, new Date(), 'day')
+const period = temporal.period( new Date(), 'day')
 ```
 
 ### From date-fns
@@ -189,8 +189,8 @@ import { startOfMonth, addWeeks } from 'date-fns'
 const result = addWeeks(startOfMonth(new Date()), 1)
 
 // After with date-fns adapter
-const month = period(temporal, new Date(), 'month')
-const result = go(temporal, month, 1, 'week')
+const month = temporal.period( new Date(), 'month')
+const result = go(temporal.adapter, month, 1, 'week')
 ```
 
 ## Performance vs Features Trade-off
@@ -232,7 +232,7 @@ temporal = createTemporal({
 })
 
 // All your code continues to work!
-const period = period(temporal, new Date(), 'month')
+const period = temporal.period( new Date(), 'month')
 ```
 
 ## Next Steps

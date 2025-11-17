@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 useTemporal is a revolutionary time library featuring a unique `divide()` pattern for hierarchical time management. The project is organized as a monorepo with framework-agnostic architecture.
 
-**Current API Status (v2.0.0)**: The library has been significantly simplified with a unified functional API. There are NO individual time unit composables like `useYear()` or `useMonth()` - only `usePeriod()` exists.
+**Current API Status (v2.0.0)**: The library offers three API levels for different use cases:
+- **Level 1 (Pure Functions)**: Minimal bundle (5-7KB), maximum tree-shaking
+- **Level 2 (Builder)**: Balanced convenience (8-12KB), recommended for most users
+- **Level 3 (Composables)**: Full reactivity (15-20KB), for Vue/React applications
+
+There are NO individual time unit composables like `useYear()` or `useMonth()` - only `usePeriod()` exists in Level 3.
 
 ## Documentation Structure
 
@@ -163,17 +168,46 @@ interface Temporal {
 
 ### Key API Elements
 
-1. **Factory Function**: `createTemporal(options)` - requires an adapter
-2. **Single Composable**: `usePeriod(temporal, unit)` - creates reactive periods
-3. **Operations**: All are pure functions that work with Period objects
-   - `period(temporal, date, unit)` - Create periods (renamed from createPeriod)
-   - `period(temporal, {start, end})` - Create custom periods
-   - `divide(temporal, period, unit)` - The revolutionary pattern
-   - `split(period, date)` - Split at specific point
-   - `merge(temporal, periods)` - Combine periods
-   - `next()`, `previous()`, `go()` - Navigation
-   - `contains()`, `isSame()` - Comparison
-   - `isToday()`, `isWeekday()`, `isWeekend()` - Utilities
+**Three API Levels:**
+
+**Level 1 (Pure Functions)** - Import from `@allystudio/usetemporal/operations`
+```typescript
+import { period, divide, next } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const adapter = createNativeAdapter()
+const year = period(adapter, new Date(), 'year')
+const months = divide(adapter, year, 'month')
+```
+
+**Level 2 (Builder)** - Import from `@allystudio/usetemporal`
+```typescript
+import { createTemporal } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter() })
+const year = temporal.period(new Date(), 'year')
+const months = temporal.divide(year, 'month')
+```
+
+**Level 3 (Composables)** - Import from `@allystudio/usetemporal`
+```typescript
+import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
+
+const temporal = createTemporal({ adapter: createNativeAdapter(), date: new Date() })
+const month = usePeriod(temporal, 'month')  // Reactive
+```
+
+**Available Operations** (work across all levels):
+- `period(adapter, date, unit)` - Create periods
+- `period(adapter, {start, end})` - Create custom periods
+- `divide(adapter, period, unit)` - The revolutionary pattern
+- `split(period, date)` - Split at specific point
+- `merge(adapter, periods)` - Combine periods
+- `next(adapter, period)`, `previous(adapter, period)`, `go(adapter, period, direction, count)` - Navigation
+- `contains(period, date)`, `isSame(adapter, period1, period2, unit)` - Comparison
+- `isToday(period)`, `isWeekday(period)`, `isWeekend(period)` - Utilities
 
 ### Monorepo Structure
 

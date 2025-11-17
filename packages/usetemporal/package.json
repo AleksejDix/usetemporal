@@ -20,6 +20,14 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./operations": {
+      "types": "./dist/operations.d.ts",
+      "import": "./dist/operations.js"
+    },
+    "./calendar": {
+      "types": "./dist/calendar.d.ts",
+      "import": "./dist/calendar.js"
+    },
     "./composables": {
       "types": "./dist/composables/index.d.ts",
       "import": "./dist/composables/index.js"
