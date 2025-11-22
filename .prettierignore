@@ -14,3 +14,7 @@ yarn.lock
 .claude
 .gemini-tmp
 CHANGELOG.md
+docs/
+examples/vue/playwright-report/
+examples/vue/test-results/
+vitepress/
