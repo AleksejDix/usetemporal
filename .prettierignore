@@ -10,3 +10,7 @@ yarn.lock
 .vscode
 .idea
 *.log
+.bmad-core
+.claude
+.gemini-tmp
+CHANGELOG.md

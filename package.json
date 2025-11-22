@@ -26,7 +26,8 @@
     "docs:preview": "cd docs && npm run docs:preview",
     "test:workspaces": "npm run test --workspaces --if-present",
     "dev": "npm run dev --workspace=@allystudio/usetemporal",
-    "lint": "npm run lint --workspaces --if-present",
+    "lint": "oxlint .",
+    "lint:workspaces": "npm run lint --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "npm run type-check --workspaces --if-present",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
     "@js-temporal/polyfill": "^0.5.1",
+    "oxlint": "^1.29.0",
     "prettier": "^3.6.2"
   },
   "engines": {
