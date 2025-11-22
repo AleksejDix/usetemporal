@@ -12,7 +12,10 @@ export default defineConfig({
     projects: [
       {
         name: "unit",
-        include: ["packages/*/test/**/*.test.ts"],
+        include: [
+          "packages/*/src/**/*.test.ts",
+          "packages/*/src/__tests__/**/*.test.ts",
+        ],
       },
     ],
     coverage: {
@@ -25,6 +28,7 @@ export default defineConfig({
         "packages/*/src/**/*.d.ts",
         "packages/*/dist/**",
         "packages/*/src/test/**",
+        "packages/*/src/__tests__/**",
       ],
       // Collect coverage from all packages, not just the one being tested
       all: true,
