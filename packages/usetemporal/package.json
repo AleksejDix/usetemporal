@@ -75,6 +75,7 @@
   },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.5.1",
+    "@types/luxon": "^3.7.1",
     "@types/node": "^22.12.1",
     "@usetemporal/tsconfig": "2.0.0-alpha.1",
     "@vitest/coverage-v8": "^3.2.4",

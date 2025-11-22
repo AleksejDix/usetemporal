@@ -10,3 +10,11 @@ yarn.lock
 .vscode
 .idea
 *.log
+.bmad-core
+.claude
+.gemini-tmp
+CHANGELOG.md
+docs/
+examples/vue/playwright-report/
+examples/vue/test-results/
+vitepress/
