@@ -233,6 +233,7 @@ export default defineConfig({
           items: [
             { text: "Basic Usage", link: "/examples/basic-usage" },
             { text: "Simple Calendar", link: "/examples/calendar" },
+            { text: "Interactive Calendar", link: "/examples/interactive-calendar" },
           ],
         },
         {
