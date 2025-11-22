@@ -4,7 +4,8 @@ export default defineConfig({
   title: "useTemporal",
   description:
     "Revolutionary time library with unique divide() pattern for hierarchical time management",
-  base: "/usetemporal/",
+  base: "/",
+  ignoreDeadLinks: true,
 
   head: [
     ["meta", { name: "theme-color", content: "#3c8772" }],
@@ -50,11 +51,11 @@ export default defineConfig({
         items: [
           {
             text: "Changelog",
-            link: "https://github.com/aleksej/usetemporal/blob/main/CHANGELOG.md",
+            link: "https://github.com/AleksejDix/usetemporal/blob/main/CHANGELOG.md",
           },
           {
             text: "Contributing",
-            link: "https://github.com/aleksej/usetemporal/blob/main/CONTRIBUTING.md",
+            link: "https://github.com/AleksejDix/usetemporal/blob/main/CONTRIBUTING.md",
           },
         ],
       },
@@ -294,7 +295,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/AleksejDix/pickle" },
+      { icon: "github", link: "https://github.com/AleksejDix/usetemporal" },
       { icon: "twitter", link: "https://twitter.com/aleksejdix" },
     ],
 
@@ -304,7 +305,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: "https://github.com/AleksejDix/pickle/edit/main/docs/:path",
+      pattern: "https://github.com/AleksejDix/usetemporal/edit/main/vitepress/:path",
       text: "Edit this page on GitHub",
     },
 

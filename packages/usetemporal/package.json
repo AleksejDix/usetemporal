@@ -5,7 +5,7 @@
   "description": "Revolutionary time library with unique divide() pattern for hierarchical time management",
   "license": "MIT",
   "author": "Aleksej Dix <git@aleksejdix.com>",
-  "homepage": "https://github.com/AleksejDix/usetemporal#readme",
+  "homepage": "https://usetemporal.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AleksejDix/usetemporal.git",
