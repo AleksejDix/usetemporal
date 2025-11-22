@@ -4,6 +4,7 @@ export default defineConfig({
   title: "useTemporal",
   description:
     "Revolutionary time library with unique divide() pattern for hierarchical time management",
+  base: "/usetemporal/",
 
   head: [
     ["meta", { name: "theme-color", content: "#3c8772" }],
