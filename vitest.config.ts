@@ -14,6 +14,7 @@ export default defineConfig({
         name: "unit",
         include: [
           "packages/*/src/**/*.test.ts",
+          "packages/*/src/**/*.test.tsx",
           "packages/*/src/__tests__/**/*.test.ts",
         ],
       },
