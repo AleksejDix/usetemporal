@@ -1,5 +1,3 @@
-import type { Ref } from "@vue/reactivity";
-
 /**
  * Core data structure for representing time periods
  * This is a plain data structure - no methods, just data
@@ -79,18 +77,11 @@ export type UnitsObject = typeof UNITS;
 
 /**
  * Minimal temporal context needed for operations
+ * This is the core type used by pure functional operations
  */
 export interface TemporalContext {
   adapter: Adapter;
   weekStartsOn: number;
-}
-
-/**
- * The temporal instance that holds reactive state
- */
-export interface Temporal extends TemporalContext {
-  browsing: Ref<Period>;
-  now: Ref<Period>;
 }
 
 // Adapter Types
@@ -155,6 +146,3 @@ export interface SplitOptions {
     weeks?: number;
   };
 }
-
-// Utility Types
-export type DateOrRef = Date | Ref<Date>;
