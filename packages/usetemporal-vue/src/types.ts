@@ -17,7 +17,7 @@ export interface VueTemporal {
  * Options for creating a Vue temporal instance.
  * Accepts native dates or refs so state can be controlled externally.
  */
-export interface UseTemporalOptions {
+export interface CreateTemporalOptions {
   date: Date | Ref<Date>;
   now?: Date | Ref<Date>;
   adapter: Adapter;

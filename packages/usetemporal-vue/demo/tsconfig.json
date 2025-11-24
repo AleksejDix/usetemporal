@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "baseUrl": "./",
+    "paths": {
+      "@allystudio/usetemporal-vue": ["../src"],
+      "@allystudio/usetemporal": ["../../usetemporal/src/index.ts"],
+      "@allystudio/usetemporal/native": ["../../usetemporal/src/native.ts"],
+      "@allystudio/usetemporal/operations": [
+        "../../usetemporal/src/operations.ts"
+      ],
+      "@allystudio/usetemporal/types": ["../../usetemporal/src/types.ts"]
+    }
+  },
+  "include": [
+    "env.d.ts",
+    "src/**/*"
+  ]
+}
