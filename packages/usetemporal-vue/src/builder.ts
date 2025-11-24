@@ -17,7 +17,7 @@ import type { TemporalBuilder, VueTemporal } from "./types";
  *
  * @example
  * ```typescript
- * const temporal = useTemporal({ adapter: nativeAdapter, date: new Date() });
+ * const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
  * const builder = createTemporalBuilder(temporal);
  *
  * const year = builder.period(new Date(), 'year');
@@ -26,7 +26,30 @@ import type { TemporalBuilder, VueTemporal } from "./types";
  */
 export function createTemporalBuilder(temporal: VueTemporal): TemporalBuilder {
   return {
-    ...temporal,
+    get adapter() {
+      return temporal.adapter;
+    },
+    set adapter(value) {
+      temporal.adapter = value;
+    },
+    get weekStartsOn() {
+      return temporal.weekStartsOn;
+    },
+    set weekStartsOn(value) {
+      temporal.weekStartsOn = value;
+    },
+    get browsing() {
+      return temporal.browsing;
+    },
+    set browsing(value) {
+      temporal.browsing = value;
+    },
+    get now() {
+      return temporal.now;
+    },
+    set now(value) {
+      temporal.now = value;
+    },
 
     period(dateOrOptions: Date | CustomPeriodOptions, unit?: Unit): Period {
       if (typeof dateOrOptions === "object" && "start" in dateOrOptions) {

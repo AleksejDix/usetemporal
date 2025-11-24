@@ -1,10 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { useTemporal, type UseTemporalOptions } from "./useTemporal";
-import { ref, isRef, effect, computed } from "vue";
+import { createTemporal } from "./createTemporal";
+import type { CreateTemporalOptions } from "./types";
+import {
+  ref,
+  isRef,
+  effect,
+  computed,
+} from "vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 import type { Adapter } from "@allystudio/usetemporal";
 
-describe("useTemporal", () => {
+describe("createTemporal", () => {
   let mockAdapter: Adapter;
   let testDate: Date;
 
@@ -17,9 +23,9 @@ describe("useTemporal", () => {
     it("should throw error when adapter is not provided", () => {
       const options = {
         date: testDate,
-      } as UseTemporalOptions;
+      } as CreateTemporalOptions;
 
-      expect(() => useTemporal(options)).toThrow(
+      expect(() => createTemporal(options)).toThrow(
         "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."
       );
     });
@@ -30,7 +36,7 @@ describe("useTemporal", () => {
         adapter: null as any,
       };
 
-      expect(() => useTemporal(options)).toThrow(
+      expect(() => createTemporal(options)).toThrow(
         "A date adapter is required"
       );
     });
@@ -41,7 +47,7 @@ describe("useTemporal", () => {
         adapter: undefined as any,
       };
 
-      expect(() => useTemporal(options)).toThrow(
+      expect(() => createTemporal(options)).toThrow(
         "A date adapter is required"
       );
     });
@@ -49,7 +55,7 @@ describe("useTemporal", () => {
 
   describe("basic initialization", () => {
     it("should create temporal with required options", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -63,7 +69,7 @@ describe("useTemporal", () => {
 
     it("should accept custom weekStartsOn values", () => {
       for (let day = 0; day <= 6; day++) {
-        const temporal = useTemporal({
+        const temporal = createTemporal({
           date: testDate,
           adapter: mockAdapter,
           weekStartsOn: day,
@@ -74,7 +80,7 @@ describe("useTemporal", () => {
 
     it("should use provided now date", () => {
       const nowDate = new Date(2024, 0, 20, 10, 0, 0);
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
         now: nowDate,
@@ -85,7 +91,7 @@ describe("useTemporal", () => {
 
     it("should default now to current date when not provided", () => {
       const beforeCreate = new Date();
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -100,7 +106,7 @@ describe("useTemporal", () => {
   describe("reactive date handling", () => {
     it("should accept ref date and preserve reactivity", () => {
       const dateRef = ref(testDate);
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: dateRef,
         adapter: mockAdapter,
       });
@@ -114,7 +120,7 @@ describe("useTemporal", () => {
     });
 
     it("should accept plain date and convert to ref", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -125,7 +131,7 @@ describe("useTemporal", () => {
 
     it("should accept ref now and preserve reactivity", () => {
       const nowRef = ref(new Date(2024, 0, 20));
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
         now: nowRef,
@@ -151,7 +157,7 @@ describe("useTemporal", () => {
 
   describe("period initialization", () => {
     it("should initialize browsing period correctly", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -165,7 +171,7 @@ describe("useTemporal", () => {
 
     it("should initialize now period as computed", () => {
       const nowDate = new Date(2024, 0, 20, 15, 30, 45);
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
         now: nowDate,
@@ -181,7 +187,7 @@ describe("useTemporal", () => {
 
   describe("reactivity behavior", () => {
     it("should trigger effects when browsing changes", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -210,7 +216,7 @@ describe("useTemporal", () => {
     });
 
     it("should support computed properties based on temporal state", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -234,7 +240,7 @@ describe("useTemporal", () => {
     });
 
     it("should cleanup reactive effects properly", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -280,7 +286,7 @@ describe("useTemporal", () => {
       const dateRef = ref(testDate);
       const nowRef = ref(new Date(2024, 0, 20));
 
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: dateRef,
         adapter: mockAdapter,
         now: nowRef,
@@ -316,7 +322,7 @@ describe("useTemporal", () => {
   describe("edge cases", () => {
     it("should handle dates at year boundaries", () => {
       const endOfYear = new Date(2023, 11, 31, 23, 59, 59);
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: endOfYear,
         adapter: mockAdapter,
       });
@@ -326,7 +332,7 @@ describe("useTemporal", () => {
 
     it("should handle leap year dates", () => {
       const leapDay = new Date(2024, 1, 29); // Feb 29, 2024
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: leapDay,
         adapter: mockAdapter,
       });
@@ -335,7 +341,7 @@ describe("useTemporal", () => {
     });
 
     it("should handle invalid weekStartsOn gracefully", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
         weekStartsOn: -1 as any,
@@ -345,7 +351,7 @@ describe("useTemporal", () => {
     });
 
     it("should handle weekStartsOn as undefined", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
         weekStartsOn: undefined,
@@ -365,7 +371,7 @@ describe("useTemporal", () => {
         diff: vi.fn(),
       };
 
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: customAdapter,
       });
@@ -374,7 +380,7 @@ describe("useTemporal", () => {
     });
 
     it("should preserve adapter reference", () => {
-      const temporal = useTemporal({
+      const temporal = createTemporal({
         date: testDate,
         adapter: mockAdapter,
       });
@@ -382,14 +388,37 @@ describe("useTemporal", () => {
       expect(temporal.adapter).toBe(mockAdapter);
       expect(temporal.adapter.startOf).toBe(mockAdapter.startOf);
     });
+
+    it("should recompute week periods when adapter weekStartsOn changes", () => {
+      const date = new Date(2024, 0, 3, 12); // Wednesday
+      const mondayAdapter = createNativeAdapter({ weekStartsOn: 1 });
+      const sundayAdapter = createNativeAdapter({ weekStartsOn: 0 });
+
+      const temporal = createTemporal({
+        date,
+        adapter: mondayAdapter,
+      });
+
+      const mondayWeek = temporal.period(date, "week");
+      expect(mondayWeek.start.getDay()).toBe(1);
+      expect(mondayWeek.start.getDate()).toBe(1);
+
+      temporal.adapter = sundayAdapter;
+
+      const sundayWeek = temporal.period(date, "week");
+      expect(sundayWeek.start.getDay()).toBe(0);
+      expect(sundayWeek.start.getDate()).toBe(31);
+      expect(sundayWeek.start.getMonth()).toBe(11); // Dec 31, 2023
+    });
   });
+
 
   describe("performance", () => {
     it("should execute in less than 100ms", () => {
       const start = performance.now();
 
       for (let i = 0; i < 100; i++) {
-        useTemporal({
+        createTemporal({
           date: new Date(),
           adapter: mockAdapter,
         });
@@ -410,7 +439,7 @@ describe("useTemporal", () => {
 
       it(`should assign browsing period for ${label}`, () => {
         const baseDate = new Date(Date.UTC(2024, 0, 1));
-        const temporal = useTemporal({
+        const temporal = createTemporal({
           date: baseDate,
           adapter: createNativeAdapter(),
         });

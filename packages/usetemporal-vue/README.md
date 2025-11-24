@@ -21,17 +21,21 @@ npm install @allystudio/usetemporal/native
 
 ```ts
 import { ref } from "vue";
-import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { createTemporal, useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
 const now = ref(new Date());
 
-const temporal = useTemporal({
+// Call inside setup to create + provide the temporal instance
+const temporal = createTemporal({
   adapter: createNativeAdapter(),
   date: now,
 });
 
 const month = usePeriod(temporal, "month");
+
+// Child components can access the same instance via the injector:
+const nestedTemporal = useTemporal();
 
 month.value.start; // Reactive!
 ```
@@ -40,11 +44,11 @@ month.value.start; // Reactive!
 
 ```ts
 import { computed, ref } from "vue";
-import { useTemporal } from "@allystudio/usetemporal-vue";
+import { createTemporal } from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
 const weekStartsOn = ref(1);
-const temporal = useTemporal({
+const temporal = createTemporal({
   adapter: computed(() =>
     createNativeAdapter({ weekStartsOn: weekStartsOn.value })
   ),
@@ -56,10 +60,15 @@ weekStartsOn.value = 0; // automatically recalculates browsing periods
 
 ### API
 
-- `useTemporal(options: UseTemporalOptions): TemporalBuilder`  
-  Creates a reactive temporal instance. Options accept native dates or refs for
-  both `date` and `now`. Methods from the builder delegate to the core
-  operations while passing the adapter automatically.
+- `createTemporal(options: CreateTemporalOptions): TemporalBuilder`  
+  Creates (and automatically provides) a reactive temporal instance. Options
+  accept native dates or refs for both `date` and `now`. Methods from the
+  builder delegate to the core operations while passing the adapter
+  automatically.
+
+- `useTemporal(): TemporalBuilder`  
+  Injects the nearest provided temporal instance so nested components can tap
+  into the same builder without prop drilling.
 
 - `usePeriod(temporal: VueTemporal, unit: Unit | Ref<Unit>): ComputedRef<Period>`  
   Returns a computed period that updates when `browsing` changes or the unit
@@ -74,9 +83,9 @@ import { createTemporal, usePeriod } from "@allystudio/usetemporal";
 const temporal = createTemporal({ adapter, date: new Date() });
 
 // After
-import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { createTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 
-const temporal = useTemporal({ adapter, date: new Date() });
+const temporal = createTemporal({ adapter, date: new Date() });
 ```
 
 ## Scripts
@@ -84,6 +93,19 @@ const temporal = useTemporal({ adapter, date: new Date() });
 - `npm run build --workspace=@allystudio/usetemporal-vue`
 - `TZ=UTC npm test --workspace=@allystudio/usetemporal-vue`
 - `npm run type-check --workspace=@allystudio/usetemporal-vue`
+- `npm run demo --workspace=@allystudio/usetemporal-vue`
+
+## Demo playground
+
+Run the interactive playground directly from this workspace to experiment with
+the composables:
+
+```bash
+npm run demo --workspace=@allystudio/usetemporal-vue
+```
+
+The Vite app lives under `packages/usetemporal-vue/demo` and imports the
+library source directly, so any local changes are reflected instantly.
 
 ## Documentation
 

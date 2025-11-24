@@ -1,7 +1,12 @@
+export { createTemporal } from "./createTemporal";
 export { useTemporal } from "./useTemporal";
 export { usePeriod } from "./usePeriod";
 export { createTemporalBuilder } from "./builder";
-export type { VueTemporal, UseTemporalOptions, TemporalBuilder } from "./types";
+export type {
+  VueTemporal,
+  CreateTemporalOptions,
+  TemporalBuilder,
+} from "./types";
 
 export {
   period,

@@ -37,11 +37,14 @@
     "calendar"
   ],
   "scripts": {
+    "pretest": "npm run build --workspace=@allystudio/usetemporal",
     "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist node_modules"
+    "clean": "rm -rf dist node_modules",
+    "demo": "vite --config demo/vite.config.ts",
+    "demo:build": "vite build --config demo/vite.config.ts"
   },
   "dependencies": {
     "@allystudio/usetemporal": "^2.0.0-alpha.1",
@@ -50,6 +53,7 @@
   "devDependencies": {
     "@types/node": "^22.12.1",
     "@usetemporal/tsconfig": "^2.0.0-alpha.1",
+    "@vitejs/plugin-vue": "^6.0.2",
     "typescript": "^5.7.3",
     "vite": "^7.2.4",
     "vite-plugin-dts": "^4.4.0",
