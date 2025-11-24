@@ -1,0 +1,67 @@
+{
+  "name": "@allystudio/usetemporal-react",
+  "version": "2.0.0-beta.1",
+  "description": "React hooks for useTemporal",
+  "author": "Aleksej Dix <git@aleksejdix.com>",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleksejDix/usetemporal.git",
+    "directory": "packages/usetemporal-react"
+  },
+  "bugs": {
+    "url": "https://github.com/AleksejDix/usetemporal/issues"
+  },
+  "homepage": "https://usetemporal.vercel.app",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": "./dist/types.d.ts"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "react",
+    "hooks",
+    "temporal",
+    "time",
+    "calendar"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@allystudio/usetemporal": "^2.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/node": "^22.12.1",
+    "@types/react": "^18.0.0",
+    "@usetemporal/tsconfig": "^2.0.0-alpha.1",
+    "react": "^18.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.4.0",
+    "vitest": "^4.0.13"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}
