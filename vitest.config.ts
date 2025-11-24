@@ -10,20 +10,9 @@ export default defineConfig({
     },
     setupFiles: ["./vitest.setup.ts"],
     projects: [
-      {
-        name: "unit",
-        include: [
-          "packages/*/src/**/*.test.ts",
-          "packages/*/src/__tests__/**/*.test.ts",
-        ],
-      },
-      {
-        name: "react",
-        test: {
-          include: ["packages/usetemporal-react/src/**/*.test.tsx"],
-          environment: "jsdom",
-        },
-      },
+      "packages/usetemporal",
+      "packages/usetemporal-vue",
+      "packages/usetemporal-react",
     ],
     coverage: {
       provider: "v8",
