@@ -23,5 +23,19 @@ export type {
   AdapterUnit,
   Period,
   Unit,
+  AdapterOptions,
   Duration,
+} from "@allystudio/usetemporal";
+
+export {
+  UNITS,
+  YEAR,
+  QUARTER,
+  MONTH,
+  WEEK,
+  DAY,
+  HOUR,
+  MINUTE,
+  SECOND,
+  CUSTOM,
 } from "@allystudio/usetemporal";

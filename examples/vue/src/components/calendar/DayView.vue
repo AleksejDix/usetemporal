@@ -38,8 +38,7 @@
 
 <script setup lang="ts">
 import { computed, type ComputedRef } from 'vue'
-import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
-import { usePeriod } from '@allystudio/usetemporal'
+import { usePeriod, type TemporalBuilder, type Period } from '@allystudio/usetemporal-vue'
 
 /**
  * DayView Component

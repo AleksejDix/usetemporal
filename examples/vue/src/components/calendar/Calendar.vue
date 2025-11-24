@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { usePeriod, type Period, DAY } from '@allystudio/usetemporal'
+import { usePeriod, type Period, DAY } from '@allystudio/usetemporal-vue'
 import { temporal } from '@/composables/useTemporal'
 import YearView from './YearView.vue'
 import MonthView from './MonthView.vue'
