@@ -42,21 +42,6 @@ describe("Export Verification Tests", () => {
   });
 
   describe("index.ts exports", () => {
-    it("should export core createTemporal function", () => {
-      expect(mainExports.createTemporal).toBeDefined();
-      expect(typeof mainExports.createTemporal).toBe("function");
-    });
-
-    it("should export CreateTemporalOptions type", () => {
-      // TypeScript types are erased at runtime, but we can check the export exists
-      expect(mainExports).toHaveProperty("createTemporal");
-    });
-
-    it("should export usePeriod composable", () => {
-      expect(mainExports.usePeriod).toBeDefined();
-      expect(typeof mainExports.usePeriod).toBe("function");
-    });
-
     it("should export all operation functions", () => {
       const expectedOperations = [
         "divide",
@@ -173,11 +158,11 @@ describe("Export Verification Tests", () => {
     it("should have all expected type exports in main index", () => {
       // While we can't check types at runtime, we can verify the module structure
       const exportedNames = Object.keys(mainExports);
-      
+
       // These are functions/constants that should exist if types are properly exported
       const typeRelatedExports = [
-        "createTemporal", // Related to CreateTemporalOptions
         "UNITS", // Related to Unit type
+        "period", // Core operation
       ];
 
       typeRelatedExports.forEach(name => {
@@ -189,13 +174,9 @@ describe("Export Verification Tests", () => {
   describe("Export completeness", () => {
     it("should export a complete API surface", () => {
       const coreExports = Object.keys(mainExports);
-      
-      // Minimum expected exports for a complete API
+
+      // Minimum expected exports for a complete API (pure functions only)
       const minimumExports = [
-        // Core
-        "createTemporal",
-        "usePeriod",
-        
         // Operations
         "divide",
         "next",

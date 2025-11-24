@@ -28,10 +28,6 @@
       "types": "./dist/calendar.d.ts",
       "import": "./dist/calendar.js"
     },
-    "./composables": {
-      "types": "./dist/composables/index.d.ts",
-      "import": "./dist/composables/index.js"
-    },
     "./types": {
       "types": "./dist/types.d.ts"
     },
@@ -70,9 +66,7 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist node_modules"
   },
-  "dependencies": {
-    "@vue/reactivity": "^3.5.18"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@js-temporal/polyfill": "^0.5.1",
     "@types/luxon": "^3.7.1",
@@ -96,11 +90,10 @@
     "date",
     "temporal",
     "divide",
-    "reactive",
-    "composable",
     "typescript",
-    "vue-reactivity",
     "calendar",
-    "stableMonth"
+    "stableMonth",
+    "pure-functions",
+    "framework-agnostic"
   ]
 }
