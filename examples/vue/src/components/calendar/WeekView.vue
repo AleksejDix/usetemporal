@@ -52,8 +52,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, type ComputedRef } from 'vue'
-import type { TemporalBuilder, Period } from '@allystudio/usetemporal'
-import { usePeriod } from '@allystudio/usetemporal'
+import { usePeriod, type TemporalBuilder, type Period } from '@allystudio/usetemporal-vue'
 
 /**
  * WeekView Component
