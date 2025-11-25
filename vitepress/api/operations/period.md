@@ -2,11 +2,7 @@
 
 Creates a period of a specific unit type from a date, or a custom period with start/end dates.
 
-## API Levels
-
-This function is available in multiple API levels:
-
-### Level 1: Pure Function
+## Usage
 
 ```typescript
 import { period } from '@allystudio/usetemporal/operations'
@@ -16,60 +12,32 @@ const adapter = createNativeAdapter()
 const month = period(adapter, new Date(), 'month')
 ```
 
-### Level 2: Builder Method
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-const month = temporal.period(new Date(), 'month')
-```
-
-### Level 3: Reactive Composable
-
-For reactive periods, use `usePeriod()`:
-
-```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal'
-
-const temporal = createTemporal({ adapter, date: new Date() })
-const month = usePeriod(temporal, 'month') // Returns Ref<Period>
-```
 
 ## Signatures
 
 ### Standard Period
 
 ```typescript
-// Level 1 (Pure Function)
 function period(adapter: Adapter, date: Date, unit: Unit): Period
-
-// Level 2 (Builder Method)
-temporal.period(date: Date, unit: Unit): Period
 ```
 
 ### Custom Period
 
 ```typescript
-// Level 1 (Pure Function)
 function period(adapter: Adapter, options: { start: Date; end: Date }): Period
-
-// Level 2 (Builder Method)
-temporal.period(options: { start: Date; end: Date }): Period
 ```
 
 ## Parameters
 
 ### Standard Period
 
-- `adapter` - `Adapter` - (Level 1 only) The date adapter instance
+- `adapter` - `Adapter` - The date adapter instance
 - `date` - `Date` - The date to create the period from
 - `unit` - `Unit` - The unit type (`'year'` | `'month'` | `'week'` | `'day'` | `'hour'` | `'minute'` | `'second'` | `'quarter'`)
 
 ### Custom Period
 
-- `adapter` - `Adapter` - (Level 1 only) The date adapter instance
+- `adapter` - `Adapter` - The date adapter instance
 - `options` - `{ start: Date; end: Date }` - Custom period boundaries
 
 ## Returns
@@ -78,7 +46,7 @@ temporal.period(options: { start: Date; end: Date }): Period
 
 ## Examples
 
-### Basic Usage (Level 1)
+### Basic Usage
 
 ```typescript
 import { period } from '@allystudio/usetemporal/operations'
@@ -97,7 +65,7 @@ const week = period(adapter, new Date(2024, 0, 15), 'week')
 // { type: 'week', date: 2024-01-15, start: 2024-01-14 (Sun), end: 2024-01-20 23:59:59.999 }
 ```
 
-### Custom Period (Level 1)
+### Custom Period
 
 ```typescript
 import { period } from '@allystudio/usetemporal/operations'
@@ -113,50 +81,9 @@ const sprint = period(adapter, {
 // { type: 'custom', start: 2024-01-01, end: 2024-01-14, date: 2024-01-07 (midpoint) }
 ```
 
-### Builder API (Level 2)
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  weekStartsOn: 1 // Monday
-})
-
-// More convenient syntax
-const month = temporal.period(new Date(), 'month')
-const custom = temporal.period({
-  start: new Date('2024-01-01'),
-  end: new Date('2024-03-31')
-})
-```
-
-### Reactive Composable (Level 3)
-
-```typescript
-import { ref } from 'vue'
-import { createTemporal, usePeriod } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const currentDate = ref(new Date())
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  date: currentDate
-})
-
-// Reactive period that updates when currentDate changes
-const month = usePeriod(temporal, 'month')
-console.log(month.value) // Current period
-
-// Change date - month automatically recalculates
-currentDate.value = new Date(2024, 5, 1)
-console.log(month.value) // June 2024 period
-```
-
 ## TypeScript
 
-Full type safety across all levels:
+Full type safety across the entire API:
 
 ```typescript
 import type { Adapter, Period, Unit } from '@allystudio/usetemporal'
@@ -176,9 +103,3 @@ const custom: Period = period(adapter, {
 ## See Also
 
 - [divide()](/api/operations/divide) - Divide periods into smaller units
-- [usePeriod()](/api/composables/use-period) - Reactive period composable
-- [Period Type](/api/types/period) - Period interface
-- [Choosing API Level](/guide/choosing-api-level) - Which level to use
-- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
-- [Level 2 API](/api/level-2-builder) - Builder pattern documentation
-- [Level 3 API](/api/level-3-composables) - Composables documentation

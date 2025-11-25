@@ -96,26 +96,6 @@ console.log(januaryEvents)
 // [{ name: 'New Year', ... }, { name: 'Birthday', ... }]
 ```
 
-### Works with All API Levels
-
-```typescript
-// Level 1 (Pure Functions)
-import { period, contains } from '@allystudio/usetemporal/operations'
-const month1 = period(adapter, new Date(), 'month')
-const isInMonth1 = contains(month1, someDate)
-
-// Level 2 (Builder)
-import { createTemporal } from '@allystudio/usetemporal'
-const temporal = createTemporal({ adapter })
-const month2 = temporal.period(new Date(), 'month')
-const isInMonth2 = contains(month2, someDate)
-
-// Level 3 (Composables)
-import { usePeriod } from '@allystudio/usetemporal'
-const month3 = usePeriod(temporal, 'month')
-const isInMonth3 = contains(month3.value, someDate)
-```
-
 ### Custom Period Containment
 
 ```typescript

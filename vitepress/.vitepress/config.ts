@@ -35,17 +35,6 @@ export default defineConfig({
         activeMatch: "/guide/",
       },
       { text: "API", link: "/api/index", activeMatch: "/api/" },
-      { text: "Extensions", link: "/extensions/", activeMatch: "/extensions/" },
-      {
-        text: "Examples",
-        link: "/examples/basic-usage",
-        activeMatch: "/examples/",
-      },
-      {
-        text: "Resources",
-        link: "/resources/javascript-date-quirks",
-        activeMatch: "/resources/",
-      },
       {
         text: "v2.0.0",
         items: [
@@ -62,22 +51,6 @@ export default defineConfig({
     ],
 
     sidebar: {
-      "/extensions/": [
-        {
-          text: "Extensions",
-          items: [
-            { text: "Overview", link: "/extensions/" },
-          ],
-        },
-        {
-          text: "Calendar Units",
-          items: [
-            { text: "Getting Started", link: "/extensions/calendar-units" },
-            { text: "API Reference", link: "/extensions/calendar-units-api" },
-            { text: "Examples", link: "/extensions/calendar-units-examples" },
-          ],
-        },
-      ],
       "/guide/": [
         {
           text: "Introduction",
@@ -88,55 +61,21 @@ export default defineConfig({
               link: "/guide/what-is-usetemporal",
             },
             { text: "Getting Started", link: "/guide/getting-started" },
-            { text: "Installation", link: "/guide/installation" },
-            { text: "First App", link: "/guide/first-app" },
           ],
         },
         {
           text: "Core Concepts",
           collapsed: false,
           items: [
-            { text: "Choosing an API Level", link: "/guide/choosing-api-level" },
             { text: "The divide() Pattern", link: "/guide/divide-pattern" },
-            { text: "Reactive Time Units", link: "/guide/reactive-time-units" },
-            { text: "Date Adapters", link: "/guide/adapters" },
-            { text: "Framework Agnostic", link: "/guide/framework-agnostic" },
           ],
         },
         {
-          text: "Patterns & Recipes",
+          text: "Reference Guides",
           collapsed: false,
           items: [
-            { text: "The divide() Pattern", link: "/guide/patterns/divide-pattern" },
-            { text: "Navigation", link: "/guide/patterns/navigation" },
-            { text: "Time Analysis", link: "/guide/patterns/time-analysis" },
-            { text: "Business Logic", link: "/guide/patterns/business-logic" },
-          ],
-        },
-        {
-          text: "Framework Integration",
-          collapsed: false,
-          items: [
-            { text: "Overview", link: "/guide/integrations/overview" },
-          ],
-        },
-        {
-          text: "Advanced Topics",
-          collapsed: false,
-          items: [
+            { text: "Operations", link: "/guide/operations" },
             { text: "Bundle Size Optimization", link: "/guide/bundle-size-optimization" },
-            { text: "Performance Optimization", link: "/guide/advanced/performance-optimization" },
-            { text: "Testing", link: "/guide/testing" },
-            { text: "TypeScript", link: "/guide/typescript" },
-            { text: "Migration Guide", link: "/guide/migration" },
-          ],
-        },
-        {
-          text: "Reference",
-          collapsed: false,
-          items: [
-            { text: "Performance", link: "/guide/performance" },
-            { text: "Troubleshooting", link: "/guide/troubleshooting" },
           ],
         },
       ],
@@ -149,20 +88,10 @@ export default defineConfig({
           ],
         },
         {
-          text: "API Levels",
+          text: "API Basics",
           collapsed: false,
           items: [
             { text: "Level 1: Pure Functions", link: "/api/level-1-pure-functions" },
-            { text: "Level 2: Builder", link: "/api/level-2-builder" },
-            { text: "Level 3: Composables", link: "/api/level-3-composables" },
-          ],
-        },
-        {
-          text: "Factory Functions",
-          collapsed: false,
-          items: [
-            { text: "Overview", link: "/api/factory-functions/" },
-            { text: "createTemporal", link: "/api/factory-functions/create-temporal" },
           ],
         },
         {
@@ -170,61 +99,30 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: "Overview", link: "/api/operations/" },
-            { text: "Time Division", items: [
-              { text: "divide", link: "/api/operations/divide" },
-              { text: "split", link: "/api/operations/split" },
-              { text: "merge", link: "/api/operations/merge" },
-            ]},
-            { text: "Navigation", items: [
-              { text: "period", link: "/api/operations/period" },
-              { text: "next", link: "/api/operations/next" },
-              { text: "previous", link: "/api/operations/previous" },
-              { text: "go", link: "/api/operations/go" },
-            ]},
-            { text: "Comparison", items: [
-              { text: "isSame", link: "/api/operations/is-same" },
-              { text: "contains", link: "/api/operations/contains" },
-            ]},
-          ],
-        },
-        {
-          text: "Utilities",
-          collapsed: false,
-          items: [
-            { text: "Overview", link: "/api/utilities/" },
-            { text: "isWeekend", link: "/api/utilities/is-weekend" },
-            { text: "isWeekday", link: "/api/utilities/is-weekday" },
-            { text: "isToday", link: "/api/utilities/is-today" },
-          ],
-        },
-        {
-          text: "Types",
-          collapsed: false,
-          items: [
-            { text: "Overview", link: "/api/types/" },
-            { text: "Period", link: "/api/types/period" },
-            { text: "Unit", link: "/api/types/unit" },
-            { text: "Temporal", link: "/api/types/temporal" },
-            { text: "Adapter", link: "/api/types/adapter" },
-            { text: "UnitRegistry", link: "/api/types/unit-registry" },
-          ],
-        },
-        {
-          text: "Composables",
-          collapsed: false,
-          items: [
-            { text: "usePeriod", link: "/api/composables/use-period" },
-          ],
-        },
-        {
-          text: "Unit System",
-          collapsed: false,
-          items: [
-            { text: "defineUnit", link: "/api/unit-system/define-unit" },
-            { text: "Unit Constants", link: "/api/unit-system/constants" },
-            { text: "getUnitDefinition", link: "/api/unit-system/get-unit-definition" },
-            { text: "hasUnit", link: "/api/unit-system/has-unit" },
-            { text: "getRegisteredUnits", link: "/api/unit-system/get-registered-units" },
+            {
+              text: "Time Division",
+              items: [
+                { text: "divide", link: "/api/operations/divide" },
+                { text: "split", link: "/api/operations/split" },
+                { text: "merge", link: "/api/operations/merge" },
+              ],
+            },
+            {
+              text: "Navigation",
+              items: [
+                { text: "period", link: "/api/operations/period" },
+                { text: "next", link: "/api/operations/next" },
+                { text: "previous", link: "/api/operations/previous" },
+                { text: "go", link: "/api/operations/go" },
+              ],
+            },
+            {
+              text: "Comparison",
+              items: [
+                { text: "isSame", link: "/api/operations/is-same" },
+                { text: "contains", link: "/api/operations/contains" },
+              ],
+            },
           ],
         },
       ],

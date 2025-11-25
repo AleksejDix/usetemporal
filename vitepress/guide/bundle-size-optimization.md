@@ -27,7 +27,7 @@ npm run build
 
 ## Optimization Tips
 
-### 1. Use Level 1 for Hot Paths
+### 1. Use Pure Functions for Hot Paths
 
 ```typescript
 // Hot path: Use pure functions
@@ -38,7 +38,7 @@ function filterItems(items, range) {
 }
 ```
 
-**Bundle Impact:** ~5KB (vs ~12KB with Level 2)
+**Bundle Impact:** ~5KB total footprint
 
 ### 2. Import Only What You Need
 
@@ -111,57 +111,32 @@ const range = period(adapter, { start, end });
 const filtered = items.filter(item => contains(range, item.date));
 ```
 
-### Example 2: Calendar Component
+### Example 2: Full Dashboard
 
 **Before v2.0:** 30KB
-**After v2.0 (Level 2):** 10KB
-**Savings:** 67%
+**After v2.0:** 10-12KB
+**Savings:** 60%+
 
 ```typescript
-import { createTemporal } from '@allystudio/usetemporal';
-import { createStableMonth } from '@allystudio/usetemporal/calendar';
+import { period, divide, next, previous } from '@allystudio/usetemporal/operations';
 import { createNativeAdapter } from '@allystudio/usetemporal/native';
 
-// Tree-shakes unused operations
-const temporal = createTemporal({
-  adapter: createNativeAdapter()
-});
+const adapter = createNativeAdapter();
+const month = period(adapter, new Date(), 'month');
+const days = divide(adapter, month, 'day');
+const nextMonth = next(adapter, month);
+const previousMonth = previous(adapter, month);
 ```
-
-### Example 3: Full Dashboard
-
-**Before v2.0:** 30KB
-**After v2.0 (Level 3):** 18KB
-**Savings:** 40%
-
-```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal';
-import { createNativeAdapter } from '@allystudio/usetemporal/native';
-
-// Includes reactivity, but still tree-shakes
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  date: new Date()
-});
-```
-
-## Bundle Size by API Level
-
-| API Level | Typical Usage | Gzipped Size |
-|-----------|---------------|--------------|
-| Level 1 (Pure) | 2-3 operations | 5-7KB |
-| Level 2 (Builder) | 5+ operations | 8-12KB |
-| Level 3 (Composables) | Vue/React components | 15-20KB |
 
 ## Advanced Optimization
 
 ### Split Code by Route
 
 ```typescript
-// Route 1: Simple filtering (Level 1)
+// Route 1: Simple filtering (pure functions)
 const FilterRoute = () => import('./FilterRoute.js');
 
-// Route 2: Calendar UI (Level 3)
+// Route 2: Calendar UI (includes calendar utilities)
 const CalendarRoute = () => import('./CalendarRoute.js');
 ```
 
@@ -244,6 +219,6 @@ const calendar = await import('@allystudio/usetemporal/calendar');
 
 ## Related
 
-- [Choosing an API Level](./choosing-api-level.md) - Pick the right level
+- [Operations Overview](/guide/operations) - Deep dive into period functions
 - [Performance Optimization](./performance.md) - Runtime performance tips
 - [Level 1 API](/api/level-1-pure-functions.md) - Smallest bundle size

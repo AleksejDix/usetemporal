@@ -1,16 +1,8 @@
 # API Reference
 
-The useTemporal API is organized into the following sections:
+useTemporal exposes a single, pure-functional API. Once you import an adapter, everything else lives inside the operations module.
 
-## [Factory Functions](/api/factory-functions/)
-
-Core functions for creating temporal instances.
-
-- [`createTemporal`](/api/factory-functions/create-temporal) - Create a temporal instance
-
-## [Operations](/api/operations/)
-
-Functions for manipulating and working with periods.
+## Operations
 
 ### Time Division
 - [`divide`](/api/operations/divide) - The signature divide() pattern
@@ -27,61 +19,21 @@ Functions for manipulating and working with periods.
 - [`isSame`](/api/operations/is-same) - Check period equality
 - [`contains`](/api/operations/contains) - Check containment
 
-
-## [Utilities](/api/utilities/)
-
-Helper functions for common date operations.
-
-- [`isWeekend`](/api/utilities/is-weekend) - Check if period is weekend
-- [`isWeekday`](/api/utilities/is-weekday) - Check if period is weekday
-- [`isToday`](/api/utilities/is-today) - Check if period is today
-
-## [Types](/api/types/)
-
-TypeScript type definitions.
-
-- [`Period`](/api/types/period) - Core period interface
-- [`Unit`](/api/types/unit) - Time unit types
-- [`Temporal`](/api/types/temporal) - Temporal instance type
-- [`Adapter`](/api/types/adapter) - Date adapter interface
-
-## [Composables](/api/composables/)
-
-Reactive composables for frameworks.
-
-- [`usePeriod`](/api/composables/use-period) - Create reactive period
-
-## [Unit System](/api/unit-system/)
-
-Plugin system for custom units.
-
-- [`defineUnit`](/api/unit-system/define-unit) - Register custom units
-- [`UNITS`](/api/unit-system/constants) - Unit constants
-- [`getUnitDefinition`](/api/unit-system/get-unit-definition) - Get unit configuration
-- [`hasUnit`](/api/unit-system/has-unit) - Check if unit is registered
-
-## [Calendar Units](/api/calendar/)
-
-Special units for consistent calendar grids.
-
-- [`stableMonth`](/api/calendar/stable-month) - 42-day grid for months
-- [`stableYear`](/api/calendar/stable-year) - 52/53-week grid for years
-
 ## Quick Start
 
 ```typescript
-import { createTemporal, usePeriod, divide } from 'usetemporal'
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// Create temporal instance
-const temporal = createTemporal()
+const adapter = createNativeAdapter()
 
-// Create reactive periods
-const month = usePeriod(temporal, 'month')
-const year = usePeriod(temporal, 'year')
+// Create periods
+const month = period(adapter, new Date(), 'month')
+const year = period(adapter, new Date(), 'year')
 
 // Divide operations
-const days = divide(temporal, month.value, 'day')
-const months = divide(temporal, year.value, 'month')
+const weeks = divide(adapter, month, 'week')
+const months = divide(adapter, year, 'month')
 ```
 
-For a complete guide, see [Getting Started](/guide/getting-started).
+For a complete walkthrough, see [Getting Started](/guide/getting-started).

@@ -1,7 +1,12 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig/base.json",
   "compilerOptions": {
     "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
     "baseUrl": "./",
     "paths": {
       "@allystudio/usetemporal-vue": ["../src"],
