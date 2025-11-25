@@ -10,13 +10,9 @@ export default defineConfig({
     },
     setupFiles: ["./vitest.setup.ts"],
     projects: [
-      {
-        name: "unit",
-        include: [
-          "packages/*/src/**/*.test.ts",
-          "packages/*/src/__tests__/**/*.test.ts",
-        ],
-      },
+      "packages/usetemporal",
+      "packages/usetemporal-vue",
+      "packages/usetemporal-react",
     ],
     coverage: {
       provider: "v8",
