@@ -1,97 +1,34 @@
 # What is useTemporal?
 
-useTemporal is a revolutionary time manipulation library for JavaScript that introduces the unique **divide() pattern** - a hierarchical approach to time management that no other library offers.
+useTemporal is a tiny library that treats time as a hierarchy of periods rather than a collection of loose timestamps. Instead of juggling `Date` methods, you create a period (year, month, week, day, etc.) and then subdivide it as deep as you need.
 
-## Core Philosophy
-
-Traditional date libraries focus on parsing, formatting, and basic arithmetic. useTemporal takes a different approach by treating time as a **hierarchical, divisible continuum**.
+## The Core Idea
 
 ```typescript
-// Traditional approach
-const date = new Date();
-const month = date.getMonth();
-const year = date.getFullYear();
+import { period, divide } from '@allystudio/usetemporal/operations'
+import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-// useTemporal approach
-const temporal = createTemporal({ 
-  adapter: createNativeAdapter() 
-});
-const year = usePeriod(temporal, 'year');
-const months = divide(temporal.adapter, year.value, 'month');
-const days = divide(temporal.adapter, months[0], 'day');
+const adapter = createNativeAdapter({ weekStartsOn: 1 })
+
+const year = period(adapter, new Date(), 'year')
+const months = divide(adapter, year, 'month')
+const firstMonth = months[0]
+const days = divide(adapter, firstMonth, 'day')
 ```
 
-## Key Features
+That’s the entire API. There are no builders, classes, or global state—just simple pure functions that return plain objects.
 
-### 1. **The divide() Pattern**
+## Why It Matters
 
-The revolutionary feature that sets useTemporal apart. Infinitely subdivide any time unit into smaller units with perfect synchronization.
+- **Hierarchical thinking**: Reason about time like a tree (year → month → week → day).
+- **No manual math**: `divide()` handles tricky calendar edges for you.
+- **Framework agnostic**: Works with React, Vue, Svelte, or vanilla JavaScript because it only returns data structures.
+- **Super small**: Core operations plus the native adapter come in under 6 KB gzipped.
 
-### 2. **Framework Agnostic**
+## Typical Use Cases
 
-Works seamlessly with:
+- Calendar and scheduling UIs
+- Time-based visualizations (heatmaps, timelines, dashboards)
+- Reports that need consistent period boundaries
 
-- Vue 3
-- React
-- Angular
-- Svelte
-- Vanilla JavaScript
-
-### 3. **Pluggable Date Adapters**
-
-Choose your preferred date manipulation library:
-
-- **Native**: Zero dependencies, full functionality
-- **date-fns**: Popular functional date library
-- **Luxon**: Powerful internationalization
-- **Temporal API**: Future-proof with TC39 proposal
-
-### 4. **Reactive Time Units**
-
-All time units are reactive by default, perfect for building dynamic UIs:
-
-```typescript
-const month = usePeriod(temporal, 'month');
-// month.value.date, month.value.start, month.value.end are all reactive
-```
-
-### 5. **Zero Dependencies Mode**
-
-The native adapter provides complete functionality without any external dependencies.
-
-## Architecture
-
-useTemporal follows a modular, monorepo architecture:
-
-```
-@usetemporal/core         # Core functionality
-@usetemporal/adapter-native    # Zero-dependency adapter
-@allystudio/usetemporal/date-fns  # date-fns integration
-@allystudio/usetemporal/luxon     # Luxon integration
-@usetemporal/adapter-temporal  # Temporal API integration
-usetemporal              # Convenience meta-package
-```
-
-## When to Use useTemporal
-
-useTemporal excels in applications that need:
-
-- **Complex date navigation** (calendars, date pickers)
-- **Hierarchical time visualization** (timeline views, Gantt charts)
-- **Reactive time-based UIs**
-- **Framework-agnostic date handling**
-
-## Performance
-
-- **Bundle size**: <6KB (core + native adapter)
-- **Tree-shakeable**: Import only what you need
-- **Lazy loading**: Adapters loaded on demand
-- **Optimized**: Minimal re-computations with reactive caching
-
-## Browser Support
-
-Works in all modern browsers that support:
-
-- ES2020 features
-- Proxy API (for reactivity)
-- Intl.DateTimeFormat (for i18n)
+If you can describe the time structure you need, divide() can build it. The rest of the documentation shows how to compose these primitives for real projects.

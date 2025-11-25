@@ -2,11 +2,7 @@
 
 Check if two periods represent the same time unit.
 
-## API Levels
-
-This function is available in multiple API levels:
-
-### Level 1: Pure Function
+## Usage
 
 ```typescript
 import { period, isSame } from '@allystudio/usetemporal/operations'
@@ -20,32 +16,11 @@ console.log(isSame(adapter, period1, period2, 'month')) // true (same month)
 console.log(isSame(adapter, period1, period2, 'day'))   // false (different days)
 ```
 
-### Level 2: Builder Method
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-const period1 = temporal.period(new Date('2024-01-15'), 'day')
-const period2 = temporal.period(new Date('2024-01-20'), 'day')
-
-console.log(temporal.isSame(period1, period2, 'month')) // true
-```
-
 ## Signatures
 
 ```typescript
-// Level 1 (Pure Function)
 function isSame(
   adapter: Adapter,
-  a: Period | null | undefined,
-  b: Period | null | undefined,
-  unit: Unit
-): boolean
-
-// Level 2 (Builder Method)
-temporal.isSame(
   a: Period | null | undefined,
   b: Period | null | undefined,
   unit: Unit
@@ -54,15 +29,7 @@ temporal.isSame(
 
 ## Parameters
 
-### Level 1 (Pure Function)
-
 - `adapter` - `Adapter` - The date adapter instance
-- `a` - `Period | null | undefined` - First period to compare
-- `b` - `Period | null | undefined` - Second period to compare
-- `unit` - `Unit` - The unit level to compare at
-
-### Level 2 (Builder Method)
-
 - `a` - `Period | null | undefined` - First period to compare
 - `b` - `Period | null | undefined` - Second period to compare
 - `unit` - `Unit` - The unit level to compare at
@@ -108,21 +75,6 @@ const period2025_jan = period(adapter, new Date('2025-01-15'), 'month')
 
 console.log(isSame(adapter, period2024_jan, period2024_dec, 'year'))  // true
 console.log(isSame(adapter, period2024_jan, period2025_jan, 'year'))  // false
-```
-
-### Builder API (Level 2)
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-
-const today = temporal.period(new Date(), 'day')
-const tomorrow = temporal.next(today)
-
-console.log(temporal.isSame(today, tomorrow, 'month'))  // true (if same month)
-console.log(temporal.isSame(today, tomorrow, 'day'))    // false
 ```
 
 ### Practical Example: Group Events by Month
@@ -199,6 +151,4 @@ const result: boolean = isSame(adapter, p1, p2, unit)
 - [contains()](/api/operations/contains) - Check if period contains a date/period
 - [isToday()](/api/utilities/is-today) - Check if period is today
 - [period()](/api/operations/period) - Create periods
-- [Choosing API Level](/guide/choosing-api-level) - Which level to use
 - [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
-- [Level 2 API](/api/level-2-builder) - Builder pattern documentation

@@ -96,6 +96,5 @@ import { period, divide } from '@allystudio/usetemporal/operations';
 
 ## Related
 
-- [Level 2: Builder API](./level-2-builder.md) - Convenience methods with good tree-shaking
-- [Level 3: Composables API](./level-3-composables.md) - Reactive composables for Vue/React
-- [Choosing an API Level](/guide/choosing-api-level.md) - Decision guide
+- [Operations Guide](/guide/operations)
+- [Bundle Size Optimization](/guide/bundle-size-optimization.md)

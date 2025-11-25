@@ -79,22 +79,3 @@ Check if a period contains a date or another period.
 ```typescript
 const isInMonth = contains(monthPeriod, new Date())
 ```
-
-## Zoom Pattern (Removed Operations)
-
-The zoom operations (`zoomIn`, `zoomOut`, `zoomTo`) have been removed in v2.0.0 to maintain API minimalism. You can achieve the same functionality by composing existing operations:
-
-**Zoom In Pattern:**
-```typescript
-// Instead of: zoomIn(yearPeriod, 'month')
-const months = divide(temporal, yearPeriod, 'month');
-const targetMonth = months.find(m => contains(m, yearPeriod.date)) || months[0];
-```
-
-**Zoom Out Pattern:**
-```typescript
-// Instead of: zoomOut(monthPeriod, 'year')
-const year = period(temporal, monthPeriod.date, 'year');
-```
-
-See the [migration guide](/guide/migration#zoom-operations) for more details.

@@ -2,11 +2,7 @@
 
 Navigate to the next period of the same type.
 
-## API Levels
-
-This function is available in multiple API levels:
-
-### Level 1: Pure Function
+## Usage
 
 ```typescript
 import { period, next } from '@allystudio/usetemporal/operations'
@@ -17,36 +13,15 @@ const month = period(adapter, new Date(), 'month')
 const nextMonth = next(adapter, month)
 ```
 
-### Level 2: Builder Method
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-const month = temporal.period(new Date(), 'month')
-const nextMonth = temporal.next(month)
-```
-
 ## Signatures
 
 ```typescript
-// Level 1 (Pure Function)
 function next(adapter: Adapter, period: Period): Period
-
-// Level 2 (Builder Method)
-temporal.next(period: Period): Period
 ```
 
 ## Parameters
 
-### Level 1 (Pure Function)
-
 - `adapter` - `Adapter` - The date adapter instance
-- `period` - `Period` - The current period to navigate from
-
-### Level 2 (Builder Method)
-
 - `period` - `Period` - The current period to navigate from
 
 ## Returns
@@ -59,7 +34,7 @@ Creates a new period that immediately follows the given period, maintaining the 
 
 ## Examples
 
-### Basic Usage (Level 1)
+### Basic Usage
 
 ```typescript
 import { period, next } from '@allystudio/usetemporal/operations'
@@ -78,19 +53,6 @@ const nextMonth = next(adapter, month)
 // Navigate to next year
 const year = period(adapter, new Date(), 'year')
 const nextYear = next(adapter, year)
-```
-
-### Builder API (Level 2)
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-
-const month = temporal.period(new Date(), 'month')
-const nextMonth = temporal.next(month)
-const monthAfterNext = temporal.next(nextMonth)
 ```
 
 ### Custom Period Navigation
@@ -148,6 +110,4 @@ const nextMonth: Period = next(adapter, month)
 - [previous()](/api/operations/previous) - Navigate backward
 - [go()](/api/operations/go) - Navigate multiple steps at once
 - [period()](/api/operations/period) - Create periods
-- [Choosing API Level](/guide/choosing-api-level) - Which level to use
 - [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
-- [Level 2 API](/api/level-2-builder) - Builder pattern documentation

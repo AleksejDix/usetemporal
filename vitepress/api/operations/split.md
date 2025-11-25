@@ -135,26 +135,6 @@ console.log(result.beforeEvent)    // Jan 1 - Jun 14
 console.log(result.eventAndAfter)  // Jun 15 - Dec 31
 ```
 
-### Works with All API Levels
-
-```typescript
-// Level 1 (Pure Functions)
-import { period, split } from '@allystudio/usetemporal/operations'
-const month1 = period(adapter, new Date(), 'month')
-const [before1, after1] = split(month1, new Date())
-
-// Level 2 (Builder)
-import { createTemporal } from '@allystudio/usetemporal'
-const temporal = createTemporal({ adapter })
-const month2 = temporal.period(new Date(), 'month')
-const [before2, after2] = split(month2, new Date())
-
-// Level 3 (Composables)
-import { usePeriod } from '@allystudio/usetemporal'
-const month3 = usePeriod(temporal, 'month')
-const [before3, after3] = split(month3.value, new Date())
-```
-
 ## Special Cases
 
 - **Split at start**: First period is empty (start === end), second is full

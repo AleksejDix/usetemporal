@@ -12,7 +12,7 @@ const hours = divide(adapter, day, 'hour')
 ## 🚀 Features
 
 - **🧩 Revolutionary divide() Pattern**: Infinitely subdivide time units with perfect synchronization
-- **📦 Three API Levels**: Choose between pure functions (5-7KB), builder (8-12KB), or composables (15-20KB)
+- **📦 Pure Functional API**: Import only what you need for optimal tree-shaking
 - **🌳 Optimal Tree-Shaking**: 60-76% bundle size reduction through modular architecture
 - **🌍 Framework Agnostic**: Works with Vue, React, Angular, Svelte, and vanilla JavaScript
 - **⚡ Zero Dependencies**: Native adapter provides full functionality without external libraries
@@ -21,9 +21,7 @@ const hours = divide(adapter, day, 'hour')
 
 ## 📦 Bundle Size
 
-- **Level 1 (Pure Functions):** 5-7KB gzipped
-- **Level 2 (Builder):** 8-12KB gzipped
-- **Level 3 (Composables):** 15-20KB gzipped
+- **Core operations + native adapter:** 5-7KB gzipped
 
 ## 📥 Installation
 
@@ -33,9 +31,8 @@ npm install @allystudio/usetemporal
 
 ## 🎯 Quick Start
 
-### Three API Levels - Choose What Fits Your Needs
+### Pure Functions Only
 
-**Level 1: Pure Functions (Smallest Bundle - 5-7KB)**
 ```typescript
 import { period, divide } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
@@ -45,42 +42,9 @@ const year = period(adapter, new Date(), 'year')
 const months = divide(adapter, year, 'month')
 ```
 
-**Level 2: Builder (Balanced - 8-12KB)** - Recommended for most users
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+[Learn more patterns →](./vitepress/guide/divide-pattern.md)
 
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  weekStartsOn: 1
-})
-
-const year = temporal.period(new Date(), 'year')
-const months = temporal.divide(year, 'month')
-```
-
-**Level 3: Composables (Full DX - 15-20KB)**
-```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal'
-import { divide } from '@allystudio/usetemporal/operations'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  date: new Date()
-})
-
-const month = usePeriod(temporal, 'month')
-// month.value is reactive - automatically updates
-```
-
-[Learn how to choose the right API level →](./vitepress/guide/choosing-api-level.md)
-
-## 🔄 Migrating from v1.x or alpha.1?
-
-See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions. The v2.0 architecture delivers 60-76% bundle size reduction!
-
-### Vue Example (Level 3 - Composables)
+### Vue Example (Pure Functions)
 
 ```vue
 <template>
@@ -93,49 +57,62 @@ See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions. The v2.0
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { createTemporal, usePeriod } from '@allystudio/usetemporal'
-import { divide } from '@allystudio/usetemporal/operations'
+import { computed, ref } from 'vue'
+import { period, divide, next, previous } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  date: new Date()
-})
+const adapter = createNativeAdapter({ weekStartsOn: 1 })
+const browsing = ref(new Date())
 
-const month = usePeriod(temporal, 'month')
-const days = computed(() => divide(temporal.adapter, month.value, 'day'))
+const month = computed(() => period(adapter, browsing.value, 'month'))
+const days = computed(() => divide(adapter, month.value, 'day'))
 
 const monthLabel = computed(() =>
   month.value.date.toLocaleDateString('en', { month: 'long', year: 'numeric' })
 )
+
+function go(direction: 'next' | 'previous') {
+  const updated = direction === 'next'
+    ? next(adapter, month.value)
+    : previous(adapter, month.value)
+  browsing.value = updated.date
+}
 </script>
 ```
 
-### React Example (Level 2 - Builder)
+### React Example (Pure Functions)
 
 ```tsx
-import { useMemo } from 'react'
-import { createTemporal } from '@allystudio/usetemporal'
+import { useMemo, useState } from 'react'
+import { period, divide, next, previous } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
-function Calendar() {
-  const temporal = useMemo(() => createTemporal({
-    adapter: createNativeAdapter(),
-    weekStartsOn: 1
-  }), [])
+const adapter = createNativeAdapter({ weekStartsOn: 1 })
 
-  const month = temporal.period(new Date(), 'month')
-  const days = temporal.divide(month, 'day')
+function Calendar() {
+  const [browsing, setBrowsing] = useState(() => new Date())
+  const month = useMemo(() => period(adapter, browsing, 'month'), [browsing])
+  const days = useMemo(() => divide(adapter, month, 'day'), [month])
+
+  const navigate = (direction: 'next' | 'previous') => {
+    const updated = direction === 'next'
+      ? next(adapter, month)
+      : previous(adapter, month)
+    setBrowsing(updated.date)
+  }
 
   return (
     <div>
-      <h2>
-        {month.date.toLocaleDateString('en', {
-          month: 'long',
-          year: 'numeric'
-        })}
-      </h2>
+      <header>
+        <button onClick={() => navigate('previous')}>←</button>
+        <h2>
+          {month.date.toLocaleDateString('en', {
+            month: 'long',
+            year: 'numeric'
+          })}
+        </h2>
+        <button onClick={() => navigate('next')}>→</button>
+      </header>
       {days.map(day => (
         <div key={day.date.toISOString()}>
           {day.date.getDate()}
@@ -148,46 +125,21 @@ function Calendar() {
 
 ## 🔧 Core API
 
-### Choose Your API Level
+### Pure Functions Overview
 
-**Level 1: Pure Functions**
 ```typescript
-import { period, divide, next } from '@allystudio/usetemporal/operations'
+import { period, divide, next, previous, go } from '@allystudio/usetemporal/operations'
 import { createNativeAdapter } from '@allystudio/usetemporal/native'
 
 const adapter = createNativeAdapter()
-const year = period(adapter, new Date(), 'year')
-const months = divide(adapter, year, 'month')
+
+const month = period(adapter, new Date(), 'month')
+const days = divide(adapter, month, 'day')
+const nextMonth = next(adapter, month)
+const previousMonth = previous(adapter, month)
+const threeMonthsAhead = go(adapter, month, 'next', 3)
 ```
 
-**Level 2: Builder** (Recommended)
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({
-  adapter: createNativeAdapter(), // Required
-  date: new Date(),              // Optional: initial browsing date
-  weekStartsOn: 1                // Optional: 0 = Sunday, 1 = Monday
-})
-
-const year = temporal.period(new Date(), 'year')
-const months = temporal.divide(year, 'month')
-```
-
-**Level 3: Composables**
-```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({
-  adapter: createNativeAdapter(),
-  date: new Date()
-})
-
-// Reactive period
-const month = usePeriod(temporal, 'month')
-```
 
 ### Period Structure
 
@@ -219,14 +171,11 @@ All operations work across all API levels:
 
 Visit our [documentation site](https://usetemporal.dev) for:
 
-- [Getting Started Guide](https://usetemporal.dev/guide/getting-started)
-- [Choosing an API Level](./vitepress/guide/choosing-api-level.md)
-- [Migration Guide](./MIGRATION.md) - v2.0 breaking changes
+- [Getting Started Guide](./vitepress/guide/getting-started.md)
+- [Operations Overview](./vitepress/guide/operations.md)
 - [Level 1: Pure Functions API](./vitepress/api/level-1-pure-functions.md)
-- [Level 2: Builder API](./vitepress/api/level-2-builder.md)
-- [Level 3: Composables API](./vitepress/api/level-3-composables.md)
 - [Bundle Size Optimization](./vitepress/guide/bundle-size-optimization.md)
-- [The divide() Pattern](https://usetemporal.dev/guide/divide-pattern)
+- [The divide() Pattern](./vitepress/guide/divide-pattern.md)
 - [API Reference](https://usetemporal.dev/api/)
 - [Examples](https://usetemporal.dev/examples/)
 
@@ -257,7 +206,6 @@ npm install @allystudio/usetemporal luxon
 npm install @allystudio/usetemporal @js-temporal/polyfill
 ```
 
-📖 See our [comprehensive adapter guide](https://usetemporal.dev/guide/adapters/) for detailed comparisons, selection help, and migration guides.
 
 ## 🎯 Why useTemporal?
 
@@ -277,20 +225,10 @@ for (let i = 0; i < 12; i++) {
 With useTemporal's divide() pattern:
 
 ```typescript
-// useTemporal approach 🎉 (Level 2 - Builder)
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-const year = temporal.period(new Date(2024, 0, 1), 'year')
-const months = temporal.divide(year, 'month')
-// That's it! 12 perfect months, automatically calculated!
-```
-
-Or even smaller bundle with Level 1:
-
-```typescript
-// Level 1 - Pure Functions (5-7KB bundle)
 const adapter = createNativeAdapter()
 const year = period(adapter, new Date(2024, 0, 1), 'year')
 const months = divide(adapter, year, 'month')
+// That's it—12 perfect months, automatically calculated!
 ```
 
 ## 🤝 Contributing

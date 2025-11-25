@@ -2,11 +2,7 @@
 
 Navigate forward or backward by multiple periods at once.
 
-## API Levels
-
-This function is available in multiple API levels:
-
-### Level 1: Pure Function
+## Usage
 
 ```typescript
 import { period, go } from '@allystudio/usetemporal/operations'
@@ -17,37 +13,15 @@ const month = period(adapter, new Date(), 'month')
 const threeMonthsLater = go(adapter, month, 3)
 ```
 
-### Level 2: Builder Method
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-const month = temporal.period(new Date(), 'month')
-const threeMonthsLater = temporal.go(month, 3)
-```
-
 ## Signatures
 
 ```typescript
-// Level 1 (Pure Function)
 function go(adapter: Adapter, period: Period, steps: number): Period
-
-// Level 2 (Builder Method)
-temporal.go(period: Period, steps: number): Period
 ```
 
 ## Parameters
 
-### Level 1 (Pure Function)
-
 - `adapter` - `Adapter` - The date adapter instance
-- `period` - `Period` - The current period to navigate from
-- `steps` - `number` - Number of steps to move (positive = forward, negative = backward, 0 = no change)
-
-### Level 2 (Builder Method)
-
 - `period` - `Period` - The current period to navigate from
 - `steps` - `number` - Number of steps to move (positive = forward, negative = backward, 0 = no change)
 
@@ -65,7 +39,7 @@ Allows navigation by multiple periods in a single operation. More efficient than
 
 ## Examples
 
-### Basic Usage (Level 1)
+### Basic Usage
 
 ```typescript
 import { period, go } from '@allystudio/usetemporal/operations'
@@ -84,19 +58,6 @@ const lastYear = go(adapter, month, -12)
 
 // No change
 const sameMonth = go(adapter, month, 0)
-```
-
-### Builder API (Level 2)
-
-```typescript
-import { createTemporal } from '@allystudio/usetemporal'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
-
-const temporal = createTemporal({ adapter: createNativeAdapter() })
-
-const day = temporal.period(new Date(), 'day')
-const nextWeek = temporal.go(day, 7)
-const lastWeek = temporal.go(day, -7)
 ```
 
 ### Quarters and Years
@@ -194,6 +155,3 @@ const result2 = go(adapter, month, 3)
 - [next()](/api/operations/next) - Navigate one step forward
 - [previous()](/api/operations/previous) - Navigate one step backward
 - [period()](/api/operations/period) - Create periods
-- [Choosing API Level](/guide/choosing-api-level) - Which level to use
-- [Level 1 API](/api/level-1-pure-functions) - Pure functions documentation
-- [Level 2 API](/api/level-2-builder) - Builder pattern documentation
