@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { ref } from "vue";
 import type { TemporalBuilder } from "./types";
 import { createTemporal } from "./createTemporal";
 import { useTemporal } from "./useTemporal";
@@ -32,7 +33,7 @@ beforeEach(() => {
   it("injects the nearest provided temporal instance", () => {
     hasInstance = true;
     const provided = createTemporal({
-      date: new Date(2024, 0, 1),
+      date: ref(new Date(2024, 0, 1)),
       adapter,
     });
     const injected = useTemporal();

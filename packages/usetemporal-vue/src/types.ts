@@ -9,19 +9,21 @@ import type { ComputedRef, Ref } from "vue";
 export interface VueTemporal {
   adapter: Adapter;
   weekStartsOn: number;
+  locale: string;
   browsing: Ref<Period>;
   now: Ref<Period> | ComputedRef<Period>;
 }
 
 /**
  * Options for creating a Vue temporal instance.
- * Accepts native dates or refs so state can be controlled externally.
+ * Callers must manage reactivity by passing refs for date/now.
  */
 export interface CreateTemporalOptions {
-  date: Date | Ref<Date>;
-  now?: Date | Ref<Date>;
+  date: Ref<Date>;
+  now?: Ref<Date>;
   adapter: Adapter;
   weekStartsOn?: number;
+  locale?: string;
 }
 
 export interface TemporalBuilder extends VueTemporal {

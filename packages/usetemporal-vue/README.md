@@ -24,12 +24,14 @@ import { ref } from "vue";
 import { createTemporal, useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
+const date = ref(new Date());
 const now = ref(new Date());
 
 // Call inside setup to create + provide the temporal instance
 const temporal = createTemporal({
   adapter: createNativeAdapter(),
-  date: now,
+  date,
+  now,
 });
 
 const month = usePeriod(temporal, "month");
@@ -58,13 +60,42 @@ const temporal = createTemporal({
 weekStartsOn.value = 0; // automatically recalculates browsing periods
 ```
 
+### Declarative `<Temporal>` provider
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { Temporal } from "@allystudio/usetemporal-vue";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
+
+const adapter = createNativeAdapter({ weekStartsOn: 1 });
+const date = ref(new Date());
+</script>
+
+<template>
+  <Temporal
+    :adapter="adapter"
+    :date="date"
+    lang="zh-CN"
+    v-slot="{ temporal }"
+  >
+    <MonthHeader />
+    <MonthGrid />
+  </Temporal>
+</template>
+```
+
+The component automatically creates + provides the builder instance and exposes
+it through the default slot for renderless patterns.
+
 ### API
 
 - `createTemporal(options: CreateTemporalOptions): TemporalBuilder`  
-  Creates (and automatically provides) a reactive temporal instance. Options
-  accept native dates or refs for both `date` and `now`. Methods from the
-  builder delegate to the core operations while passing the adapter
-  automatically.
+  Creates (and automatically provides) a reactive temporal instance. Pass Vue
+  refs for both `date` and (optionally) `now` so you remain in control of
+  reactivity. Methods from the builder delegate to the core operations while
+  passing the adapter automatically. Optionally provide `locale` (defaults to
+  `"en"`) to keep downstream UI helpers in sync with your preferred language.
 
 - `useTemporal(): TemporalBuilder`  
   Injects the nearest provided temporal instance so nested components can tap
@@ -74,18 +105,27 @@ weekStartsOn.value = 0; // automatically recalculates browsing periods
   Returns a computed period that updates when `browsing` changes or the unit
   ref updates.
 
+- `<Temporal adapter="..." :date="..." :now="..." :week-starts-on="...">`  
+  Renderless provider that wraps `createTemporal()`, injects it, and exposes the
+  builder via the default slot. Pass `lang="fr-FR"` (or any BCP 47 locale) to
+  synchronize UI formatting helpers like weekday views.
+
 ### Migration from `createTemporal`
 
 ```ts
 // Before (core package)
+import { ref } from "vue";
 import { createTemporal, usePeriod } from "@allystudio/usetemporal";
 
-const temporal = createTemporal({ adapter, date: new Date() });
+const date = ref(new Date());
+const temporal = createTemporal({ adapter, date });
 
 // After
+import { ref } from "vue";
 import { createTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 
-const temporal = createTemporal({ adapter, date: new Date() });
+const date = ref(new Date());
+const temporal = createTemporal({ adapter, date });
 ```
 
 ## Scripts

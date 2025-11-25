@@ -31,11 +31,12 @@ const emit = defineEmits<CalendarEmits>();
 // Reactive state
 const weekStartsOn = ref(props.weekStartsOn);
 const unit = ref(props.initialUnit);
+const browsingDate = ref(props.initialDate);
 
 // Create temporal instance - this will automatically provide it to children via Vue's provide/inject
 const temporal = createTemporal({
   adapter: createNativeAdapter({ weekStartsOn: weekStartsOn.value }),
-  date: props.initialDate,
+  date: browsingDate,
 });
 
 // Watch for weekStartsOn changes and update the adapter

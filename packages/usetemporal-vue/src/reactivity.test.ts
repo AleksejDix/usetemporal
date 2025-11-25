@@ -18,7 +18,7 @@ describe("Vue Reactivity Integration", () => {
   describe("Temporal reactivity", () => {
     it("should update browsing period reactively", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -46,7 +46,7 @@ describe("Vue Reactivity Integration", () => {
       const nowRef = ref(new Date(2024, 0, 1, 12, 0, 0));
       
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
         now: nowRef,
       });
@@ -71,7 +71,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should support computed properties based on temporal state", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -100,7 +100,7 @@ describe("Vue Reactivity Integration", () => {
   describe("usePeriod composable reactivity", () => {
     it("should create reactive period from temporal", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -128,7 +128,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should support multiple reactive periods", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -159,7 +159,7 @@ describe("Vue Reactivity Integration", () => {
   describe("Complex reactive workflows", () => {
     it("should handle calendar drill-down reactively", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -193,7 +193,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should handle reactive period selection", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -227,7 +227,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should clean up effects properly", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -299,7 +299,7 @@ describe("Vue Reactivity Integration", () => {
         start: dateRef.value,
         end: dateRef.value,
         type: "day",
-        date: dateRef.value,
+        date: dateRef,
       };
 
       // Access again to trigger recomputation
@@ -316,7 +316,7 @@ describe("Vue Reactivity Integration", () => {
   describe("Reactive state management patterns", () => {
     it("should support reactive calendar state", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
       
@@ -361,7 +361,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should handle reactive period highlighting", () => {
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 
@@ -391,7 +391,7 @@ describe("Vue Reactivity Integration", () => {
       const start = performance.now();
       
       const temporal = createTemporal({
-        date: testDate,
+        date: ref(testDate),
         adapter,
       });
 

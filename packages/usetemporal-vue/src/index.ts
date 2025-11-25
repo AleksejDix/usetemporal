@@ -2,6 +2,7 @@ export { createTemporal } from "./createTemporal";
 export { useTemporal } from "./useTemporal";
 export { usePeriod } from "./usePeriod";
 export { createTemporalBuilder } from "./builder";
+export { default as Temporal } from "./components/Temporal.vue";
 export type {
   VueTemporal,
   CreateTemporalOptions,
