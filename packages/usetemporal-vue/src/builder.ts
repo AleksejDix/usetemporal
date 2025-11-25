@@ -17,7 +17,7 @@ import type { TemporalBuilder, VueTemporal } from "./types";
  *
  * @example
  * ```typescript
- * const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
+ * const temporal = createTemporal({ adapter: nativeAdapter, date: ref(new Date()) });
  * const builder = createTemporalBuilder(temporal);
  *
  * const year = builder.period(new Date(), 'year');
@@ -50,6 +50,12 @@ export function createTemporalBuilder(temporal: VueTemporal): TemporalBuilder {
     set now(value) {
       temporal.now = value;
     },
+    get locale() {
+      return temporal.locale;
+    },
+    set locale(value: string) {
+      temporal.locale = value;
+    },
 
     period(dateOrOptions: Date | CustomPeriodOptions, unit?: Unit): Period {
       if (typeof dateOrOptions === "object" && "start" in dateOrOptions) {
@@ -69,21 +75,27 @@ export function createTemporalBuilder(temporal: VueTemporal): TemporalBuilder {
     },
 
     next(period: Period, count: number = 1): Period {
-      if (count === 1) {
-        return ops.next(temporal.adapter, period);
-      }
-      return ops.go(temporal.adapter, period, count);
+      const result =
+        count === 1
+          ? ops.next(temporal.adapter, period)
+          : ops.go(temporal.adapter, period, count);
+      temporal.browsing.value = result;
+      return result;
     },
 
     previous(period: Period, count: number = 1): Period {
-      if (count === 1) {
-        return ops.previous(temporal.adapter, period);
-      }
-      return ops.go(temporal.adapter, period, -count);
+      const result =
+        count === 1
+          ? ops.previous(temporal.adapter, period)
+          : ops.go(temporal.adapter, period, -count);
+      temporal.browsing.value = result;
+      return result;
     },
 
     go(period: Period, count: number): Period {
-      return ops.go(temporal.adapter, period, count);
+      const result = ops.go(temporal.adapter, period, count);
+      temporal.browsing.value = result;
+      return result;
     },
 
     split(period: Period, date: Date): [Period, Period] {

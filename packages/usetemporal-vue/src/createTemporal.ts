@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, isRef, ref } from "vue";
+import { computed, getCurrentInstance, ref } from "vue";
 import type { Period } from "@allystudio/usetemporal";
 import { createTemporalBuilder } from "./builder";
 import type { TemporalBuilder, CreateTemporalOptions, VueTemporal } from "./types";
@@ -17,7 +17,7 @@ import { provideTemporal } from "./temporalContext";
  * ```typescript
  * const temporal = createTemporal({
  *   adapter: nativeAdapter,
- *   date: new Date()
+ *   date: ref(new Date())
  * });
  *
  * const year = temporal.period(new Date(), "year");
@@ -31,10 +31,8 @@ export function createTemporal(options: CreateTemporalOptions): TemporalBuilder 
     );
   }
 
-  const browsingDate = isRef(options.date) ? options.date : ref(options.date);
-  const nowDate = isRef(options.now)
-    ? options.now
-    : ref(options.now ?? new Date());
+  const browsingDate = options.date;
+  const nowDate = options.now ?? ref(new Date());
 
   // Create a reactive Period for browsing that represents a point in time
   const browsing = ref<Period>({
@@ -58,6 +56,7 @@ export function createTemporal(options: CreateTemporalOptions): TemporalBuilder 
   const temporal: VueTemporal = {
     adapter: options.adapter,
     weekStartsOn: options.weekStartsOn ?? 1, // Default to Monday
+    locale: options.locale ?? "en",
     browsing,
     now,
   };

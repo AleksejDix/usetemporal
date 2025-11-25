@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import path from "node:path";
 
 export default defineConfig({
   title: "useTemporal",
@@ -33,6 +34,11 @@ export default defineConfig({
         text: "Guide",
         link: "/guide/what-is-usetemporal",
         activeMatch: "/guide/",
+      },
+      {
+        text: "Frameworks",
+        link: "/frameworks/",
+        activeMatch: "/frameworks/",
       },
       { text: "API", link: "/api/index", activeMatch: "/api/" },
       {
@@ -123,6 +129,23 @@ export default defineConfig({
                 { text: "contains", link: "/api/operations/contains" },
               ],
             },
+          ],
+        },
+      ],
+
+      "/frameworks/": [
+        {
+          text: "Overview",
+          items: [{ text: "Frameworks", link: "/frameworks/" }],
+        },
+        {
+          text: "Implementations",
+          collapsed: false,
+          items: [
+            { text: "Vue 3", link: "/frameworks/vue" },
+            { text: "React 18+", link: "/frameworks/react" },
+            { text: "Svelte (Roadmap)", link: "/frameworks/svelte" },
+            { text: "Angular (Roadmap)", link: "/frameworks/angular" },
           ],
         },
       ],
@@ -266,7 +289,18 @@ export default defineConfig({
   },
 
   vite: {
-    // Vite config options
+    resolve: {
+      alias: {
+        "@allystudio/usetemporal-vue": path.resolve(
+          __dirname,
+          "../../packages/usetemporal-vue/src"
+        ),
+        "@allystudio/usetemporal/native": path.resolve(
+          __dirname,
+          "../../packages/usetemporal/src/native.ts"
+        ),
+      },
+    },
   },
 
   vue: {

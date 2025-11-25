@@ -1,0 +1,20 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@allystudio/usetemporal-vue": ["../packages/usetemporal-vue/src"],
+      "@allystudio/usetemporal/native": ["../packages/usetemporal/src/native.ts"]
+    },
+    "types": ["vitepress/client"]
+  },
+  "include": [
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.vue",
+    ".vitepress/**/*.d.ts",
+    "guide/**/*.md",
+    "frameworks/**/*.md",
+    "api/**/*.md",
+    "index.md"
+  ]
+}

@@ -88,6 +88,12 @@ console.log(`${month.start.toDateString()} has ${days.length} days`)
 console.log(`Next month: ${nextMonth.start.toDateString()}`)
 ```
 
+## Framework Integrations
+
+- [Vue 3 composables](/frameworks/vue) ship today via `@allystudio/usetemporal-vue`, complete with provide/inject helpers.
+- [React hooks](/frameworks/react) live in `@allystudio/usetemporal-react`, exposing `useTemporal()` and `usePeriod()`.
+- [Svelte](/frameworks/svelte) and [Angular](/frameworks/angular) integrations are already scoped and will follow the same pattern so every major framework feels native.
+
 ## Learn More
 
 ### Concepts & Patterns
