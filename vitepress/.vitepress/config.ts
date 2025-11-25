@@ -299,6 +299,10 @@ export default defineConfig({
           __dirname,
           "../../packages/usetemporal/src/native.ts"
         ),
+        "@allystudio/usetemporal/calendar": path.resolve(
+          __dirname,
+          "../../packages/usetemporal/src/calendar/index.ts"
+        ),
       },
     },
   },
