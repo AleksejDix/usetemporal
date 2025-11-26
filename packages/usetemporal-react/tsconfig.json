@@ -8,7 +8,7 @@
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "strict": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]

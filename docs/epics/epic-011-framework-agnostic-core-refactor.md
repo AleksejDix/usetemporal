@@ -496,8 +496,8 @@ TZ=UTC npm test  # All tests must pass
 npm run type-check  # No TypeScript errors
 
 # Framework integration tests
-cd examples/vue && npm run build
-cd examples/react && npm run build
+npm run demo:build --workspace=@allystudio/usetemporal-vue
+npm run demo:build --workspace=@allystudio/usetemporal-react
 ```
 
 ## Alignment with Project Philosophy

@@ -132,19 +132,37 @@ const temporal = createTemporal({ adapter, date });
 - `npm run build --workspace=@allystudio/usetemporal-vue`
 - `TZ=UTC npm test --workspace=@allystudio/usetemporal-vue`
 - `npm run type-check --workspace=@allystudio/usetemporal-vue`
-- `npm run demo --workspace=@allystudio/usetemporal-vue`
 
-## Demo playground
+## Example playground
 
-Run the interactive playground directly from this workspace to experiment with
-the composables:
+Run the bundled Vite playground directly from this workspace to experiment with
+the composables and shipped calendar component:
 
 ```bash
-npm run demo --workspace=@allystudio/usetemporal-vue
+cd packages/usetemporal-vue/examples
+npm install
+npm run dev
 ```
 
-The Vite app lives under `packages/usetemporal-vue/demo` and imports the
-library source directly, so any local changes are reflected instantly.
+It imports the workspace source directly, so any local changes are reflected
+instantly. You can also consume the packaged demo component via
+`@allystudio/usetemporal-vue/components`.
+
+## Components entry point
+
+`@allystudio/usetemporal-vue/components` ships ready-to-run Vue components that
+mirror our docs examples. Import the `CalendarExample` anywhere you want a quick
+sandbox:
+
+```vue
+<script setup lang="ts">
+import { CalendarExample } from "@allystudio/usetemporal-vue/components";
+</script>
+
+<template>
+  <CalendarExample />
+</template>
+```
 
 ## Documentation
 

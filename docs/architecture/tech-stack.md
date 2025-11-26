@@ -129,9 +129,9 @@ While the core is framework-agnostic, examples exist for:
 
 | Framework | Example Location | Integration Method |
 |-----------|-----------------|-------------------|
-| Vue.js | /examples/vue | Direct reactivity integration |
-| React | Planned | Via wrapper hooks |
-| Svelte | Planned | Via stores adapter |
+| Vue.js | /packages/usetemporal-vue/examples | Direct reactivity integration |
+| React | /packages/usetemporal-react/examples | Via wrapper hooks |
+| Svelte | /packages/usetemporal-svelte/examples | Via stores adapter |
 
 ## Browser Support
 

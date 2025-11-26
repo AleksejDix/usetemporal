@@ -188,8 +188,9 @@ const weeks = computed(() =>
 ```
 
 With this structure, every component reacts to navigation changes while keeping
-concerns isolated (header, grid, detail panes, etc.). Check `packages/usetemporal-vue/demo`
-for a runnable version of this pattern.
+concerns isolated (header, grid, detail panes, etc.). Check
+`packages/usetemporal-vue/src/components/CalendarExample.vue` (and the Vite app
+under `packages/usetemporal-vue/examples/`) for a runnable version of this pattern.
 
 ## API surface
 
