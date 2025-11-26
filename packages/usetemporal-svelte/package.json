@@ -1,0 +1,61 @@
+{
+  "name": "@allystudio/usetemporal-svelte",
+  "version": "0.0.0",
+  "description": "Svelte integration for useTemporal with reactive stores",
+  "author": "Aleksej Dix <git@aleksejdix.com>",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleksejDix/usetemporal.git",
+    "directory": "packages/usetemporal-svelte"
+  },
+  "bugs": {
+    "url": "https://github.com/AleksejDix/usetemporal/issues"
+  },
+  "homepage": "https://usetemporal.vercel.app",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": "./dist/types.d.ts"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "svelte",
+    "store",
+    "temporal",
+    "time",
+    "calendar"
+  ],
+  "scripts": {
+    "pretest": "npm run build --workspace=@allystudio/usetemporal",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@allystudio/usetemporal": "^2.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.1",
+    "@usetemporal/tsconfig": "^2.0.0-alpha.1",
+    "svelte": "^5.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.4.0",
+    "vitest": "^4.0.13"
+  },
+  "peerDependencies": {
+    "svelte": "^4.0.0 || ^5.0.0"
+  }
+}
