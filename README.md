@@ -259,4 +259,4 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 ## 📄 License
 
-MIT © [useTemporal Contributors](https://github.com/your-username/usetemporal/graphs/contributors)
+Apache 2.0 © [useTemporal Contributors](https://github.com/your-username/usetemporal/graphs/contributors)

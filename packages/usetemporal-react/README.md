@@ -270,4 +270,4 @@ Complete documentation available at https://usetemporal.vercel.app
 
 ## License
 
-MIT © Aleksej Dix
+Apache 2.0 © Aleksej Dix

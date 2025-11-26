@@ -3,7 +3,7 @@
   "version": "2.0.0-alpha.1",
   "type": "module",
   "description": "Revolutionary time library with unique divide() pattern for hierarchical time management",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "Aleksej Dix <git@aleksejdix.com>",
   "homepage": "https://usetemporal.vercel.app",
   "repository": {
