@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { Period } from "@allystudio/usetemporal";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { createTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
-import WeekNamesView from "./WeekNamesView.vue";
-
-const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+import YearView from "./YearView.vue";
+import MonthGrid from "./MonthGrid.vue";
+import WeekView from "./WeekView.vue";
 
 const initialDate = ref(new Date());
 const temporal = createTemporal({
@@ -15,17 +15,6 @@ const temporal = createTemporal({
 
 const month = usePeriod(temporal, "month");
 
-const weekdayLabels = computed(() => {
-  const start = temporal.weekStartsOn % 7;
-  return Array.from({ length: 7 }, (_, idx) => WEEKDAY_NAMES[(idx + start) % 7]);
-});
-
-const daysInMonth = computed(() => temporal.divide(month.value, "day"));
-const firstDayOffset = computed(() => {
-  const first = daysInMonth.value[0];
-  return first ? getOffset(first.start) + 1 : 1;
-});
-
 const selectedDay = ref<Period | null>(null);
 
 function selectDay(day: Period) {
@@ -34,12 +23,6 @@ function selectDay(day: Period) {
 
 function jump(period: Period, count: number) {
   temporal.go(period, count);
-}
-
-function getOffset(date: Date) {
-  const systemIndex = date.getDay(); // Sunday = 0
-  const start = temporal.weekStartsOn ?? 0;
-  return (systemIndex - start + 7) % 7;
 }
 </script>
 
@@ -69,32 +52,19 @@ function getOffset(date: Date) {
 </div>
 
 <CalendarHeader :unit="unit" />
-      <WeekNamesView class="weeknames" />
-
-      <div class="calendar-grid">
-      <div
-        v-for="label in weekdayLabels"
-        :key="label"
-        class="weekday-label"
-      >
-        {{ label }}
-      </div>
-      <button
-        v-for="(day, index) in daysInMonth"
-        :key="day.start.toISOString()"
-        class="day-cell"
-        :data-column-start="index === 0 ? firstDayOffset : undefined"
-        :class="{
-          'is-other-month': !temporal.contains(month, day.date),
-          'is-selected':
-            selectedDay?.start.getTime() === day.start.getTime(),
-          'is-today': temporal.isSame(day, temporal.now.value, 'day'),
-        }"
-        @click="selectDay(day)"
-      >
-        <span>{{ day.date.getDate() }}</span>
-      </button>
-      </div>
+      <template v-if="unit === 'year'">
+        <YearView :year="viewPeriod" />
+      </template>
+      <template v-else-if="unit === 'week'">
+        <WeekView :week="viewPeriod" />
+      </template>
+      <template v-else>
+        <MonthGrid
+          :month="month"
+          :selected-day="selectedDay"
+          @select="selectDay"
+        />
+      </template>
 
       <footer class="demo-footer">
         <div>
