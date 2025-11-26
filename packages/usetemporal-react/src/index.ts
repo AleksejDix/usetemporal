@@ -6,6 +6,7 @@ export type {
   UseTemporalOptions,
   TemporalBuilder,
 } from "./types";
+export { CalendarExample } from "./components/CalendarExample";
 
 export {
   period,

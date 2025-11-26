@@ -4,6 +4,25 @@ import { useTemporal, type UseTemporalOptions } from "./useTemporal";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 import type { Adapter } from "@allystudio/usetemporal";
 
+// Helper to suppress console errors and stderr for expected error tests
+function suppressErrorOutput<T>(fn: () => T): T {
+  // eslint-disable-next-line no-console
+  const originalConsoleError = console.error;
+  const originalStderrWrite = process.stderr.write;
+
+  // eslint-disable-next-line no-console
+  console.error = () => {};
+  process.stderr.write = () => true as any;
+
+  try {
+    return fn();
+  } finally {
+    // eslint-disable-next-line no-console
+    console.error = originalConsoleError;
+    process.stderr.write = originalStderrWrite;
+  }
+}
+
 describe("useTemporal", () => {
   let mockAdapter: Adapter;
   let testDate: Date;
@@ -19,11 +38,13 @@ describe("useTemporal", () => {
         date: testDate,
       } as UseTemporalOptions;
 
-      expect(() => {
-        renderHook(() => useTemporal(options));
-      }).toThrow(
-        "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."
-      );
+      suppressErrorOutput(() => {
+        expect(() => {
+          renderHook(() => useTemporal(options));
+        }).toThrow(
+          "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."
+        );
+      });
     });
 
     it("should throw error when adapter is null", () => {
@@ -32,9 +53,11 @@ describe("useTemporal", () => {
         adapter: null as any,
       };
 
-      expect(() => {
-        renderHook(() => useTemporal(options));
-      }).toThrow("A date adapter is required");
+      suppressErrorOutput(() => {
+        expect(() => {
+          renderHook(() => useTemporal(options));
+        }).toThrow("A date adapter is required");
+      });
     });
 
     it("should throw error when adapter is undefined", () => {
@@ -43,9 +66,11 @@ describe("useTemporal", () => {
         adapter: undefined as any,
       };
 
-      expect(() => {
-        renderHook(() => useTemporal(options));
-      }).toThrow("A date adapter is required");
+      suppressErrorOutput(() => {
+        expect(() => {
+          renderHook(() => useTemporal(options));
+        }).toThrow("A date adapter is required");
+      });
     });
   });
 

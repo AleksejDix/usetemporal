@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "types": ["svelte"],
+    "baseUrl": "examples",
+    "paths": {
+      "@allystudio/usetemporal-svelte": ["src"],
+      "@allystudio/usetemporal-svelte/components": ["src/components/index"]
+    }
+  },
+  "include": [
+    "examples/src/**/*.d.ts",
+    "examples/src/**/*.ts",
+    "examples/src/**/*.svelte"
+  ],
+  "exclude": ["examples/node_modules/**", "examples/dist/**"]
+}

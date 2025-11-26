@@ -120,6 +120,23 @@ function MonthCalendar() {
 }
 ```
 
+### Drop-in example component
+
+Need a ready-made playground? Import the packaged calendar straight from the
+components entry point:
+
+```tsx
+import { CalendarExample } from "@allystudio/usetemporal-react/components";
+
+export function Demo() {
+  return (
+    <main className="app-shell">
+      <CalendarExample />
+    </main>
+  );
+}
+```
+
 ## API
 
 ### `useTemporal(options: UseTemporalOptions): TemporalBuilder`
