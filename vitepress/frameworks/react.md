@@ -33,11 +33,11 @@ export function MonthCalendar() {
   return (
     <div>
       <header>
-        <button onClick={() => temporal.previous(temporal.browsing)}>Prev</button>
+        <button onClick={() => temporal.previous(month)}>Prev</button>
         <span>
           {month.date.toLocaleString("en-US", { month: "long", year: "numeric" })}
         </span>
-        <button onClick={() => temporal.next(temporal.browsing)}>Next</button>
+        <button onClick={() => temporal.next(month)}>Next</button>
       </header>
 
       <div className="weeks">

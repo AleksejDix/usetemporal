@@ -98,6 +98,31 @@ describe("React reactivity", () => {
   });
 
   describe("navigation reactivity", () => {
+    it("should update periods when navigating derived period", () => {
+      const { result: temporalResult } = renderHook(() =>
+        useTemporal({
+          date: testDate,
+          adapter: mockAdapter,
+        })
+      );
+
+      const { result: monthResult, rerender } = renderHook(() =>
+        usePeriod(temporalResult.current, "month")
+      );
+
+      const januaryMonth = monthResult.current;
+
+      act(() => {
+        temporalResult.current.next(monthResult.current);
+      });
+
+      rerender();
+
+      const februaryMonth = monthResult.current;
+      expect(februaryMonth).not.toBe(januaryMonth);
+      expect(februaryMonth.date.getMonth()).toBe(1);
+    });
+
     it("should trigger period update on next navigation", () => {
       const { result: temporalResult } = renderHook(() =>
         useTemporal({
