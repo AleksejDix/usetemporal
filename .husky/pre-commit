@@ -1,0 +1,2 @@
+npm run lint:workspaces
+npm run format:check

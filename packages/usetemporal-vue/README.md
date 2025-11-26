@@ -21,7 +21,11 @@ npm install @allystudio/usetemporal/native
 
 ```ts
 import { ref } from "vue";
-import { createTemporal, useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import {
+  createTemporal,
+  useTemporal,
+  usePeriod,
+} from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
 const date = ref(new Date());
@@ -73,12 +77,7 @@ const date = ref(new Date());
 </script>
 
 <template>
-  <Temporal
-    :adapter="adapter"
-    :date="date"
-    lang="zh-CN"
-    v-slot="{ temporal }"
-  >
+  <Temporal :adapter="adapter" :date="date" lang="zh-CN" v-slot="{ temporal }">
     <MonthHeader />
     <MonthGrid />
   </Temporal>

@@ -169,7 +169,7 @@ export function testAdapterCompliance(adapterName: string, adapter: Adapter) {
       it("should calculate year difference", () => {
         const diff = adapter.diff(date1, date2, "year");
         expect(diff).toBe(0); // Same year
-        
+
         const date3 = new Date(2026, 0, 1);
         const diff2 = adapter.diff(date1, date3, "year");
         expect(diff2).toBe(2);
@@ -242,29 +242,48 @@ export function testAdapterCompliance(adapterName: string, adapter: Adapter) {
 
     describe("consistency checks", () => {
       it("should be reversible: add then subtract", () => {
-        const units: AdapterUnit[] = ["year", "month", "week", "day", "hour", "minute", "second"];
-        
-        units.forEach(unit => {
+        const units: AdapterUnit[] = [
+          "year",
+          "month",
+          "week",
+          "day",
+          "hour",
+          "minute",
+          "second",
+        ];
+
+        units.forEach((unit) => {
           const added = adapter.add(testDate, 5, unit);
           const subtracted = adapter.add(added, -5, unit);
-          
+
           // Should return to original date (within millisecond precision)
-          expect(Math.abs(subtracted.getTime() - testDate.getTime())).toBeLessThan(1000);
+          expect(
+            Math.abs(subtracted.getTime() - testDate.getTime())
+          ).toBeLessThan(1000);
         });
       });
 
       it("should have consistent startOf/endOf relationship", () => {
-        const units: AdapterUnit[] = ["year", "month", "day", "hour", "minute", "second"];
-        
-        units.forEach(unit => {
+        const units: AdapterUnit[] = [
+          "year",
+          "month",
+          "day",
+          "hour",
+          "minute",
+          "second",
+        ];
+
+        units.forEach((unit) => {
           const start = adapter.startOf(testDate, unit);
           const end = adapter.endOf(testDate, unit);
-          
+
           // End should be after start
           expect(end.getTime()).toBeGreaterThan(start.getTime());
-          
+
           // Should be in the same period
-          expect(adapter.startOf(start, unit).getTime()).toBe(adapter.startOf(end, unit).getTime());
+          expect(adapter.startOf(start, unit).getTime()).toBe(
+            adapter.startOf(end, unit).getTime()
+          );
         });
       });
     });

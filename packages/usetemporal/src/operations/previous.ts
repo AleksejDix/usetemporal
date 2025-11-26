@@ -18,11 +18,7 @@ export function previous(adapter: Adapter, p: Period): Period {
     };
   }
 
-  const prevValue = adapter.add(
-    p.date,
-    -1,
-    p.type as AdapterUnit
-  );
+  const prevValue = adapter.add(p.date, -1, p.type as AdapterUnit);
 
   return period(adapter, prevValue, p.type as AdapterUnit);
 }

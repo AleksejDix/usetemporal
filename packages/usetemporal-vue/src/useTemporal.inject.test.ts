@@ -14,7 +14,7 @@ vi.mock("vue", async () => {
   const actual = (await vi.importActual<VueModule>("vue")) as VueModule;
   return {
     ...actual,
-    getCurrentInstance: () => (hasInstance ? ({}) : null),
+    getCurrentInstance: () => (hasInstance ? {} : null),
     provide: (key: symbol, value: TemporalBuilder) => {
       context.set(key, value);
     },
@@ -25,10 +25,10 @@ vi.mock("vue", async () => {
 describe("useTemporal injector", () => {
   const adapter = createNativeAdapter();
 
-beforeEach(() => {
-  context.clear();
-  hasInstance = false;
-});
+  beforeEach(() => {
+    context.clear();
+    hasInstance = false;
+  });
 
   it("injects the nearest provided temporal instance", () => {
     hasInstance = true;

@@ -9,7 +9,10 @@ export const dayHandler: UnitHandler = {
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
-      0, 0, 0, 0
+      0,
+      0,
+      0,
+      0
     );
   },
 
@@ -18,7 +21,10 @@ export const dayHandler: UnitHandler = {
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
-      23, 59, 59, 999
+      23,
+      59,
+      59,
+      999
     );
   },
 
@@ -29,7 +35,11 @@ export const dayHandler: UnitHandler = {
   },
 
   diff: (from: Date, to: Date): number => {
-    const fromStart = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    const fromStart = new Date(
+      from.getFullYear(),
+      from.getMonth(),
+      from.getDate()
+    );
     const toStart = new Date(to.getFullYear(), to.getMonth(), to.getDate());
     const diffMs = toStart.getTime() - fromStart.getTime();
     return Math.floor(diffMs / (24 * 60 * 60 * 1000));

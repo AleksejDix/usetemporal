@@ -44,7 +44,9 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist node_modules",
     "demo": "vite --config demo/vite.config.ts",
-    "demo:build": "vite build --config demo/vite.config.ts"
+    "demo:build": "vite build --config demo/vite.config.ts",
+    "lint": "oxlint --config ../../oxlint.vite.json .",
+    "lint:fix": "oxlint --config ../../oxlint.vite.json --fix ."
   },
   "dependencies": {
     "@allystudio/usetemporal": "^2.0.0-alpha.1",

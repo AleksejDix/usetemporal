@@ -19,7 +19,7 @@ export function isSame(
   adapter: Adapter,
   a: Period | null | undefined,
   b: Period | null | undefined,
-  unit: AdapterUnit | 'custom'
+  unit: AdapterUnit | "custom"
 ): boolean {
   if (!a || !b) return false;
 
@@ -31,15 +31,8 @@ export function isSame(
     return dateA.getTime() === dateB.getTime();
   }
 
-
   // For all other units, compare by checking if startOf values are equal
-  const startA = adapter.startOf(
-    dateA,
-    unit
-  );
-  const startB = adapter.startOf(
-    dateB,
-    unit
-  );
+  const startA = adapter.startOf(dateA, unit);
+  const startB = adapter.startOf(dateB, unit);
   return startA.getTime() === startB.getTime();
 }

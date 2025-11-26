@@ -30,8 +30,14 @@ const friendlyDate = computed(() =>
       <h3>{{ friendlyDate }}</h3>
     </header>
     <div class="day-timeline">
-      <div v-for="timestamp in guideSlots" :key="timestamp.toISOString()" class="timeline-row">
-        <span class="time">{{ timestamp.toLocaleTimeString("en", { hour: "numeric" }) }}</span>
+      <div
+        v-for="timestamp in guideSlots"
+        :key="timestamp.toISOString()"
+        class="timeline-row"
+      >
+        <span class="time">{{
+          timestamp.toLocaleTimeString("en", { hour: "numeric" })
+        }}</span>
         <div class="slot"></div>
       </div>
     </div>

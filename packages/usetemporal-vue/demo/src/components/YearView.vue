@@ -37,7 +37,9 @@ function select(month: Period) {
         :class="{ active: isActive(monthPeriod) }"
         @click="select(monthPeriod)"
       >
-        <span class="title">{{ monthPeriod.start.toLocaleDateString("en", { month: "short" }) }}</span>
+        <span class="title">{{
+          monthPeriod.start.toLocaleDateString("en", { month: "short" })
+        }}</span>
         <small>{{ temporal.divide(monthPeriod, "week").length }} weeks</small>
       </button>
     </div>

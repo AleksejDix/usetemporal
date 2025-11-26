@@ -17,7 +17,7 @@ const router = createRouter({
       path: '/:year(\\d{4})',
       name: 'year',
       component: () => import('../components/calendar/Calendar.vue'),
-      props: route => ({
+      props: (route) => ({
         view: 'year',
         year: parseInt(route.params.year as string),
       }),
@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/:year(\\d{4})/:week(\\d{1,2})',
       name: 'week',
       component: () => import('../components/calendar/Calendar.vue'),
-      props: route => ({
+      props: (route) => ({
         view: 'week',
         year: parseInt(route.params.year as string),
         week: parseInt(route.params.week as string),
@@ -36,7 +36,7 @@ const router = createRouter({
       path: '/:year(\\d{4})/:month(\\d{2})',
       name: 'month',
       component: () => import('../components/calendar/Calendar.vue'),
-      props: route => ({
+      props: (route) => ({
         view: 'month',
         year: parseInt(route.params.year as string),
         month: parseInt(route.params.month as string),
@@ -46,7 +46,7 @@ const router = createRouter({
       path: '/:year(\\d{4})/:month(\\d{2})/:day(\\d{2})',
       name: 'day',
       component: () => import('../components/calendar/Calendar.vue'),
-      props: route => ({
+      props: (route) => ({
         view: 'day',
         year: parseInt(route.params.year as string),
         month: parseInt(route.params.month as string),

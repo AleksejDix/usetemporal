@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="calendar-container">
     <div class="calendar-toolbar">
@@ -146,7 +145,7 @@ function getWeekNumber(date: Date): number {
   const dayNum = d.getUTCDay() || 7
   d.setUTCDate(d.getUTCDate() + 4 - dayNum)
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
-  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
 }
 
 // Navigate to a specific route based on view and date
@@ -211,9 +210,9 @@ watch(
       const month = params.month ? parseInt(params.month as string) - 1 : 0
       const day = params.day ? parseInt(params.day as string) : 1
       const week = params.week ? parseInt(params.week as string) : 1
-      
+
       const date = new Date(year, month, day)
-      
+
       // If week view, calculate date from week number
       if (route.name === 'week' && params.week) {
         const janFirst = new Date(year, 0, 1)
@@ -224,7 +223,7 @@ watch(
         const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)
         date.setDate(diff)
       }
-      
+
       temporal.browsing.value = {
         start: date,
         end: date,
@@ -233,7 +232,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 // Update currentView when route changes
@@ -244,7 +243,7 @@ watch(
       currentView.value = name as ViewType
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 

@@ -8,7 +8,6 @@ import { createTemporalAdapter } from "../adapters/temporal";
 
 // Run compliance tests for all adapters
 describe("Adapter Compliance Tests", () => {
-
   // Native adapter
   testAdapterCompliance("Native", createNativeAdapter({ weekStartsOn: 1 }));
 
@@ -16,7 +15,10 @@ describe("Adapter Compliance Tests", () => {
   testAdapterCompliance("date-fns", createDateFnsAdapter({ weekStartsOn: 1 }));
 
   // date-fns-tz adapter
-  testAdapterCompliance("date-fns-tz", createDateFnsTzAdapter({ timezone: "UTC", weekStartsOn: 1 }));
+  testAdapterCompliance(
+    "date-fns-tz",
+    createDateFnsTzAdapter({ timezone: "UTC", weekStartsOn: 1 })
+  );
 
   // Luxon adapter
   testAdapterCompliance("Luxon", createLuxonAdapter({ weekStartsOn: 1 }));

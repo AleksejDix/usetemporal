@@ -1,4 +1,10 @@
-import { derived, get, writable, type Readable, type Writable } from "svelte/store";
+import {
+  derived,
+  get,
+  writable,
+  type Readable,
+  type Writable,
+} from "svelte/store";
 import { period } from "@allystudio/usetemporal/operations";
 import type { Period } from "@allystudio/usetemporal";
 import { createTemporalBuilder } from "./builder";
@@ -27,7 +33,9 @@ function tryProvideTemporal(builder: TemporalBuilder) {
 /**
  * Creates a temporal instance with builder methods for Svelte.
  */
-export function createTemporal(options: CreateTemporalOptions): TemporalBuilder {
+export function createTemporal(
+  options: CreateTemporalOptions
+): TemporalBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."

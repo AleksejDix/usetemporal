@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  period,
-  divide,
-  contains,
-} from "..";
+import { period, divide, contains } from "..";
 import { createNativeAdapter } from "../adapters/native";
 import { createDateFnsAdapter } from "../adapters/date-fns";
 import { createLuxonAdapter } from "../adapters/luxon";
@@ -23,13 +19,19 @@ describe("StableMonth Unit", () => {
         const adapter = create();
         const weekStartsOn = 1;
 
-        const stableMonthPeriod = createStableMonth(adapter, weekStartsOn, date);
-        
+        const stableMonthPeriod = createStableMonth(
+          adapter,
+          weekStartsOn,
+          date
+        );
+
         // Calculate days between start and end
         const days = Math.round(
-          (stableMonthPeriod.end.getTime() - stableMonthPeriod.start.getTime()) / (1000 * 60 * 60 * 24)
+          (stableMonthPeriod.end.getTime() -
+            stableMonthPeriod.start.getTime()) /
+            (1000 * 60 * 60 * 24)
         );
-        
+
         expect(stableMonthPeriod.type).toBe("stableMonth");
         expect(days).toBe(42); // 42 days total
       });
@@ -65,11 +67,11 @@ describe("StableMonth Unit", () => {
         it("should respect weekStartsOn setting", () => {
           const date = new Date(2024, 0, 1); // Jan 1, 2024 (Monday)
           const adapter = create();
-          
+
           // Test with Sunday start
           const sundayMonth = createStableMonth(adapter, 0, date);
           expect(sundayMonth.start.getDay()).toBe(0); // Should start on Sunday
-          
+
           // Test with Monday start
           const mondayMonth = createStableMonth(adapter, 1, date);
           expect(mondayMonth.start.getDay()).toBe(1); // Should start on Monday
@@ -84,9 +86,9 @@ describe("StableMonth Unit", () => {
           const days = divide(adapter, stableMonth, "day");
 
           expect(days).toHaveLength(42);
-          
+
           // Check that we have days from January and March
-          const months = new Set(days.map(d => d.date.getMonth()));
+          const months = new Set(days.map((d) => d.date.getMonth()));
           expect(months.size).toBeGreaterThan(1); // Should span multiple months
         });
 
@@ -99,9 +101,9 @@ describe("StableMonth Unit", () => {
           const days = divide(adapter, stableMonth, "day");
 
           expect(days).toHaveLength(42);
-          
+
           // Check that we have days from different years
-          const years = new Set(days.map(d => d.date.getFullYear()));
+          const years = new Set(days.map((d) => d.date.getFullYear()));
           if (years.size > 1) {
             expect([...years]).toContain(2023);
             expect([...years]).toContain(2024);
@@ -115,20 +117,30 @@ describe("StableMonth Unit", () => {
           const weekStartsOn = 1;
 
           // Create stableMonth for different months manually
-          const january = createStableMonth(adapter, weekStartsOn, new Date(2024, 0, 15));
-          const february = createStableMonth(adapter, weekStartsOn, new Date(2024, 1, 15));
-          
+          const january = createStableMonth(
+            adapter,
+            weekStartsOn,
+            new Date(2024, 0, 15)
+          );
+          const february = createStableMonth(
+            adapter,
+            weekStartsOn,
+            new Date(2024, 1, 15)
+          );
+
           expect(january.type).toBe("stableMonth");
           expect(february.type).toBe("stableMonth");
-          
+
           // Both should be 42 days
           const janDays = Math.round(
-            (january.end.getTime() - january.start.getTime()) / (1000 * 60 * 60 * 24)
+            (january.end.getTime() - january.start.getTime()) /
+              (1000 * 60 * 60 * 24)
           );
           const febDays = Math.round(
-            (february.end.getTime() - february.start.getTime()) / (1000 * 60 * 60 * 24)
+            (february.end.getTime() - february.start.getTime()) /
+              (1000 * 60 * 60 * 24)
           );
-          
+
           expect(janDays).toBe(42);
           expect(febDays).toBe(42);
         });
@@ -141,11 +153,11 @@ describe("StableMonth Unit", () => {
           const weekStartsOn = 1;
 
           const stableMonth = createStableMonth(adapter, weekStartsOn, date);
-          
+
           // Date in the middle of the month
           const midMonthPeriod = period(adapter, new Date(2024, 0, 20), "day");
           expect(contains(stableMonth, midMonthPeriod)).toBe(true);
-          
+
           // Date from previous month that's included in the grid
           const earlyDate = new Date(stableMonth.start);
           const earlyPeriod = period(adapter, earlyDate, "day");
@@ -163,9 +175,13 @@ describe("StableMonth Unit", () => {
           // Same date should produce same boundaries
           expect(month1.start.getTime()).toBe(month2.start.getTime());
           expect(month1.end.getTime()).toBe(month2.end.getTime());
-          
+
           // Different month should have different boundaries
-          const february = createStableMonth(adapter, weekStartsOn, new Date(2024, 1, 15));
+          const february = createStableMonth(
+            adapter,
+            weekStartsOn,
+            new Date(2024, 1, 15)
+          );
           expect(month1.start.getTime()).not.toBe(february.start.getTime());
         });
       });
@@ -182,9 +198,9 @@ describe("StableMonth Unit", () => {
       const days = divide(adapter, stableMonth, "day");
 
       expect(days).toHaveLength(42);
-      
+
       // February 2024 has 29 days
-      const febDays = days.filter(d => d.date.getMonth() === 1);
+      const febDays = days.filter((d) => d.date.getMonth() === 1);
       expect(febDays.length).toBeLessThanOrEqual(29);
     });
 
@@ -196,10 +212,11 @@ describe("StableMonth Unit", () => {
       weekStarts.forEach((weekStartsOn) => {
         const stableMonth = createStableMonth(adapter, weekStartsOn, date);
         expect(stableMonth.start.getDay()).toBe(weekStartsOn);
-        
+
         // Always 42 days
         const days = Math.round(
-          (stableMonth.end.getTime() - stableMonth.start.getTime()) / (1000 * 60 * 60 * 24)
+          (stableMonth.end.getTime() - stableMonth.start.getTime()) /
+            (1000 * 60 * 60 * 24)
         );
         expect(days).toBe(42); // 42 days total
       });

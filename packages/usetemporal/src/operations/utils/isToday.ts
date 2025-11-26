@@ -13,12 +13,12 @@ export function isToday(adapter: Adapter, now: Date, p: Period): boolean {
   if (p.type !== "day") {
     return false;
   }
-  
+
   // Create a temporary period for the current date to compare with
   const nowPeriod: Period = {
     start: now,
     end: now,
-    type: 'day', // Type doesn't strictly matter as isSame looks at the date
+    type: "day", // Type doesn't strictly matter as isSame looks at the date
     date: now,
   };
 

@@ -12,7 +12,15 @@ const monthDays = computed(() => temporal.divide(currentMonth.value, "day"));
   <div class="temporal-test">
     <h3>Temporal Test Component</h3>
     <p>Today: {{ today.date.toLocaleDateString() }}</p>
-    <p>Current Month: {{ currentMonth.start.toLocaleDateString("en", { month: "long", year: "numeric" }) }}</p>
+    <p>
+      Current Month:
+      {{
+        currentMonth.start.toLocaleDateString("en", {
+          month: "long",
+          year: "numeric",
+        })
+      }}
+    </p>
     <p>Days in month: {{ monthDays.length }}</p>
     <p>This component gets temporal context from the Calendar component!</p>
   </div>

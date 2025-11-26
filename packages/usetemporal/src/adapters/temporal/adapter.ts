@@ -22,13 +22,11 @@ export function createTemporalAdapter(options?: {
 }): Adapter {
   // Check if Temporal API is available (should always be true now)
   if (typeof (globalThis as any).Temporal === "undefined") {
-    throw new Error(
-      "Temporal API is not available in this environment."
-    );
+    throw new Error("Temporal API is not available in this environment.");
   }
 
   const weekStartsOn = options?.weekStartsOn ?? 1;
-  
+
   // Create handlers map with proper typing
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: yearHandler,

@@ -15,7 +15,7 @@ export function createDateFnsAdapter(options?: {
   weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }): Adapter {
   const weekStartsOn = options?.weekStartsOn ?? 1;
-  
+
   // Create handlers map with proper typing
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: yearHandler,

@@ -10,7 +10,9 @@ export const hourHandler: UnitHandler = {
       date.getMonth(),
       date.getDate(),
       date.getHours(),
-      0, 0, 0
+      0,
+      0,
+      0
     );
   },
 
@@ -20,7 +22,9 @@ export const hourHandler: UnitHandler = {
       date.getMonth(),
       date.getDate(),
       date.getHours(),
-      59, 59, 999
+      59,
+      59,
+      999
     );
   },
 

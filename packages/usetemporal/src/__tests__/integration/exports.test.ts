@@ -9,12 +9,14 @@ describe("Export Verification Tests", () => {
       // operations.ts should have same exports as operations/index.ts
       const operationsKeys = Object.keys(operationsExports).sort();
       const operationsIndexKeys = Object.keys(operationsIndex).sort();
-      
+
       expect(operationsKeys).toEqual(operationsIndexKeys);
-      
+
       // Verify each export is the same function
-      operationsKeys.forEach(key => {
-        expect((operationsExports as Record<string, any>)[key]).toBe((operationsIndex as Record<string, any>)[key]);
+      operationsKeys.forEach((key) => {
+        expect((operationsExports as Record<string, any>)[key]).toBe(
+          (operationsIndex as Record<string, any>)[key]
+        );
       });
     });
 
@@ -31,12 +33,14 @@ describe("Export Verification Tests", () => {
         "split",
         "isWeekend",
         "isWeekday",
-        "isToday"
+        "isToday",
       ];
 
-      expectedOperations.forEach(op => {
+      expectedOperations.forEach((op) => {
         expect((operationsExports as Record<string, any>)[op]).toBeDefined();
-        expect(typeof (operationsExports as Record<string, any>)[op]).toBe("function");
+        expect(typeof (operationsExports as Record<string, any>)[op]).toBe(
+          "function"
+        );
       });
     });
   });
@@ -55,21 +59,25 @@ describe("Export Verification Tests", () => {
         "isSame",
       ];
 
-      expectedOperations.forEach(op => {
+      expectedOperations.forEach((op) => {
         expect((mainExports as Record<string, any>)[op]).toBeDefined();
-        expect(typeof (mainExports as Record<string, any>)[op]).toBe("function");
+        expect(typeof (mainExports as Record<string, any>)[op]).toBe(
+          "function"
+        );
         // Should be same function as from operations
-        expect((mainExports as Record<string, any>)[op]).toBe((operationsExports as Record<string, any>)[op]);
+        expect((mainExports as Record<string, any>)[op]).toBe(
+          (operationsExports as Record<string, any>)[op]
+        );
       });
     });
 
     it("should export utility functions", () => {
       expect(mainExports.isWeekend).toBeDefined();
       expect(typeof mainExports.isWeekend).toBe("function");
-      
+
       expect(mainExports.isWeekday).toBeDefined();
       expect(typeof mainExports.isWeekday).toBe("function");
-      
+
       expect(mainExports.isToday).toBeDefined();
       expect(typeof mainExports.isToday).toBe("function");
     });
@@ -77,7 +85,7 @@ describe("Export Verification Tests", () => {
     it("should export unit constants", () => {
       expect(mainExports.UNITS).toBeDefined();
       expect(typeof mainExports.UNITS).toBe("object");
-      
+
       // Check UNITS object has all properties
       expect(mainExports.UNITS.year).toBe("year");
       expect(mainExports.UNITS.quarter).toBe("quarter");
@@ -88,22 +96,24 @@ describe("Export Verification Tests", () => {
       expect(mainExports.UNITS.minute).toBe("minute");
       expect(mainExports.UNITS.second).toBe("second");
       expect(mainExports.UNITS.custom).toBe("custom");
-      
+
       const expectedUnits = [
         "YEAR",
-        "QUARTER", 
+        "QUARTER",
         "MONTH",
         "WEEK",
         "DAY",
         "HOUR",
         "MINUTE",
         "SECOND",
-        "CUSTOM"
+        "CUSTOM",
       ];
 
-      expectedUnits.forEach(unit => {
+      expectedUnits.forEach((unit) => {
         expect((mainExports as Record<string, any>)[unit]).toBeDefined();
-        expect(typeof (mainExports as Record<string, any>)[unit]).toBe("string");
+        expect(typeof (mainExports as Record<string, any>)[unit]).toBe(
+          "string"
+        );
       });
 
       // Verify individual constants match UNITS object values
@@ -118,18 +128,16 @@ describe("Export Verification Tests", () => {
       expect(mainExports.CUSTOM).toBe(mainExports.UNITS.custom);
     });
 
-    
-
     it("should not export internal implementation details", () => {
       // These should NOT be exported
       const internalDetails = [
         "isAdapterUnit",
         "isLeapYear",
         "createNativeAdapter", // This comes from adapter packages
-        "mockAdapter" // Test utilities
+        "mockAdapter", // Test utilities
       ];
 
-      internalDetails.forEach(internal => {
+      internalDetails.forEach((internal) => {
         expect((mainExports as Record<string, any>)[internal]).toBeUndefined();
       });
     });
@@ -148,8 +156,10 @@ describe("Export Verification Tests", () => {
         "isSame",
       ];
 
-      operationNames.forEach(op => {
-        expect((mainExports as Record<string, any>)[op]).toBe((operationsExports as Record<string, any>)[op]);
+      operationNames.forEach((op) => {
+        expect((mainExports as Record<string, any>)[op]).toBe(
+          (operationsExports as Record<string, any>)[op]
+        );
       });
     });
   });
@@ -165,7 +175,7 @@ describe("Export Verification Tests", () => {
         "period", // Core operation
       ];
 
-      typeRelatedExports.forEach(name => {
+      typeRelatedExports.forEach((name) => {
         expect(exportedNames).toContain(name);
       });
     });
@@ -180,19 +190,19 @@ describe("Export Verification Tests", () => {
         // Operations
         "divide",
         "next",
-        "previous", 
+        "previous",
         "go",
         "contains",
         "period",
         "split",
         "merge",
         "isSame",
-        
+
         // Utils
         "isWeekend",
         "isWeekday",
         "isToday",
-        
+
         // Constants
         "UNITS", // Object with unit values
         "YEAR",
@@ -204,11 +214,9 @@ describe("Export Verification Tests", () => {
         "MINUTE",
         "SECOND",
         "CUSTOM",
-        
-
       ];
 
-      minimumExports.forEach(exportName => {
+      minimumExports.forEach((exportName) => {
         expect(coreExports).toContain(exportName);
       });
 
@@ -219,7 +227,7 @@ describe("Export Verification Tests", () => {
     it("should not have duplicate exports", () => {
       const exportNames = Object.keys(mainExports);
       const uniqueNames = [...new Set(exportNames)];
-      
+
       expect(exportNames.length).toBe(uniqueNames.length);
     });
   });
@@ -227,22 +235,22 @@ describe("Export Verification Tests", () => {
   describe("Performance", () => {
     it("should complete all export tests in under 100ms", () => {
       const start = performance.now();
-      
+
       // Access all exports to ensure they're loaded
-      Object.keys(mainExports).forEach(key => {
+      Object.keys(mainExports).forEach((key) => {
         const value = (mainExports as Record<string, any>)[key];
-        if (typeof value === 'function') {
+        if (typeof value === "function") {
           expect(value).toBeDefined();
         }
       });
 
-      Object.keys(operationsExports).forEach(key => {
+      Object.keys(operationsExports).forEach((key) => {
         const value = (operationsExports as Record<string, any>)[key];
-        if (typeof value === 'function') {
+        if (typeof value === "function") {
           expect(value).toBeDefined();
         }
       });
-      
+
       const duration = performance.now() - start;
       expect(duration).toBeLessThan(100);
     });

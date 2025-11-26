@@ -35,14 +35,19 @@ export interface UnitRegistry {
  * Extensible via module augmentation of UnitRegistry
  */
 export type AdapterUnit = keyof UnitRegistry;
-export type Unit = AdapterUnit | "custom" | "stableMonth" | "stableYear" | (string & {});
+export type Unit =
+  | AdapterUnit
+  | "custom"
+  | "stableMonth"
+  | "stableYear"
+  | (string & {});
 
 /**
  * All available time unit constants grouped for better autocomplete and imports.
- * 
+ *
  * @example
  * import { UNITS } from '@usetemporal/core'
- * 
+ *
  * // Better autocomplete
  * const months = divide(temporal, year, UNITS.month)
  * const days = divide(temporal, month, UNITS.day)
@@ -104,7 +109,6 @@ export interface AdapterOptions {
  * Known adapter units (units that adapters must implement)
  */
 
-
 /**
  * Simplified functional adapter interface (RFC 015)
  * Only 4 core operations needed for date manipulation
@@ -112,16 +116,8 @@ export interface AdapterOptions {
 export interface Adapter {
   startOf(date: Date, unit: AdapterUnit): Date;
   endOf(date: Date, unit: AdapterUnit): Date;
-  add(
-    date: Date,
-    amount: number,
-    unit: AdapterUnit
-  ): Date;
-  diff(
-    from: Date,
-    to: Date,
-    unit: AdapterUnit
-  ): number;
+  add(date: Date, amount: number, unit: AdapterUnit): Date;
+  diff(from: Date, to: Date, unit: AdapterUnit): number;
 }
 
 /**

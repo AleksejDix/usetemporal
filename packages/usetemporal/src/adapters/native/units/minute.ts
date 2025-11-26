@@ -11,7 +11,8 @@ export const minuteHandler: UnitHandler = {
       date.getDate(),
       date.getHours(),
       date.getMinutes(),
-      0, 0
+      0,
+      0
     );
   },
 
@@ -22,7 +23,8 @@ export const minuteHandler: UnitHandler = {
       date.getDate(),
       date.getHours(),
       date.getMinutes(),
-      59, 999
+      59,
+      999
     );
   },
 

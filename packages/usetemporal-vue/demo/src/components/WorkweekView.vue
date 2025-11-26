@@ -24,8 +24,12 @@ const workingDays = computed(() =>
     </header>
     <div class="workweek-list">
       <article v-for="day in workingDays" :key="day.start.toISOString()">
-        <strong>{{ day.start.toLocaleDateString("en", { weekday: "long" }) }}</strong>
-        <small>{{ day.start.toLocaleDateString("en", { month: "short", day: "numeric" }) }}</small>
+        <strong>{{
+          day.start.toLocaleDateString("en", { weekday: "long" })
+        }}</strong>
+        <small>{{
+          day.start.toLocaleDateString("en", { month: "short", day: "numeric" })
+        }}</small>
       </article>
     </div>
   </section>

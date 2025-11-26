@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { get } from "svelte/store";
-  import type { Readable } from "svelte/store";
+  import { get, type Readable } from "svelte/store";
   import type { Period } from "@allystudio/usetemporal";
   import { useTemporal } from "@allystudio/usetemporal-svelte";
 
-  export let month: Readable<Period>;
+  export let month!: Readable<Period>;
 
   const temporal = useTemporal();
 

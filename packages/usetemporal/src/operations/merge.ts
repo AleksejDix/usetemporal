@@ -4,7 +4,11 @@ import { period } from "./period";
 /**
  * Merge multiple periods into a single period
  */
-export function merge(adapter: Adapter, periods: Period[], targetUnit?: AdapterUnit): Period | null {
+export function merge(
+  adapter: Adapter,
+  periods: Period[],
+  targetUnit?: AdapterUnit
+): Period | null {
   if (periods.length === 0) {
     // Return current period with the target unit (or 'day' if not specified)
     const unit = targetUnit || "day";

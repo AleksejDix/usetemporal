@@ -10,13 +10,15 @@ const alias = {
   "@allystudio/usetemporal/temporal": resolve(coreRoot, "temporal.ts"),
   "@allystudio/usetemporal/operations": resolve(coreRoot, "operations.ts"),
 };
+const baseResolve = viteConfig.resolve ?? {};
+const baseAlias = baseResolve.alias ?? {};
 
 export default defineConfig({
   ...viteConfig,
   resolve: {
-    ...(viteConfig.resolve ?? {}),
+    ...baseResolve,
     alias: {
-      ...(viteConfig.resolve?.alias ?? {}),
+      ...baseAlias,
       ...alias,
     },
   },

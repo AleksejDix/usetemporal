@@ -7,20 +7,20 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       formats: ["es"],
-      fileName: "index"
+      fileName: "index",
     },
     rollupOptions: {
-      external: [/^@allystudio\/usetemporal/, "react"]
-    }
+      external: [/^@allystudio\/usetemporal/, "react"],
+    },
   },
   plugins: [
     dts({
       include: ["src/**/*.ts", "src/**/*.tsx"],
-      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx"]
-    })
+      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    }),
   ],
   test: {
     environment: "jsdom",
-    setupFiles: resolve(__dirname, "../../vitest.setup.ts")
-  }
+    setupFiles: resolve(__dirname, "../../vitest.setup.ts"),
+  },
 });

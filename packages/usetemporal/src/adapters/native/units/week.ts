@@ -3,7 +3,9 @@ import type { UnitHandler } from "../../../types";
 /**
  * Create week unit handler with configurable week start day
  */
-export function createWeekHandler(weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 1): UnitHandler {
+export function createWeekHandler(
+  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = 1
+): UnitHandler {
   return {
     startOf: (date: Date): Date => {
       const d = new Date(date);

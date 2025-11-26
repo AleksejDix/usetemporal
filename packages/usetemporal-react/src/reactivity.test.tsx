@@ -200,17 +200,16 @@ describe("React reactivity", () => {
 
   describe("adapter reactivity", () => {
     it("should update periods when adapter changes", () => {
-      const { result: temporalResult, rerender: rerenderTemporal } =
-        renderHook(
-          ({ adapter }) =>
-            useTemporal({
-              date: testDate,
-              adapter,
-            }),
-          {
-            initialProps: { adapter: mockAdapter },
-          }
-        );
+      const { result: temporalResult, rerender: rerenderTemporal } = renderHook(
+        ({ adapter }) =>
+          useTemporal({
+            date: testDate,
+            adapter,
+          }),
+        {
+          initialProps: { adapter: mockAdapter },
+        }
+      );
 
       const { result: monthResult, rerender: rerenderMonth } = renderHook(() =>
         usePeriod(temporalResult.current, "month")
