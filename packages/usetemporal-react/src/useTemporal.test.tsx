@@ -287,7 +287,7 @@ describe("useTemporal", () => {
       expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
     });
 
-    it("should not update browsing when navigating non-browsing period", () => {
+    it("should update browsing when navigating non-browsing period", () => {
       const { result } = renderHook(() =>
         useTemporal({
           date: testDate,
@@ -295,18 +295,16 @@ describe("useTemporal", () => {
         })
       );
 
-      const otherPeriod = result.current.period(
-        new Date(2025, 0, 1),
-        "month"
-      );
+      const otherPeriod = result.current.period(new Date(2025, 0, 1), "month");
       const initialBrowsing = result.current.browsing;
 
       act(() => {
         result.current.next(otherPeriod);
       });
 
-      // Browsing should not change since we navigated a different period
-      expect(result.current.browsing).toEqual(initialBrowsing);
+      expect(result.current.browsing).not.toEqual(initialBrowsing);
+      expect(result.current.browsing.date.getMonth()).toBe(1);
+      expect(result.current.browsing.date.getFullYear()).toBe(2025);
     });
   });
 

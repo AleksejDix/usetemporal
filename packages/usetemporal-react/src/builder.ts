@@ -54,10 +54,7 @@ export function createTemporalBuilder(
           ? ops.next(temporal.adapter, period)
           : ops.go(temporal.adapter, period, count);
 
-      // Update browsing state if navigating current browsing period
-      if (period === temporal.browsing) {
-        setBrowsingDate(result.date);
-      }
+      setBrowsingDate(result.date);
 
       return result;
     },
@@ -68,10 +65,7 @@ export function createTemporalBuilder(
           ? ops.previous(temporal.adapter, period)
           : ops.go(temporal.adapter, period, -count);
 
-      // Update browsing state if navigating current browsing period
-      if (period === temporal.browsing) {
-        setBrowsingDate(result.date);
-      }
+      setBrowsingDate(result.date);
 
       return result;
     },
@@ -79,10 +73,7 @@ export function createTemporalBuilder(
     go(period: Period, count: number): Period {
       const result = ops.go(temporal.adapter, period, count);
 
-      // Update browsing state if navigating current browsing period
-      if (period === temporal.browsing) {
-        setBrowsingDate(result.date);
-      }
+      setBrowsingDate(result.date);
 
       return result;
     },

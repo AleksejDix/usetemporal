@@ -31,10 +31,10 @@ function Calendar() {
 
   return (
     <div>
-      <button onClick={() => temporal.previous(temporal.browsing)}>
+      <button onClick={() => temporal.previous(month)}>
         Previous
       </button>
-      <button onClick={() => temporal.next(temporal.browsing)}>
+      <button onClick={() => temporal.next(month)}>
         Next
       </button>
       {/* Render calendar using weeks */}
@@ -92,7 +92,7 @@ function MonthCalendar() {
   return (
     <div className="calendar">
       <header>
-        <button onClick={() => temporal.previous(temporal.browsing)}>
+        <button onClick={() => temporal.previous(month)}>
           ←
         </button>
         <h2>
@@ -101,7 +101,7 @@ function MonthCalendar() {
             year: "numeric",
           })}
         </h2>
-        <button onClick={() => temporal.next(temporal.browsing)}>
+        <button onClick={() => temporal.next(month)}>
           →
         </button>
       </header>
@@ -177,9 +177,9 @@ const months = temporal.divide(year, "month");
 const merged = temporal.merge(months.slice(0, 3));
 
 // Navigate (automatically updates browsing state)
-temporal.next(temporal.browsing);
-temporal.previous(temporal.browsing);
-temporal.go(temporal.browsing, 5);
+temporal.next(months[0]);
+temporal.previous(months[0]);
+temporal.go(months[0], 5);
 
 // Utilities
 temporal.split(period, date);
@@ -228,26 +228,24 @@ import {
 
 ## Navigation State Management
 
-When navigating the `browsing` period, the hook automatically updates state:
+Navigation helpers always keep `browsing` in sync with the period you pass,
+making it safe to drive state changes from derived periods.
 
 ```tsx
 const temporal = useTemporal({ adapter, date: new Date() });
 const month = usePeriod(temporal, "month");
 
-// This triggers state update and re-render
-temporal.next(temporal.browsing);
+// Derived navigation reuses the same helpers
+temporal.next(month);
 
-// Month automatically updates
+// The memoized month recomputes automatically
 console.log(month.date); // New date after navigation
-```
 
-Navigating other periods doesn't affect browsing state:
-
-```tsx
 const otherPeriod = temporal.period(new Date(2025, 0, 1), "month");
 
-// This doesn't update browsing state
-temporal.next(otherPeriod);
+// Any navigation updates browsing
+temporal.previous(otherPeriod);
+console.log(temporal.browsing.date); // Reflects the previous month
 ```
 
 ## Testing
