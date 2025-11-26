@@ -1,8 +1,8 @@
-export { createTemporal } from "./createTemporal";
+// export { createTemporal } from "./createTemporal"; // Deprecated - use useTemporal
 export { useTemporal } from "./useTemporal";
 export { usePeriod } from "./usePeriod";
 export { createTemporalBuilder } from "./builder";
-export { default as Temporal } from "./components/Temporal.vue";
+export { Temporal, CalendarExample } from "./components";
 export type {
   VueTemporal,
   CreateTemporalOptions,

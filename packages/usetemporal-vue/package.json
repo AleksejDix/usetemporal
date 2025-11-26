@@ -23,6 +23,10 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
     "./types": "./dist/types.d.ts"
   },
   "main": "./dist/index.js",
@@ -39,12 +43,12 @@
   "scripts": {
     "pretest": "npm run build --workspace=@allystudio/usetemporal",
     "build": "vite build",
+    "dev": "vite --mode demo",
+    "demo:build": "vite build --mode demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist node_modules",
-    "demo": "vite --config demo/vite.config.ts",
-    "demo:build": "vite build --config demo/vite.config.ts",
     "lint": "oxlint --config ../../oxlint.vite.json .",
     "lint:fix": "oxlint --config ../../oxlint.vite.json --fix ."
   },

@@ -15,6 +15,6 @@ yarn.lock
 .gemini-tmp
 CHANGELOG.md
 docs/
-examples/vue/playwright-report/
-examples/vue/test-results/
+packages/usetemporal-vue/examples/playwright-report/
+packages/usetemporal-vue/examples/test-results/
 vitepress/

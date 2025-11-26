@@ -13,8 +13,7 @@
     "url": "https://github.com/AleksejDix/usetemporal/issues"
   },
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "packages/*"
   ],
   "scripts": {
     "prepare": "husky",
@@ -28,6 +27,12 @@
     "test:workspaces": "npm run test --workspaces --if-present",
     "test:vue": "npm run build --workspace=@allystudio/usetemporal && TZ=UTC npm run test --workspace=@allystudio/usetemporal-vue",
     "dev": "npm run dev --workspace=@allystudio/usetemporal",
+    "dev:react": "npm run dev --workspace=@allystudio/usetemporal-react",
+    "dev:vue": "npm run dev --workspace=@allystudio/usetemporal-vue",
+    "dev:svelte": "npm run dev --workspace=@allystudio/usetemporal-svelte",
+    "demo:build:react": "npm run demo:build --workspace=@allystudio/usetemporal-react",
+    "demo:build:vue": "npm run demo:build --workspace=@allystudio/usetemporal-vue",
+    "demo:build:svelte": "npm run demo:build --workspace=@allystudio/usetemporal-svelte",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "lint:workspaces": "npm run lint --workspaces --if-present",
@@ -40,8 +45,9 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
     "@js-temporal/polyfill": "^0.5.1",
-    "jsdom": "^25.0.1",
+    "@tsconfig/svelte": "^5.0.6",
     "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
     "oxlint": "^1.29.0",
     "prettier": "^3.6.2",
     "vite": "^7.2.4",

@@ -84,6 +84,18 @@ weekStartsOn.set(0); // recompute derived periods through store updates
   Returns a derived store that updates when `browsing` or the unit store
   changes.
 
+## Drop-in component
+
+Need a working calendar fast? Import the packaged component:
+
+```svelte
+<script lang="ts">
+  import { CalendarExample } from "@allystudio/usetemporal-svelte/components";
+</script>
+
+<CalendarExample />
+```
+
 ## Scripts
 
 - `npm run build --workspace=@allystudio/usetemporal-svelte`

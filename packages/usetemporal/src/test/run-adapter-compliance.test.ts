@@ -17,7 +17,8 @@ describe("Adapter Compliance Tests", () => {
   // date-fns-tz adapter
   testAdapterCompliance(
     "date-fns-tz",
-    createDateFnsTzAdapter({ timezone: "UTC", weekStartsOn: 1 })
+    createDateFnsTzAdapter({ timezone: "UTC", weekStartsOn: 1 }),
+    { timezone: "UTC" }
   );
 
   // Luxon adapter

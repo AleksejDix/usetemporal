@@ -1,4 +1,4 @@
-export { createTemporal } from "./createTemporal";
+// export { createTemporal } from "./createTemporal"; // Deprecated - use useTemporal
 export { useTemporal } from "./useTemporal";
 export { usePeriod } from "./usePeriod";
 export { createTemporalBuilder } from "./builder";
@@ -7,6 +7,7 @@ export type {
   CreateTemporalOptions,
   TemporalBuilder,
 } from "./types";
+export { CalendarExample, Navigator } from "./components";
 
 export {
   period,

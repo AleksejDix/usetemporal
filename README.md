@@ -186,6 +186,22 @@ Visit our [documentation site](https://usetemporal.dev) for:
 - [API Reference](https://usetemporal.dev/api/)
 - [Examples](https://usetemporal.dev/examples/)
 
+## 🧪 Framework demos
+
+Run the live playgrounds straight from the repository root using the shared package Vite configs:
+
+```bash
+npm run dev:react         # Launch @allystudio/usetemporal-react demo
+npm run dev:vue           # Launch @allystudio/usetemporal-vue demo
+npm run dev:svelte        # Launch @allystudio/usetemporal-svelte demo
+
+npm run demo:build:react  # Build React demo assets
+npm run demo:build:vue    # Build Vue demo assets
+npm run demo:build:svelte # Build Svelte demo assets
+```
+
+Each script proxies to `npm run dev` / `npm run demo:build` inside the respective package, so no extra installs are required—just run the command and open the printed URL.
+
 ## 🔌 Date Adapters
 
 > **Important**: Starting with v2.0.0, all adapters are bundled in `@allystudio/usetemporal`. Individual adapter packages are deprecated. See the [migration guide](docs/MIGRATION-ADAPTERS.md) for details.

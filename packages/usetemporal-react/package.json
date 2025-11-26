@@ -23,6 +23,10 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
     "./types": "./dist/types.d.ts"
   },
   "main": "./dist/index.js",
@@ -37,6 +41,8 @@
   ],
   "scripts": {
     "build": "vite build",
+    "dev": "vite --mode demo",
+    "demo:build": "vite build --mode demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
@@ -48,6 +54,7 @@
     "@allystudio/usetemporal": "^2.0.0-alpha.1"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
     "@testing-library/react": "^14.0.0",
     "@types/node": "^22.12.1",
     "@types/react": "^18.0.0",
