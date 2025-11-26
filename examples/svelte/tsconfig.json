@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "types": ["svelte"],
+    "baseUrl": ".",
+    "paths": {
+      "@allystudio/usetemporal-svelte": [
+        "../../packages/usetemporal-svelte/src"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte"
+  ],
+  "exclude": [
+    "node_modules/**",
+    "dist/**"
+  ]
+}

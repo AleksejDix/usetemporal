@@ -17,3 +17,15 @@ const formatter = new Intl.DateTimeFormat(temporal.locale, { weekday: "short" })
     </span>
   </div>
 </template>
+
+<style scoped>
+.week-names-view {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vp-c-text-2);
+}
+</style>
