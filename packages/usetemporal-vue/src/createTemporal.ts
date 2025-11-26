@@ -1,7 +1,11 @@
 import { computed, getCurrentInstance, ref } from "vue";
 import type { Period } from "@allystudio/usetemporal";
 import { createTemporalBuilder } from "./builder";
-import type { TemporalBuilder, CreateTemporalOptions, VueTemporal } from "./types";
+import type {
+  TemporalBuilder,
+  CreateTemporalOptions,
+  VueTemporal,
+} from "./types";
 import { provideTemporal } from "./temporalContext";
 
 /**
@@ -24,7 +28,9 @@ import { provideTemporal } from "./temporalContext";
  * const months = temporal.divide(year, "month");
  * ```
  */
-export function createTemporal(options: CreateTemporalOptions): TemporalBuilder {
+export function createTemporal(
+  options: CreateTemporalOptions
+): TemporalBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."

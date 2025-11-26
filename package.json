@@ -17,6 +17,7 @@
     "examples/*"
   ],
   "scripts": {
+    "prepare": "husky",
     "build": "npm run build --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -28,6 +29,7 @@
     "test:vue": "npm run build --workspace=@allystudio/usetemporal && TZ=UTC npm run test --workspace=@allystudio/usetemporal-vue",
     "dev": "npm run dev --workspace=@allystudio/usetemporal",
     "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
     "lint:workspaces": "npm run lint --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -39,6 +41,7 @@
     "@changesets/cli": "^2.27.0",
     "@js-temporal/polyfill": "^0.5.1",
     "jsdom": "^25.0.1",
+    "husky": "^9.1.7",
     "oxlint": "^1.29.0",
     "prettier": "^3.6.2",
     "vite": "^7.2.4",

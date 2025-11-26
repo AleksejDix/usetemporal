@@ -1,4 +1,9 @@
-import type { Adapter, AdapterUnit, Period, Unit } from "@allystudio/usetemporal";
+import type {
+  Adapter,
+  AdapterUnit,
+  Period,
+  Unit,
+} from "@allystudio/usetemporal";
 import type { ComputedRef, Ref } from "vue";
 
 /**
@@ -43,4 +48,10 @@ export interface TemporalBuilder extends VueTemporal {
   ): boolean;
 }
 
-export type { Adapter, AdapterUnit, Period, Unit, Duration } from "@allystudio/usetemporal";
+export type {
+  Adapter,
+  AdapterUnit,
+  Period,
+  Unit,
+  Duration,
+} from "@allystudio/usetemporal";

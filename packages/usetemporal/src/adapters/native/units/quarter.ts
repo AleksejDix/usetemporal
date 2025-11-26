@@ -15,7 +15,15 @@ export const quarterHandler: UnitHandler = {
     const quarterStartMonth = Math.floor(month / 3) * 3;
     const quarterEndMonth = quarterStartMonth + 2;
     // Get last day of quarter by going to next month's day 0
-    return new Date(date.getFullYear(), quarterEndMonth + 1, 0, 23, 59, 59, 999);
+    return new Date(
+      date.getFullYear(),
+      quarterEndMonth + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
   },
 
   add: (date: Date, amount: number): Date => {

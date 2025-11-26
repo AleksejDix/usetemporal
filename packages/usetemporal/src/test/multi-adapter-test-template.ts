@@ -1,28 +1,28 @@
 /**
  * Template for converting existing tests to multi-adapter tests
- * 
+ *
  * BEFORE (single adapter):
  * ```typescript
  * import { createNativeAdapter } from "../adapters/native";
- * 
+ *
  * describe("myOperation", () => {
  *   const temporal = createTemporal({
  *     adapter: createNativeAdapter({ weekStartsOn: 1 }),
  *   });
- *   
+ *
  *   it("should do something", () => {
  *     // test
  *   });
  * });
  * ```
- * 
+ *
  * AFTER (multi-adapter):
  * ```typescript
  * import { withAllAdapters } from "../test/shared-adapter-tests";
- * 
+ *
  * withAllAdapters("myOperation", (adapter) => {
  *   const temporal = createTemporal({ adapter });
- *   
+ *
  *   it("should do something", () => {
  *     // test
  *   });
@@ -81,19 +81,25 @@ export function example2() {
 
 // Example 3: Adapter-specific behavior
 export function example3() {
-  withAllAdapters("operation with adapter-specific behavior", (_, adapterName) => {
-    it("common test", () => {
-      // Test that should pass for all adapters
-    });
+  withAllAdapters(
+    "operation with adapter-specific behavior",
+    (_, adapterName) => {
+      it("common test", () => {
+        // Test that should pass for all adapters
+      });
 
-    // Skip tests for specific adapters if needed
-    it.skipIf(adapterName === "Temporal")("test not applicable to temporal adapter", () => {
-      // Test that doesn't make sense for temporal adapter (e.g., not yet supported)
-    });
+      // Skip tests for specific adapters if needed
+      it.skipIf(adapterName === "Temporal")(
+        "test not applicable to temporal adapter",
+        () => {
+          // Test that doesn't make sense for temporal adapter (e.g., not yet supported)
+        }
+      );
 
-    // Run tests only for specific adapters
-    it.runIf(adapterName === "Native")("native-specific test", () => {
-      // Test specific to native adapter
-    });
-  });
+      // Run tests only for specific adapters
+      it.runIf(adapterName === "Native")("native-specific test", () => {
+        // Test specific to native adapter
+      });
+    }
+  );
 }

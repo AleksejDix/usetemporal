@@ -5,7 +5,9 @@ import type { TemporalBuilder, SvelteTemporal } from "./types";
 /**
  * Create a temporal builder with convenient method wrappers.
  */
-export function createTemporalBuilder(temporal: SvelteTemporal): TemporalBuilder {
+export function createTemporalBuilder(
+  temporal: SvelteTemporal
+): TemporalBuilder {
   return {
     get adapter() {
       return temporal.adapter;

@@ -10,7 +10,7 @@ import { createSecondHandler } from "./units/second";
 
 /**
  * Create a timezone-aware date-fns adapter
- * 
+ *
  * @param options - Adapter configuration options
  * @param options.timezone - IANA timezone string (e.g., 'America/New_York', 'Europe/London')
  * @param options.weekStartsOn - First day of the week (0 = Sunday, 1 = Monday, etc.)
@@ -22,7 +22,7 @@ export function createDateFnsTzAdapter(options?: {
 }): Adapter {
   const timezone = options?.timezone ?? "UTC";
   const weekStartsOn = options?.weekStartsOn ?? 1;
-  
+
   // Create timezone-aware handlers
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: createYearHandler(timezone),
@@ -55,4 +55,7 @@ export function createDateFnsTzAdapter(options?: {
 }
 
 // Export a default instance with UTC timezone
-export const dateFnsTzAdapter = createDateFnsTzAdapter({ timezone: "UTC", weekStartsOn: 1 });
+export const dateFnsTzAdapter = createDateFnsTzAdapter({
+  timezone: "UTC",
+  weekStartsOn: 1,
+});

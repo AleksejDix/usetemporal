@@ -18,8 +18,10 @@ const temporal = useTemporal();
 
 const isToday = (day: Period) => temporal.contains(day, props.today.date);
 const isSelectedDay = (day: Period) => temporal.contains(day, props.selected);
-const isInsideSelection = (day: Period) => temporal.contains(props.selected, day);
-const isOutsideMonth = (day: Period) => day.start.getMonth() !== props.month.start.getMonth();
+const isInsideSelection = (day: Period) =>
+  temporal.contains(props.selected, day);
+const isOutsideMonth = (day: Period) =>
+  day.start.getMonth() !== props.month.start.getMonth();
 const isActiveWeek = (week: Period) =>
   props.activeUnit === "week" && temporal.contains(props.selected, week);
 
@@ -50,7 +52,9 @@ function selectDay(day: Period) {
         @click="selectDay(day)"
       >
         <span class="number">{{ day.start.getDate() }}</span>
-        <span class="weekday">{{ day.start.toLocaleDateString("en", { weekday: "short" }) }}</span>
+        <span class="weekday">{{
+          day.start.toLocaleDateString("en", { weekday: "short" })
+        }}</span>
       </button>
     </div>
   </section>

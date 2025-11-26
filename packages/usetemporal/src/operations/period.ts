@@ -25,11 +25,11 @@ export function period(adapter: Adapter, options: CustomPeriodOptions): Period;
 
 /**
  * Create a period of a specific type from a date or create a custom period
- * 
+ *
  * @example
  * // Standard period from date
  * period(adapter, new Date(), "month")
- * 
+ *
  * @example
  * // Custom period with start and end
  * period(adapter, { start: new Date('2024-01-01'), end: new Date('2024-03-31') })
@@ -40,7 +40,7 @@ export function period(
   unit?: Unit
 ): Period {
   // Check if this is a custom period request
-  if ('start' in dateOrOptions && 'end' in dateOrOptions) {
+  if ("start" in dateOrOptions && "end" in dateOrOptions) {
     // Custom period logic
     const { start, end } = dateOrOptions;
     return {

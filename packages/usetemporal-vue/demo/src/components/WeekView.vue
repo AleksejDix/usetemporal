@@ -24,9 +24,19 @@ function select(day: Period) {
     <header>
       <p class="eyebrow">Week view</p>
       <h3>
-        {{ days[0]?.start.toLocaleDateString("en", { month: "short", day: "numeric" }) }}
+        {{
+          days[0]?.start.toLocaleDateString("en", {
+            month: "short",
+            day: "numeric",
+          })
+        }}
         –
-        {{ days[days.length - 1]?.start.toLocaleDateString("en", { month: "short", day: "numeric" }) }}
+        {{
+          days[days.length - 1]?.start.toLocaleDateString("en", {
+            month: "short",
+            day: "numeric",
+          })
+        }}
       </h3>
     </header>
     <div class="week-strip">
@@ -37,7 +47,9 @@ function select(day: Period) {
         :class="{ active: isSelected(day) }"
         @click="select(day)"
       >
-        <span class="dow">{{ day.start.toLocaleDateString("en", { weekday: "short" }) }}</span>
+        <span class="dow">{{
+          day.start.toLocaleDateString("en", { weekday: "short" })
+        }}</span>
         <strong>{{ day.start.getDate() }}</strong>
       </button>
     </div>

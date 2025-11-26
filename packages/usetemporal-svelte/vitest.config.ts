@@ -7,6 +7,6 @@ export default defineConfig({
     ...viteConfig.test,
     globals: false,
     environment: "node",
-    include: ["src/**/*.test.ts"]
-  }
+    include: ["src/**/*.test.ts"],
+  },
 });

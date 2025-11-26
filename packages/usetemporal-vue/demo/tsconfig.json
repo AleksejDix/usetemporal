@@ -18,8 +18,5 @@
       "@allystudio/usetemporal/types": ["../../usetemporal/src/types.ts"]
     }
   },
-  "include": [
-    "env.d.ts",
-    "src/**/*"
-  ]
+  "include": ["env.d.ts", "src/**/*"]
 }

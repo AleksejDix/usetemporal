@@ -7,20 +7,20 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       formats: ["es"],
-      fileName: "index"
+      fileName: "index",
     },
     rollupOptions: {
-      external: [/^@allystudio\/usetemporal/, "svelte"]
-    }
+      external: [/^@allystudio\/usetemporal/, "svelte"],
+    },
   },
   plugins: [
     dts({
       include: ["src/**/*.ts"],
-      exclude: ["src/**/*.test.ts"]
-    })
+      exclude: ["src/**/*.test.ts"],
+    }),
   ],
   test: {
     environment: "node",
-    setupFiles: resolve(__dirname, "../../vitest.setup.ts")
-  }
+    setupFiles: resolve(__dirname, "../../vitest.setup.ts"),
+  },
 });

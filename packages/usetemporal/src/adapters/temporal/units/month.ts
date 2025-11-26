@@ -6,7 +6,7 @@ export const monthHandler: UnitHandler = {
     result.setHours(0, 0, 0, 0);
     return result;
   },
-  
+
   endOf(date: Date): Date {
     const temporal = (globalThis as any).Temporal;
     const plainDate = temporal.PlainDate.from({
@@ -19,7 +19,7 @@ export const monthHandler: UnitHandler = {
     result.setHours(23, 59, 59, 999);
     return result;
   },
-  
+
   add(date: Date, amount: number): Date {
     const temporal = (globalThis as any).Temporal;
     const plainDate = temporal.PlainDate.from({
@@ -29,10 +29,15 @@ export const monthHandler: UnitHandler = {
     });
     const result = plainDate.add({ months: amount });
     const newDate = new Date(result.toString());
-    newDate.setHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+    newDate.setHours(
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds()
+    );
     return newDate;
   },
-  
+
   diff(from: Date, to: Date): number {
     const temporal = (globalThis as any).Temporal;
     const fromPlain = temporal.PlainDate.from({

@@ -1,4 +1,9 @@
-import type { Adapter, AdapterUnit, Period, Unit } from "@allystudio/usetemporal";
+import type {
+  Adapter,
+  AdapterUnit,
+  Period,
+  Unit,
+} from "@allystudio/usetemporal";
 import type { Readable, Writable } from "svelte/store";
 
 /**

@@ -2,7 +2,8 @@
 import { onErrorCaptured } from 'vue'
 
 onErrorCaptured((err) => {
-  console.error('Error in Calendar:', err)
+  const reporter = (globalThis as { reportError?: (error: unknown) => void }).reportError
+  reporter?.(err)
   return false
 })
 </script>

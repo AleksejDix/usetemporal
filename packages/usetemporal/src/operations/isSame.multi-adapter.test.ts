@@ -1,7 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { isSame } from "./isSame";
 import { period } from "./period";
-import { withAllAdapters, getAdapterTestCases } from "../test/shared-adapter-tests";
+import {
+  withAllAdapters,
+  getAdapterTestCases,
+} from "../test/shared-adapter-tests";
 import { testDates } from "../test/testDates";
 
 // Example using withAllAdapters wrapper

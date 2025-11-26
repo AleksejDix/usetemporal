@@ -1,9 +1,5 @@
 import * as ops from "@allystudio/usetemporal/operations";
-import type {
-  AdapterUnit,
-  Period,
-  Unit,
-} from "@allystudio/usetemporal";
+import type { AdapterUnit, Period, Unit } from "@allystudio/usetemporal";
 import type { TemporalBuilder, ReactTemporal } from "./types";
 
 /**

@@ -4,9 +4,9 @@
 
 ```typescript
 // Divide any time unit into smaller units
-const months = divide(adapter, year, 'month')
-const days = divide(adapter, month, 'day')
-const hours = divide(adapter, day, 'hour')
+const months = divide(adapter, year, "month");
+const days = divide(adapter, month, "day");
+const hours = divide(adapter, day, "hour");
 ```
 
 ## 🚀 Features
@@ -34,12 +34,12 @@ npm install @allystudio/usetemporal
 ### Pure Functions Only
 
 ```typescript
-import { period, divide } from '@allystudio/usetemporal/operations'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { period, divide } from "@allystudio/usetemporal/operations";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
-const adapter = createNativeAdapter({ weekStartsOn: 1 })
-const year = period(adapter, new Date(), 'year')
-const months = divide(adapter, year, 'month')
+const adapter = createNativeAdapter({ weekStartsOn: 1 });
+const year = period(adapter, new Date(), "year");
+const months = divide(adapter, year, "month");
 ```
 
 [Learn more patterns →](./vitepress/guide/divide-pattern.md)
@@ -83,43 +83,45 @@ function go(direction: 'next' | 'previous') {
 ### React Example (Pure Functions)
 
 ```tsx
-import { useMemo, useState } from 'react'
-import { period, divide, next, previous } from '@allystudio/usetemporal/operations'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { useMemo, useState } from "react";
+import {
+  period,
+  divide,
+  next,
+  previous,
+} from "@allystudio/usetemporal/operations";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
-const adapter = createNativeAdapter({ weekStartsOn: 1 })
+const adapter = createNativeAdapter({ weekStartsOn: 1 });
 
 function Calendar() {
-  const [browsing, setBrowsing] = useState(() => new Date())
-  const month = useMemo(() => period(adapter, browsing, 'month'), [browsing])
-  const days = useMemo(() => divide(adapter, month, 'day'), [month])
+  const [browsing, setBrowsing] = useState(() => new Date());
+  const month = useMemo(() => period(adapter, browsing, "month"), [browsing]);
+  const days = useMemo(() => divide(adapter, month, "day"), [month]);
 
-  const navigate = (direction: 'next' | 'previous') => {
-    const updated = direction === 'next'
-      ? next(adapter, month)
-      : previous(adapter, month)
-    setBrowsing(updated.date)
-  }
+  const navigate = (direction: "next" | "previous") => {
+    const updated =
+      direction === "next" ? next(adapter, month) : previous(adapter, month);
+    setBrowsing(updated.date);
+  };
 
   return (
     <div>
       <header>
-        <button onClick={() => navigate('previous')}>←</button>
+        <button onClick={() => navigate("previous")}>←</button>
         <h2>
-          {month.date.toLocaleDateString('en', {
-            month: 'long',
-            year: 'numeric'
+          {month.date.toLocaleDateString("en", {
+            month: "long",
+            year: "numeric",
           })}
         </h2>
-        <button onClick={() => navigate('next')}>→</button>
+        <button onClick={() => navigate("next")}>→</button>
       </header>
-      {days.map(day => (
-        <div key={day.date.toISOString()}>
-          {day.date.getDate()}
-        </div>
+      {days.map((day) => (
+        <div key={day.date.toISOString()}>{day.date.getDate()}</div>
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -128,27 +130,32 @@ function Calendar() {
 ### Pure Functions Overview
 
 ```typescript
-import { period, divide, next, previous, go } from '@allystudio/usetemporal/operations'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import {
+  period,
+  divide,
+  next,
+  previous,
+  go,
+} from "@allystudio/usetemporal/operations";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
-const adapter = createNativeAdapter()
+const adapter = createNativeAdapter();
 
-const month = period(adapter, new Date(), 'month')
-const days = divide(adapter, month, 'day')
-const nextMonth = next(adapter, month)
-const previousMonth = previous(adapter, month)
-const threeMonthsAhead = go(adapter, month, 'next', 3)
+const month = period(adapter, new Date(), "month");
+const days = divide(adapter, month, "day");
+const nextMonth = next(adapter, month);
+const previousMonth = previous(adapter, month);
+const threeMonthsAhead = go(adapter, month, "next", 3);
 ```
-
 
 ### Period Structure
 
 ```typescript
 interface Period {
-  type: Unit    // 'year' | 'month' | 'week' | 'day' | etc.
-  date: Date    // Representative date
-  start: Date   // Period start
-  end: Date     // Period end (exclusive)
+  type: Unit; // 'year' | 'month' | 'week' | 'day' | etc.
+  date: Date; // Representative date
+  start: Date; // Period start
+  end: Date; // Period end (exclusive)
 }
 ```
 
@@ -185,12 +192,12 @@ Visit our [documentation site](https://usetemporal.dev) for:
 
 useTemporal supports multiple date libraries through adapters. Choose the one that fits your needs:
 
-| Adapter | Bundle Size | Timezone | Tree-shakeable | Status |
-|---------|------------|----------|----------------|---------|
-| Native | 0KB | ❌ | ✅ | Stable |
-| date-fns | ~2.1KB | ❌ | ✅ | Stable |
-| Luxon | ~2.3KB | ✅ | ✅ | Stable |
-| Temporal | ~3KB | ✅ | ✅ | Polyfill |
+| Adapter  | Bundle Size | Timezone | Tree-shakeable | Status   |
+| -------- | ----------- | -------- | -------------- | -------- |
+| Native   | 0KB         | ❌       | ✅             | Stable   |
+| date-fns | ~2.1KB      | ❌       | ✅             | Stable   |
+| Luxon    | ~2.3KB      | ✅       | ✅             | Stable   |
+| Temporal | ~3KB        | ✅       | ✅             | Polyfill |
 
 ```bash
 # Native JavaScript Date (included by default)
@@ -199,13 +206,12 @@ npm install @allystudio/usetemporal
 # With date-fns
 npm install @allystudio/usetemporal date-fns
 
-# With Luxon  
+# With Luxon
 npm install @allystudio/usetemporal luxon
 
 # With Temporal API (future)
 npm install @allystudio/usetemporal @js-temporal/polyfill
 ```
-
 
 ## 🎯 Why useTemporal?
 
@@ -213,21 +219,21 @@ Traditional date libraries require manual calculation for time subdivisions:
 
 ```javascript
 // Traditional approach 😢
-const year = 2024
-const months = []
+const year = 2024;
+const months = [];
 for (let i = 0; i < 12; i++) {
-  const start = new Date(year, i, 1)
-  const end = new Date(year, i + 1, 0)
-  months.push({ start, end })
+  const start = new Date(year, i, 1);
+  const end = new Date(year, i + 1, 0);
+  months.push({ start, end });
 }
 ```
 
 With useTemporal's divide() pattern:
 
 ```typescript
-const adapter = createNativeAdapter()
-const year = period(adapter, new Date(2024, 0, 1), 'year')
-const months = divide(adapter, year, 'month')
+const adapter = createNativeAdapter();
+const year = period(adapter, new Date(2024, 0, 1), "year");
+const months = divide(adapter, year, "month");
 // That's it—12 perfect months, automatically calculated!
 ```
 

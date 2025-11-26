@@ -216,6 +216,5 @@ describe("contains", () => {
       expect(contains(january, lastDayJan)).toBe(true);
       expect(contains(january, firstDayFeb)).toBe(false);
     });
-
   });
 });

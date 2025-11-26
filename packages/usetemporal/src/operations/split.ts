@@ -3,10 +3,7 @@ import type { Period } from "../types";
 /**
  * Split a period at a specific date
  */
-export function split(
-  period: Period,
-  splitDate: Date
-): [Period, Period] {
+export function split(period: Period, splitDate: Date): [Period, Period] {
   const splitTime = splitDate.getTime();
   const startTime = period.start.getTime();
   const endTime = period.end.getTime();

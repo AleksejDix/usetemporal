@@ -1,4 +1,9 @@
-import type { Adapter, AdapterUnit, Period, Unit } from "@allystudio/usetemporal";
+import type {
+  Adapter,
+  AdapterUnit,
+  Period,
+  Unit,
+} from "@allystudio/usetemporal";
 
 /**
  * Base React temporal instance with reactive state.
@@ -42,4 +47,10 @@ export interface UseTemporalOptions {
   weekStartsOn?: number;
 }
 
-export type { Adapter, AdapterUnit, Period, Unit, Duration } from "@allystudio/usetemporal";
+export type {
+  Adapter,
+  AdapterUnit,
+  Period,
+  Unit,
+  Duration,
+} from "@allystudio/usetemporal";

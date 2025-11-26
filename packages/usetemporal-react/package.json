@@ -40,7 +40,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist node_modules"
+    "clean": "rm -rf dist node_modules",
+    "lint": "oxlint --config ../../oxlint.vite.json .",
+    "lint:fix": "oxlint --config ../../oxlint.vite.json --fix ."
   },
   "dependencies": {
     "@allystudio/usetemporal": "^2.0.0-alpha.1"

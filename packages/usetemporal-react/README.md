@@ -31,12 +31,8 @@ function Calendar() {
 
   return (
     <div>
-      <button onClick={() => temporal.previous(month)}>
-        Previous
-      </button>
-      <button onClick={() => temporal.next(month)}>
-        Next
-      </button>
+      <button onClick={() => temporal.previous(month)}>Previous</button>
+      <button onClick={() => temporal.next(month)}>Next</button>
       {/* Render calendar using weeks */}
     </div>
   );
@@ -63,12 +59,8 @@ function App() {
 
   return (
     <div>
-      <button onClick={() => setWeekStartsOn(0)}>
-        Start week on Sunday
-      </button>
-      <button onClick={() => setWeekStartsOn(1)}>
-        Start week on Monday
-      </button>
+      <button onClick={() => setWeekStartsOn(0)}>Start week on Sunday</button>
+      <button onClick={() => setWeekStartsOn(1)}>Start week on Monday</button>
     </div>
   );
 }
@@ -92,18 +84,14 @@ function MonthCalendar() {
   return (
     <div className="calendar">
       <header>
-        <button onClick={() => temporal.previous(month)}>
-          ←
-        </button>
+        <button onClick={() => temporal.previous(month)}>←</button>
         <h2>
           {month.date.toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
           })}
         </h2>
-        <button onClick={() => temporal.next(month)}>
-          →
-        </button>
+        <button onClick={() => temporal.next(month)}>→</button>
       </header>
 
       <div className="weeks">
@@ -139,12 +127,14 @@ function MonthCalendar() {
 Creates a reactive temporal instance with builder methods.
 
 **Options:**
+
 - `adapter: Adapter` (required) - Date adapter instance
 - `date?: Date` - Initial browsing date (defaults to `new Date()`)
 - `now?: Date` - Initial now date (defaults to `new Date()`)
 - `weekStartsOn?: number` - Week start day, 0=Sunday, 1=Monday (defaults to 1)
 
 **Returns:** A temporal builder with:
+
 - `adapter: Adapter` - The current adapter
 - `weekStartsOn: number` - Week start day configuration
 - `browsing: Period` - Current browsing period (reactive)
@@ -156,6 +146,7 @@ Creates a reactive temporal instance with builder methods.
 Creates a reactive period that updates when `browsing` changes.
 
 **Parameters:**
+
 - `temporal: TemporalBuilder` - The temporal instance from `useTemporal`
 - `unit: Unit` - Period unit type (`'year'`, `'month'`, `'week'`, `'day'`, etc.)
 
@@ -222,7 +213,7 @@ import {
   YEAR,
   MONTH,
   WEEK,
-  DAY
+  DAY,
 } from "@allystudio/usetemporal-react";
 ```
 

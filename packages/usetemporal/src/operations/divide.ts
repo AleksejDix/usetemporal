@@ -27,7 +27,7 @@ export function divide(
 
     // Move to the start of the next unit to avoid issues with variable length units
     const nextDate = adapter.add(start, 1, unit);
-    
+
     // If the next date is the same as the current one (e.g. DST), we must advance manually
     if (nextDate.getTime() <= current.getTime()) {
       current = new Date(start.getTime() + 24 * 60 * 60 * 1000); // Move to next day

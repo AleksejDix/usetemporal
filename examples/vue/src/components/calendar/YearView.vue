@@ -68,8 +68,7 @@ const props = defineProps<{
   temporal: TemporalBuilder
 }>()
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const emit = defineEmits<{
+defineEmits<{
   selectMonth: [month: Period]
 }>()
 

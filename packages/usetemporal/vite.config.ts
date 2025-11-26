@@ -24,7 +24,11 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["@usetemporal/core", "@usetemporal/adapter-native", "@vue/reactivity"],
+      external: [
+        "@usetemporal/core",
+        "@usetemporal/adapter-native",
+        "@vue/reactivity",
+      ],
       output: {
         preserveModules: false,
       },

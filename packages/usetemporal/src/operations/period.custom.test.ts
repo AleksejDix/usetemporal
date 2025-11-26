@@ -84,15 +84,15 @@ describe("period with custom options", () => {
 
   it("should work alongside standard period function", () => {
     const date = new Date(2024, 0, 15);
-    
+
     // Standard period
     const monthPeriod = period(adapter, date, "month");
     expect(monthPeriod.type).toBe("month");
-    
+
     // Custom period
-    const customPeriod = period(adapter, { 
-      start: new Date(2024, 0, 1), 
-      end: new Date(2024, 0, 31) 
+    const customPeriod = period(adapter, {
+      start: new Date(2024, 0, 1),
+      end: new Date(2024, 0, 31),
     });
     expect(customPeriod.type).toBe("custom");
   });

@@ -4,15 +4,12 @@ import { divide } from "./divide";
 import { period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
 
-
 withAllAdapters("merge", (adapter) => {
-  
-
   describe("period merging", () => {
     it("should merge days into a week", () => {
       const week = period(adapter, new Date(2024, 0, 15), "week");
       const days = divide(adapter, week, "day");
-      
+
       const mergedWeek = merge(adapter, days, "week");
       expect(mergedWeek!.type).toBe("week");
       expect(mergedWeek!.start.getTime()).toBe(week.start.getTime());
@@ -22,7 +19,7 @@ withAllAdapters("merge", (adapter) => {
     it("should merge months into a year", () => {
       const year = period(adapter, new Date(2024, 5, 15), "year");
       const months = divide(adapter, year, "month");
-      
+
       const mergedYear = merge(adapter, months, "year");
       expect(mergedYear!.type).toBe("year");
       expect(mergedYear!.start.getFullYear()).toBe(2024);
@@ -33,7 +30,7 @@ withAllAdapters("merge", (adapter) => {
     it("should merge hours into a day", () => {
       const day = period(adapter, new Date(2024, 0, 15), "day");
       const hours = divide(adapter, day, "hour");
-      
+
       const mergedDay = merge(adapter, hours, "day");
       expect(mergedDay!.type).toBe("day");
       expect(mergedDay!.start.getDate()).toBe(15);
@@ -44,11 +41,11 @@ withAllAdapters("merge", (adapter) => {
     it("should merge partial periods", () => {
       const day = period(adapter, new Date(2024, 0, 15), "day");
       const hours = divide(adapter, day, "hour");
-      
+
       // Take only morning hours (0-11)
       const morningHours = hours.slice(0, 12);
       const mergedMorning = merge(adapter, morningHours, "day");
-      
+
       expect(mergedMorning!.type).toBe("day");
       expect(mergedMorning!.start.getHours()).toBe(0);
       expect(mergedMorning!.end.getHours()).toBe(11);
@@ -60,19 +57,23 @@ withAllAdapters("merge", (adapter) => {
       const monday = period(adapter, new Date(2024, 0, 8), "day");
       const wednesday = period(adapter, new Date(2024, 0, 10), "day");
       const friday = period(adapter, new Date(2024, 0, 12), "day");
-      
+
       const merged = merge(adapter, [monday, wednesday, friday], "week");
-      
+
       expect(merged!.type).toBe("week");
       // Should span from Monday to Friday's week
-      expect(merged!.start.getTime()).toBeLessThanOrEqual(monday.start.getTime());
-      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(friday.end.getTime());
+      expect(merged!.start.getTime()).toBeLessThanOrEqual(
+        monday.start.getTime()
+      );
+      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(
+        friday.end.getTime()
+      );
     });
 
     it("should merge minutes into an hour", () => {
       const hour = period(adapter, new Date(2024, 0, 15, 14), "hour");
       const minutes = divide(adapter, hour, "minute");
-      
+
       const mergedHour = merge(adapter, minutes, "hour");
       expect(mergedHour!.type).toBe("hour");
       expect(mergedHour!.start.getHours()).toBe(14);
@@ -83,7 +84,7 @@ withAllAdapters("merge", (adapter) => {
     it("should merge seconds into a minute", () => {
       const minute = period(adapter, new Date(2024, 0, 15, 14, 30), "minute");
       const seconds = divide(adapter, minute, "second");
-      
+
       const mergedMinute = merge(adapter, seconds, "minute");
       expect(mergedMinute!.type).toBe("minute");
       expect(mergedMinute!.start.getMinutes()).toBe(30);
@@ -93,17 +94,21 @@ withAllAdapters("merge", (adapter) => {
 
     it("should handle single period merge", () => {
       const day = period(adapter, new Date(2024, 0, 15), "day");
-      
+
       const mergedWeek = merge(adapter, [day], "week");
       expect(mergedWeek!.type).toBe("week");
       // The week should contain the day
-      expect(mergedWeek!.start.getTime()).toBeLessThanOrEqual(day.start.getTime());
-      expect(mergedWeek!.end.getTime()).toBeGreaterThanOrEqual(day.end.getTime());
+      expect(mergedWeek!.start.getTime()).toBeLessThanOrEqual(
+        day.start.getTime()
+      );
+      expect(mergedWeek!.end.getTime()).toBeGreaterThanOrEqual(
+        day.end.getTime()
+      );
     });
 
     it("should handle empty array", () => {
       const merged = merge(adapter, [], "day");
-      
+
       // Should return a period for the current date
       expect(merged!.type).toBe("day");
       expect(merged!.date).toBeDefined();
@@ -114,14 +119,22 @@ withAllAdapters("merge", (adapter) => {
       const lastDayOfJan = period(adapter, new Date(2024, 0, 31), "day");
       const firstDayOfFeb = period(adapter, new Date(2024, 1, 1), "day");
       const secondDayOfFeb = period(adapter, new Date(2024, 1, 2), "day");
-      
-      const merged = merge(adapter, [lastDayOfJan, firstDayOfFeb, secondDayOfFeb], "month");
-      
+
+      const merged = merge(
+        adapter,
+        [lastDayOfJan, firstDayOfFeb, secondDayOfFeb],
+        "month"
+      );
+
       // Should create a month period that contains all days
       expect(merged!.type).toBe("month");
       // The exact month depends on the merge algorithm
-      expect(merged!.start.getTime()).toBeLessThanOrEqual(lastDayOfJan.start.getTime());
-      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(secondDayOfFeb.end.getTime());
+      expect(merged!.start.getTime()).toBeLessThanOrEqual(
+        lastDayOfJan.start.getTime()
+      );
+      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(
+        secondDayOfFeb.end.getTime()
+      );
     });
 
     it("should preserve reference date from first period", () => {
@@ -130,9 +143,9 @@ withAllAdapters("merge", (adapter) => {
         period(adapter, new Date(2024, 0, 11), "day"),
         period(adapter, new Date(2024, 0, 12), "day"),
       ];
-      
+
       const merged = merge(adapter, periods, "week");
-      
+
       // Reference date should come from the first period
       expect(merged!.date.getTime()).toBe(periods[0].date.getTime());
     });

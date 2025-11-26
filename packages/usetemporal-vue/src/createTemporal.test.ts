@@ -1,12 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createTemporal } from "./createTemporal";
 import type { CreateTemporalOptions } from "./types";
-import {
-  ref,
-  isRef,
-  effect,
-  computed,
-} from "vue";
+import { ref, isRef, effect, computed } from "vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 import type { Adapter } from "@allystudio/usetemporal";
 
@@ -419,7 +414,6 @@ describe("createTemporal", () => {
     });
   });
 
-
   describe("performance", () => {
     it("should execute in less than 100ms", () => {
       const start = performance.now();
@@ -437,8 +431,9 @@ describe("createTemporal", () => {
   });
 
   describe("browsing coverage across leap year", () => {
-    const leapYearDates = Array.from({ length: 366 }, (_, index) =>
-      new Date(2024, 0, 1 + index)
+    const leapYearDates = Array.from(
+      { length: 366 },
+      (_, index) => new Date(2024, 0, 1 + index)
     );
 
     leapYearDates.forEach((targetDate) => {

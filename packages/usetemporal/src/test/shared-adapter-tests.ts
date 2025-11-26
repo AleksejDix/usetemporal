@@ -58,6 +58,6 @@ export function withAllAdapters(
  */
 export function getAdapterTestCases() {
   return testAdapters
-    .filter(config => !config.skip)
+    .filter((config) => !config.skip)
     .map(({ name, createAdapter }) => [name, createAdapter()] as const);
 }
