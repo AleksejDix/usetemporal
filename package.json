@@ -47,6 +47,10 @@
     "vite": "^7.2.4",
     "vitest": "^4.0.13"
   },
+  "optionalDependencies": {
+    "@oxlint/linux-x64-gnu": "^1.29.0",
+    "@oxlint/wasm32-wasi": "^1.29.0"
+  },
   "engines": {
     "node": ">=16.0.0"
   }
