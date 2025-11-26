@@ -16,7 +16,7 @@ pickle/                              # Project root (monorepo)
 ├── package.json                    # Root package configuration
 ├── package-lock.json              # Dependency lock file
 ├── CHANGELOG.md                    # Project changelog
-├── LICENSE                         # MIT license
+├── LICENSE                         # Apache 2.0 license
 ├── README.md                       # Project readme
 ├── .prettierrc.json               # Code formatting config
 ├── .gitignore                     # Git ignore patterns

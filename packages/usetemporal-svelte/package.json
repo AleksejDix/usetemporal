@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Svelte integration for useTemporal with reactive stores",
   "author": "Aleksej Dix <git@aleksejdix.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "module",
   "repository": {
     "type": "git",

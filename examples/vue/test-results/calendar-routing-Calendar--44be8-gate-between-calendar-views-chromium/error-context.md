@@ -248,6 +248,6 @@
   - link "twitter":
     - /url: https://twitter.com/aleksej
 - contentinfo:
-  - paragraph: Released under the MIT License.
+  - paragraph: Released under the Apache 2.0 License.
   - paragraph: Copyright © 2024-present useTemporal Contributors
 ```

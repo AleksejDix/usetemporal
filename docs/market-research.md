@@ -884,7 +884,7 @@ Based on willingness to pay analysis and competitive landscape, we recommend a *
 **1. Community Edition (Free Forever)**
 - Full core library with all current features
 - Community support via GitHub/Discord
-- MIT license for maximum adoption
+- Apache 2.0 license for maximum adoption with patent protection
 - No user limits or project restrictions
 - Rationale: Drive adoption and build community
 
@@ -1012,7 +1012,7 @@ Based on willingness to pay analysis and competitive landscape, we recommend a *
    - Likelihood: Low
    - Impact: High
    - Mitigation:
-     - Use permissive MIT license
+     - Use permissive Apache 2.0 license
      - Clear CLA for contributors
      - Regular license audits of dependencies
      - Legal review before commercial offerings
