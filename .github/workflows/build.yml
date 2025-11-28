@@ -1,0 +1,29 @@
+name: PR Quality Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: rm -f package-lock.json && npm install
+
+      - name: Build packages
+        run: npm run build --workspace=@allystudio/usetemporal --workspace=@allystudio/usetemporal-react --workspace=@allystudio/usetemporal-vue --workspace=@allystudio/usetemporal-svelte
+
+      - name: Run type checking
+        run: npm run type-check
