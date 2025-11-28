@@ -31,5 +31,5 @@ function setUnit(next: Unit) {
 </script>
 
 <template>
-  <slot :unit="viewUnit" :view-period="viewPeriod" :set-unit="setUnit" />
+  <slot v-if="viewPeriod" :unit="viewUnit" :view-period="viewPeriod" :set-unit="setUnit" />
 </template>
