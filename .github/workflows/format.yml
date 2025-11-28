@@ -1,4 +1,4 @@
-name: format
+name: lint-format
 
 on:
   pull_request:
