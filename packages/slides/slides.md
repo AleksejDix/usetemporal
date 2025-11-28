@@ -19,7 +19,6 @@ info: |
   Aleksej Dix · CTO @ Ally Studio and Head of Frontend @ Medidata
 </div>
 
-
 ---
 
 <h1 class="text-lg font-700 text-center">The Journey In Six Visual Steps</h1>
@@ -153,7 +152,9 @@ function buildCalendarGrid(cursor, weekStartsOn = 1) {
 
   // HACK: Add 1 hour to avoid DST midnight weirdness
   // See ticket #4521 - March 2023 DST incident
-  const gridStart = new Date(monthStart.getTime() - (offset * 86400000) + 3600000);
+  const gridStart = new Date(
+    monthStart.getTime() - offset * 86400000 + 3600000
+  );
 
   // Build 6 weeks (42 cells) - hardcoded because dynamic sizing broke QA
   for (let i = 0; i < 42; i++) {
@@ -164,7 +165,6 @@ function buildCalendarGrid(cursor, weekStartsOn = 1) {
     // FIXME: This breaks when user timezone != Swiss local
     // TODO: Refactor after Q2 launch (LOL never happens)
     const inMonth = cell.getMonth() === cursor.getMonth();
-
   }
 
   return cells;
@@ -332,7 +332,7 @@ const date = ref(new Date("2025-03-13"));
 </template>
 ```
 
---- 
+---
 
 ```vue {all|4-7}
 <!-- MonthGrid.vue -->
@@ -342,8 +342,8 @@ import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
 import { divide } from "@allystudio/usetemporal/operations";
 
 const temporal = useTemporal();
-const month = usePeriod(temporal, 'month');
-const days = computed(() => divide(temporal.adapter, month.value, 'day'));
+const month = usePeriod(temporal, "month");
+const days = computed(() => divide(temporal.adapter, month.value, "day"));
 </script>
 
 <template>
@@ -364,7 +364,6 @@ const days = computed(() => divide(temporal.adapter, month.value, 'day'));
 # Step 04 · Calendar Superpowers (Live)
 
 <CalendarSuperpowers />
-
 
 ---
 
