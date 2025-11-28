@@ -1,6 +1,6 @@
 {
   "name": "@allystudio/usetemporal-react",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "description": "React hooks for useTemporal",
   "author": "Aleksej Dix <git@aleksejdix.com>",
   "license": "Apache-2.0",
