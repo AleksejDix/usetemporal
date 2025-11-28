@@ -12,54 +12,44 @@ info: |
   A step-by-step visual walkthrough of how our calendar stack failed, why Swiss-local databases exposed every weakness, and how `@allystudio/usetemporal` fixes it with predictable data primitives.
 ---
 
-# Visual Guide to Building Reliable Calendars
+<h1 class="text-lg font-700">useTemporal</h1>
+<h1>Declarative Calender Library</h1>
 
-### Step-by-step visuals from pain to solution
-
-<div class="text-lg opacity-80">
-  Aleksej Dix · Principal Engineer · Ally Studio
-</div>
-
-<div class="mt-4 text-sm opacity-60">
-  Follow the visuals, adopt the steps, stop apologizing for calendars.
+<div>
+  Aleksej Dix · CTO @ Ally Studio and Head of Frontend @ Medidata
 </div>
 
 ---
 
-layout: center
-class: text-left
-
----
-
-# The Journey In Six Visual Steps
+<h1 class="text-lg font-700 text-center">The Journey In Six Visual Steps</h1>
 
 <div class="grid grid-cols-3 gap-4 mt-12 text-left">
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">01</div>
     <div class="text-base uppercase tracking-widest opacity-70">Context</div>
     <p class="mt-3 text-sm opacity-80">Swiss-local DBs, traveling users, invisible drift.</p>
   </div>
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">02</div>
     <div class="text-base uppercase tracking-widest opacity-70">Pain Map</div>
     <p class="mt-3 text-sm opacity-80">Imperative helpers, unstable layouts.</p>
   </div>
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">03</div>
     <div class="text-base uppercase tracking-widest opacity-70">Architecture</div>
-    <p class="mt-3 text-sm opacity-80">Adapter → Period → divide() → Stable Month.</p>
+    <p class="mt-3 text-sm opacity-80">Adapter → Period → devide → Stable Month</p>
   </div>
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">04</div>
     <div class="text-base uppercase tracking-widest opacity-70">Before/After</div>
     <p class="mt-3 text-sm opacity-80">Plain JS comparison.</p>
   </div>
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">05</div>
     <div class="text-base uppercase tracking-widest opacity-70">Demo Flow</div>
     <p class="mt-3 text-sm opacity-80">Live steps to inspect periods.</p>
   </div>
-  <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+  <div class="bg-white/5 border border-black p-4">
     <div class="text-3xl font-bold">06</div>
     <div class="text-base uppercase tracking-widest opacity-70">Adoption</div>
     <p class="mt-3 text-sm opacity-80">Checklist for teams.</p>
@@ -68,122 +58,209 @@ class: text-left
 
 ---
 
-layout: center
-class: text-left
-
----
-
-# Mobility Story — October 26
+<h1 class="text-lg font-700 text-center">Date Time Savings — October 26</h1>
 
 <DstReminder />
 
 ---
 
-# Step 01 · DST Story (2/3)
-
-<div class="grid grid-cols-2 gap-4 text-left">
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">Pickup</div>
-    <p class="text-sm mt-2 opacity-85">
-      App thought I was an hour early and refused to unlock the car.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">Return & Fuel</div>
-    <p class="text-sm mt-2 opacity-85">
-      System logged me an hour late and the gas station card declined because it thought I was outside the booking window.
-    </p>
-  </div>
-</div>
-
----
-
-# Step 01 · DST Story (3/3)
-
-- Support double-charged me while “investigating”.
-- This is the same failure class we see with Swiss-local databases at enterprise scale.
-
-<div class="grid grid-cols-2 gap-4 text-left">
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">23:30</div>
-    <p class="text-sm mt-2 opacity-85">
-      Booking & calendar both “Swiss time” but display different hours.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">23:45</div>
-    <p class="text-sm mt-2 opacity-85">
-      Car lock refuses to open because the app thinks I'm early.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">01:00</div>
-    <p class="text-sm mt-2 opacity-85">
-      Return logged late; fuel card declines because the system thinks I'm outside the slot.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-xs uppercase tracking-wide opacity-60">02:00</div>
-    <p class="text-sm mt-2 opacity-85">
-      Support double-charges while “investigating” the mismatch.
-    </p>
-  </div>
-</div>
-
----
-
-# Step 02 · Pain Map (Visual)
+<h1 class="text-lg font-700 text-center">Pain Map</h1>
 
 ```mermaid
-graph LR
-  A[UI Component] --> B{Helper Soup}
-  B --> C[date-fns utils]
-  B --> D[Custom offsets]
-  D --> E[Swiss Local DB]
-  C --> F[React team]
-  C --> G[Vue team]
-  E --> H[(Calendar Layout Drift)]
-  G --> H
-  F --> H
+graph TD
+  A[React Calendar] --> B[vanilla Date]
+  A --> C[date-fns/parseISO]
+  A --> D[Custom formatters]
+
+  E[Vue Dashboard] --> F[date-fns]
+  E --> G[luxon/DateTime]
+  E --> D
+
+  H[Angular Scheduler] --> I[moment.js]
+  H --> J[moment-timezone]
+  H --> D
+
+  K[Mobile App] --> L[dayjs]
+  K --> D
+
+  M[Backend API] --> N[Java LocalDate]
+  M --> O[Joda-Time]
+  M --> P[SimpleDateFormat]
+
+  B --> Q{Helper Soup}
+  C --> Q
+  F --> Q
+  G --> Q
+  I --> Q
+  J --> Q
+  L --> Q
+  D --> Q
+  N --> Q
+  O --> Q
+  P --> Q
+
+  Q --> R[(Swiss Local DB<br/>No TZ Info)]
+
+  R --> S[(Layout Drift<br/>4-6 rows)]
+  R --> T[(DST Bugs<br/>±1 hour)]
+  R --> U[(TZ Chaos<br/>Wrong day)]
+
+  S --> V{QA Sprint}
+  T --> V
+  U --> V
+
+  V --> W[Patch A: Add offset]
+  V --> X[Patch B: Fix parsing]
+  V --> Y[Patch C: New helper]
+
+  W --> D
+  X --> D
+  Y --> D
+
+  style R fill:#ff6b6b,stroke:#ff0000,stroke-width:3px
+  style S fill:#ff6b6b
+  style T fill:#ff6b6b
+  style U fill:#ff6b6b
+  style Q fill:#ffa94d,stroke:#ff8800,stroke-width:2px
+  style D fill:#ffa94d
+  style V fill:#ee5a6f
 ```
 
-- Every framework had its own version of helpers.
-- Layout drift cascaded to QA and release teams.
-- No central object to inspect; debugging meant logging random Dates.
+- **4 frontend teams** mixing 8+ date libraries (vanilla Date, date-fns, luxon, moment.js, dayjs...)
+- **Backend** uses 3 different Java time APIs, all writing to Swiss Local DB with no timezone info
+- Everything funnels through **"Helper Soup"** - a 2000+ line utility file nobody understands
+- **3 failure modes**: Layout Drift (4-6 rows), DST Bugs (±1 hour), Timezone Chaos (wrong day)
+- **The death spiral**: QA finds bugs → 3 new patches → Back to Custom formatters → More bugs
+- No shared data model to inspect; each team logs incompatible formats
 
 ---
 
-# Step 02 · Imperative Builder (Code)
+# Step 02 · Imperative Builder (Real Production Code)
 
-```js {1-18|3-5|7-16}
-import {
-  addDays,
-  startOfWeek,
-  startOfMonth,
-  isSameMonth,
-  format,
-} from "date-fns";
+```js {1-40|3-8|10-16|18-28|30-38}
+// WARN: Do NOT touch this without testing Swiss local first!
+// Last modified: 2023-10-27 (DST bug hotfix)
+function buildCalendarGrid(cursor, weekStartsOn = 1) {
+  const cells = [];
 
-function buildGrid(cursor, weekStartsOn = 1) {
-  const first = startOfWeek(startOfMonth(cursor), { weekStartsOn });
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = addDays(first, index);
-    return {
-      date,
-      label: format(date, "d"),
-      isCurrentMonth: isSameMonth(date, cursor),
-    };
-  });
+  // Get first of month in LOCAL time (critical for Swiss DB!)
+  const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+
+  // BUG FIX 2022-03-15: was off by 1 during DST transition
+  let dayOfWeek = monthStart.getDay();
+  let offset = (dayOfWeek - weekStartsOn + 7) % 7;
+
+  // HACK: Add 1 hour to avoid DST midnight weirdness
+  // See ticket #4521 - March 2023 DST incident
+  const gridStart = new Date(
+    monthStart.getTime() - offset * 86400000 + 3600000
+  );
+
+  // Build 6 weeks (42 cells) - hardcoded because dynamic sizing broke QA
+  for (let i = 0; i < 42; i++) {
+    // Clone to avoid mutation bugs (learned the hard way)
+    const cell = new Date(gridStart.getTime());
+    cell.setDate(cell.getDate() + i);
+
+    // FIXME: This breaks when user timezone != Swiss local
+    // TODO: Refactor after Q2 launch (LOL never happens)
+    const inMonth = cell.getMonth() === cursor.getMonth();
+  }
+
+  return cells;
 }
 ```
 
-<div class="mt-6 text-sm opacity-70">
-  Visual issue: each cell is a raw Date with flags—nothing ties rows together, so layouts shake.
+---
+
+<h1>Bugs in every Row</h1>
+
+<div>
+  <ul>
+    <li>DST hotfix with magic +1 hour offset (line 16)</li>
+    <li>Hardcoded 42 cells because "dynamic sizing broke QA"</li>
+    <li>Time zone assumptions baked into logic (line 25 comment)</li>
+    <li>Multiple TODO/FIXME comments from 2022-2023</li>
+    <li>No shared Period type—just raw Dates with boolean flags</li>
+  </ul>
 </div>
 
 ---
 
-# Step 03 · Architecture Sketch
+<h1 class="text-lg font-700 text-center">Hierarchy of Time</h1>
+
+<div class="flex flex-col items-center gap-4 my-6">
+  <!-- Year -->
+  <div class="inline-block bg-cyan-400 border-3 border-cyan-700 rounded-lg px-6 py-3 font-bold text-gray-900">
+    Year 2025
+  </div>
+
+  <div class="text-xl opacity-50">↓ divide</div>
+
+  <!-- Months -->
+  <div class="flex gap-2 items-center flex-wrap justify-center text-sm">
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Jan</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Feb</div>
+    <div class="bg-cyan-400 border-2 border-cyan-700 rounded px-3 py-1.5 font-bold text-gray-900">Mar</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Apr</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">May</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Jun</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Jul</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Aug</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Sep</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Oct</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Nov</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Dec</div>
+  </div>
+
+  <div class="text-xl opacity-50">↓ divide</div>
+
+  <!-- Days -->
+  <div class="flex gap-2 items-center flex-wrap justify-center text-sm">
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 10</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 11</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 12</div>
+    <div class="bg-cyan-400 border-2 border-cyan-700 rounded px-3 py-1.5 font-bold text-gray-900">Mar 13</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 14</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 15</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">Mar 16</div>
+  </div>
+
+  <div class="text-xl opacity-50">↓ divide</div>
+
+  <!-- Hours -->
+  <div class="flex gap-2 items-center flex-wrap justify-center text-sm">
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">00:00</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">01:00</div>
+    <div class="bg-red-500 border-3 border-red-700 rounded px-3 py-1.5 font-bold text-white">02:00</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">03:00</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">04:00</div>
+    <div class="bg-white/10 border-2 border-white/30 rounded px-3 py-1.5">05:00</div>
+  </div>
+
+  <div class="text-xl opacity-50">↓ divide</div>
+
+  <!-- Minutes -->
+  <div class="flex gap-2 items-center flex-wrap justify-center text-xs">
+    <div class="bg-red-500 border-2 border-red-700 rounded px-2 py-1 font-bold text-white">02:00</div>
+    <div class="bg-red-300 border-2 border-red-500 rounded px-2 py-1 text-gray-900">02:01</div>
+    <div class="bg-red-300 border-2 border-red-500 rounded px-2 py-1 text-gray-900">02:02</div>
+    <div class="bg-red-300 border-2 border-red-500 rounded px-2 py-1 text-gray-900">02:03</div>
+    <div class="bg-red-300 border-2 border-red-500 rounded px-2 py-1 text-gray-900">02:04</div>
+    <div class="bg-red-300 border-2 border-red-500 rounded px-2 py-1 text-gray-900">02:05</div>
+  </div>
+</div>
+
+<div class="mt-4 text-sm opacity-80">
+  <p><strong>The Pattern:</strong> Year → Month → Day → Hour → Minute → Second</p>
+  <p class="mt-2">Every level is a <strong>Period</strong> with <code>{ start, end, type }</code></p>
+  <p class="mt-2">The red hour (02:00-03:00)? That's the DST "spring forward" that <strong>doesn't exist</strong> in Switzerland on March 30.</p>
+  <p class="mt-2"><strong>useTemporal's divide() gives you ANY level from ANY starting period.</strong></p>
+</div>
+
+---
+
+# Architecture Sketch
 
 ```mermaid
 graph LR
@@ -205,31 +282,34 @@ graph LR
 
 ---
 
-# Step 03 · Key Building Blocks
+# Key Building Blocks
 
-<div class="grid grid-cols-3 gap-4 text-left">
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Adapter</div>
+<div class="grid grid-cols-4 gap-4 text-left">
+  <div class="border p-4">
+    <div class="text-sm uppercase tracking-wide ">Adapter</div>
     <p class="text-lg font-bold mt-1">4 operations</p>
-    <p class="text-sm opacity-80 mt-2">`startOf`, `endOf`, `add`, `diff`</p>
+    <p class="text-sm opacity-80 mt-2">startOf, endOf, add, diff</p>
   </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Period</div>
+  <div class="border p-4">
+    <div class="text-sm uppercase tracking-wide ">Period</div>
     <p class="text-lg font-bold mt-1">Serializable slice</p>
-    <p class="text-sm opacity-80 mt-2">`{ start, end, type, date }`</p>
+    <p class="text-sm opacity-80 mt-2">{ start, end, type, date }</p>
   </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Stable Month</div>
-    <p class="text-lg font-bold mt-1">Always 6 rows</p>
-    <p class="text-sm opacity-80 mt-2">Aligned to `weekStartsOn`</p>
+  <div class="border p-4">
+    <div class="text-sm uppercase tracking-wide ">Units</div>
+    <p class="text-lg font-bold mt-1">Extensible types</p>
+    <p class="text-sm opacity-80 mt-2">year, month, week, day...</p>
+  </div>
+  <div class="border p-4">
+    <div class="text-sm uppercase tracking-wide ">Temporal</div>
+    <p class="text-lg font-bold mt-1">State container</p>
+    <p class="text-sm opacity-80 mt-2">browsing, now, config</p>
   </div>
 </div>
 
 ---
 
-## layout: two-cols
-
-# Step 04 · After (Vue + `useTemporal`)
+# useTemporal
 
 ```vue {1-16|2-7|9-14}
 <!-- App.vue -->
@@ -252,53 +332,31 @@ const date = ref(new Date("2025-03-13"));
 </template>
 ```
 
-::right::
+---
 
-```vue {1-23|4-7|9-20}
+```vue {all|4-7}
 <!-- MonthGrid.vue -->
 <script setup lang="ts">
 import { computed } from "vue";
-import { useTemporal } from "@allystudio/usetemporal-vue";
-import { UNITS } from "@allystudio/usetemporal";
-import { createStableMonth } from "@allystudio/usetemporal/calendar";
+import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { divide } from "@allystudio/usetemporal/operations";
 
 const temporal = useTemporal();
-
-const grid = computed(() => {
-  const month = createStableMonth(
-    temporal.adapter,
-    temporal.weekStartsOn,
-    temporal.browsing.value.date
-  );
-
-  return temporal.divide(month, UNITS.week).map((week) =>
-    temporal.divide(week, UNITS.day).map((day) => ({
-      period: day,
-      label: day.start.getDate().toString(),
-      inMonth: temporal.contains(month, day),
-    }))
-  );
-});
+const month = usePeriod(temporal, "month");
+const days = computed(() => divide(temporal.adapter, month.value, "day"));
 </script>
 
 <template>
-  <div class="weeks">
-    <div v-for="(week, w) in grid" :key="w" class="week">
-      <button
-        v-for="day in week"
-        :key="day.period.start.toISOString()"
-        class="day"
-        :class="{ 'day--muted': !day.inMonth }"
-      >
-        {{ day.label }}
-      </button>
+  <div class="calendar">
+    <div v-for="day in days" :key="day.start.toISOString()">
+      {{ day.start.getDate() }}
     </div>
   </div>
 </template>
 ```
 
 <div class="mt-6 text-sm opacity-70">
-  Visual: `Temporal` provides context once; child components call `useTemporal()` and only worry about rendering the period graph.
+  <strong>Core primitives in action:</strong> <code>usePeriod()</code> creates a reactive month, <code>divide()</code> breaks it into days. That's the entire calendar logic.
 </div>
 
 ---
@@ -307,134 +365,31 @@ const grid = computed(() => {
 
 <CalendarSuperpowers />
 
-<div class="mt-6 text-sm opacity-70">
-  Toggle week starts and timezones. Note how the grid stays six rows while launch/blackout ranges follow automatically.
-</div>
+---
+
+# How many hours do we have in 1 day?
 
 ---
 
-# Step 04 · Timezone Offsets At A Glance
+# How many hours do we have in 1 day?
+
+## 26
+
+---
+
+# Timezone Offsets At A Glance
 
 <TimezoneShowcase />
 
-<div class="mt-6 text-sm opacity-70">
-  Kiritimati is 14 hours ahead of UTC, Niue is 11 hours behind. Stable month renders the same structure even when local days shift dramatically.
-</div>
+---
+
+# How many week we have in a month?
 
 ---
 
-# Step 04 · Daylight Saving Chaos
+# How many week we have in a month?
 
-<div class="grid grid-cols-3 gap-4 text-left">
-  <div class="bg-white/5 rounded-xl p-4">
-    <p class="eyebrow">Europe / US</p>
-    <p class="text-lg font-semibold">Shift twice a year</p>
-    <p class="text-sm opacity-80">
-      March: 23-hour day · October: 25-hour day  
-      Switzerland inherits EU rules, so local DBs drift if you don't normalize.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <p class="eyebrow">No DST Zones</p>
-    <p class="text-lg font-semibold">Singapore · Niue · Kiritimati</p>
-    <p class="text-sm opacity-80">
-      Never shift. Niue is still on yesterday while Kiritimati is already on tomorrow, yet both expect stable grids.
-    </p>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <p class="eyebrow">Southern Hemisphere</p>
-    <p class="text-lg font-semibold">New Zealand & friends</p>
-    <p class="text-sm opacity-80">
-      DST flips opposite the North. Any “single” calendar model must support both directions simultaneously.
-    </p>
-  </div>
-</div>
-
-<div class="mt-6 text-sm opacity-70">
-  Stable periods + adapters keep math in UTC and labels local, so blackout blocks follow the real local day instead of guessing.
-</div>
-
----
-
-# Step 04 · Before vs After (Visual Cards)
-
-<div class="grid grid-cols-2 gap-4 text-left">
-  <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide text-red-300">Before</div>
-    <ul class="mt-3 space-y-2 text-sm">
-      <li>Arrays of Date objects</li>
-      <li>Logic duplicated per framework</li>
-      <li>Layout rows vary (4–6)</li>
-      <li>No common test surface</li>
-    </ul>
-  </div>
-  <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide text-emerald-300">After</div>
-    <ul class="mt-3 space-y-2 text-sm">
-      <li>Period graph reused everywhere</li>
-      <li>Stable months guarantee 6 rows</li>
-      <li>Adapters encapsulate timezone quirks</li>
-      <li>Tests target divide() + adapters</li>
-    </ul>
-  </div>
-</div>
-
----
-
-## layout: center
-
-# Step 05 · Demo Board (Horizontal)
-
-<div class="flex flex-row items-stretch gap-4 justify-center text-left text-sm">
-  <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
-    <div class="text-2xl font-bold">①</div>
-    <p class="font-semibold mt-2 uppercase tracking-wide opacity-70">Pick Date</p>
-    <p class="opacity-80 mt-1">`2025-03-13`, TZ=`Europe/Zurich`</p>
-  </div>
-  <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
-    <div class="text-2xl font-bold">②</div>
-    <p class="font-semibold mt-2 uppercase tracking-wide opacity-70">Stable Month</p>
-    <p class="opacity-80 mt-1">`createStableMonth(adapter, 1, date)`</p>
-  </div>
-  <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
-    <div class="text-2xl font-bold">③</div>
-    <p class="font-semibold mt-2 uppercase tracking-wide opacity-70">Weeks</p>
-    <p class="opacity-80 mt-1">`divide(..., UNITS.week)`</p>
-  </div>
-  <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
-    <div class="text-2xl font-bold">④</div>
-    <p class="font-semibold mt-2 uppercase tracking-wide opacity-70">Days</p>
-    <p class="opacity-80 mt-1">`divide(week, UNITS.day)`</p>
-  </div>
-  <div class="flex-1 bg-white/5 rounded-xl p-4 border border-white/10">
-    <div class="text-2xl font-bold">⑤</div>
-    <p class="font-semibold mt-2 uppercase tracking-wide opacity-70">Render</p>
-    <p class="opacity-80 mt-1">Log periods, feed UI, add tests.</p>
-  </div>
-</div>
-
----
-
-# Step 05 · Stable Month Visual
-
-```mermaid
-graph LR
-  Start((Week Start)) --> Cell1[Week 1]
-  Cell1 --> Cell2[Week 2]
-  Cell2 --> Cell3[Week 3]
-  Cell3 --> Cell4[Week 4]
-  Cell4 --> Cell5[Week 5]
-  Cell5 --> Cell6[Week 6]
-```
-
-- Always 6 nodes (weeks), arranged left-to-right like the UI grid.
-- Each week knows its start/end, so virtualization and keyboard navigation never shift.
-- Adapter handles Swiss-local vs UTC offsets; the graph shape stays identical.
-
----
-
-layout: two-cols
-class: text-left
+## 4 - 6
 
 ---
 
@@ -485,38 +440,10 @@ Row 6: [Mon][02][03][04][05][06][07]
 
 ---
 
-# Step 06 · Adoption Checklist (Visual)
+# Take away
 
-<div class="grid grid-cols-2 gap-4 text-left">
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Audit</div>
-    <ul class="mt-3 space-y-2 text-sm opacity-90">
-      <li>Map every time-slicing feature.</li>
-      <li>Log where Swiss-local assumptions hide.</li>
-    </ul>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Prototype</div>
-    <ul class="mt-3 space-y-2 text-sm opacity-90">
-      <li>Replace one flow with `createStableMonth → divide`.</li>
-      <li>Write adapter tests for UTC vs Swiss local.</li>
-    </ul>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Share</div>
-    <ul class="mt-3 space-y-2 text-sm opacity-90">
-      <li>Publish the period graph to every UI team.</li>
-      <li>Document adapter contracts for backend + frontend.</li>
-    </ul>
-  </div>
-  <div class="bg-white/5 rounded-xl p-4">
-    <div class="text-sm uppercase tracking-wide opacity-60">Scale</div>
-    <ul class="mt-3 space-y-2 text-sm opacity-90">
-      <li>Add stable year / quarter flows.</li>
-      <li>Monitor with period logs instead of raw Dates.</li>
-    </ul>
-  </div>
-</div>
+use UTC Time everywhere!
+use Temporal Api
 
 ---
 

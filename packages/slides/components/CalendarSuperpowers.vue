@@ -108,11 +108,19 @@ function enrichDay(day: Date) {
     }
   });
 
+  // Check if this is today
+  const today = new Date();
+  const isToday =
+    day.getDate() === today.getDate() &&
+    day.getMonth() === today.getMonth() &&
+    day.getFullYear() === today.getFullYear();
+
   return {
     iso,
     date: day,
     inMonth,
     isWeekend,
+    isToday,
     tags,
     label: formatDayNumber(day, timezone.value),
     weekday: formatWeekday(day, timezone.value),
@@ -229,9 +237,7 @@ function shiftMonth(amount: number) {
             class="day-cell"
             :class="{
               'is-muted': !day.inMonth,
-              'is-weekend': day.isWeekend,
-              'is-reserved': day.tags.includes('reserved'),
-              'is-blackout': day.tags.includes('blackout'),
+              'is-today': day.isToday,
             }"
           >
             <span class="day-number">{{ day.label }}</span>
@@ -239,40 +245,16 @@ function shiftMonth(amount: number) {
           </button>
         </div>
       </div>
-
-      <aside class="superpower-panel">
-        <h4>Superpowers in this view</h4>
-        <ul>
-          <li>
-            Stable six-row grid with {{ featureStats.outsideDays }} padded cells
-            — UI never jumps even in February.
-          </li>
-          <li>
-            Timezone toggle shows {{ featureStats.timezone }} instantly — data
-            stays accurate, labels reformat.
-          </li>
-          <li>
-            Reserved windows ({{ featureStats.reservedDays }} cells) and
-            blackout ranges live alongside normal days with zero additional
-            logic.
-          </li>
-        </ul>
-        <div class="legend">
-          <span><span class="legend-chip reserved"></span> Launch sprint</span>
-          <span><span class="legend-chip blackout"></span> Blackout</span>
-        </div>
-      </aside>
     </div>
   </section>
 </template>
 
 <style scoped>
 .calendar-superpowers {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
+  border: 2px solid #000;
+  border-radius: 8px;
   padding: 1rem;
-  background: rgba(15, 18, 40, 0.35);
-  backdrop-filter: blur(8px);
+  background: #fff;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -286,21 +268,24 @@ function shiftMonth(amount: number) {
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.75rem;
 }
 
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #666;
   margin: 0;
+  font-weight: 600;
 }
 
 .calendar-superpowers__controls {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
-  align.items: flex-end;
+  align-items: flex-end;
 }
 
 .nav-group {
@@ -309,18 +294,20 @@ function shiftMonth(amount: number) {
 }
 
 .nav-btn {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  border-radius: 999px;
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+  border-radius: 4px;
   padding: 0.25rem 0.7rem;
   font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #000;
+  color: #fff;
 }
 
 .control {
@@ -328,37 +315,51 @@ function shiftMonth(amount: number) {
   flex-direction: column;
   gap: 0.35rem;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #000;
+  font-weight: 600;
 }
 
 .toggle-group {
   display: inline-flex;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
+  border: 2px solid #000;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .toggle {
   border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
+  background: #fff;
+  color: #000;
   padding: 0.3rem 0.8rem;
   font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
+  border-right: 1px solid #000;
+}
+
+.toggle:last-child {
+  border-right: none;
 }
 
 .toggle.is-active {
-  background: rgba(255, 255, 255, 0.14);
+  background: #000;
   color: #fff;
 }
 
 select {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 4px;
   padding: 0.35rem 0.6rem;
-  color: #fff;
+  color: #000;
   font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: 3px solid #000;
+  outline-offset: 2px;
 }
 
 .calendar-superpowers__body {
@@ -370,9 +371,10 @@ select {
 .calendar-grid {
   flex: 1.5;
   min-width: 240px;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 14px;
-  padding: 0.45rem;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 4px;
+  padding: 0.75rem;
 }
 
 .weekday-row {
@@ -381,112 +383,66 @@ select {
   text-transform: uppercase;
   font-size: 0.5rem;
   letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 0.25rem;
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .week-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.2rem;
-  margin-bottom: 0.2rem;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .day-cell {
-  border: none;
-  border-radius: 10px;
-  padding: 0.3rem;
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.4rem;
+  background: #fff;
+  color: #000;
   text-align: left;
-  min-height: 40px;
+  min-height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: default;
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
+  transition: all 0.15s ease;
+}
+
+.day-cell:hover {
+  border-color: #000;
 }
 
 .day-cell.is-muted {
-  opacity: 0.45;
+  opacity: 0.3;
+  background: #f5f5f5;
 }
 
-.day-cell.is-weekend {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.day-cell.is-reserved {
-  background: linear-gradient(
-    135deg,
-    rgba(78, 197, 212, 0.25),
-    rgba(20, 107, 140, 0.6)
-  );
-}
-
-.day-cell.is-blackout {
-  background: rgba(255, 85, 85, 0.2);
-  border: 1px solid rgba(255, 85, 85, 0.4);
+.day-cell.is-today {
+  background: #ffd700;
+  border: 3px solid #000;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px #ffd700;
 }
 
 .day-number {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #000;
 }
 
 .day-weekday {
   font-size: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.13em;
-  color: rgba(255, 255, 255, 0.6);
+  color: #666;
+  font-weight: 600;
 }
 
-.superpower-panel {
-  flex: 1;
-  min-width: 200px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-  padding: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  font-size: 0.8rem;
-}
-
-.superpower-panel ul {
-  margin: 0;
-  padding-left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.legend {
-  display: flex;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.legend-chip {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  margin-right: 0.3rem;
-}
-
-.legend-chip.reserved {
-  background: linear-gradient(
-    135deg,
-    rgba(78, 197, 212, 0.7),
-    rgba(20, 107, 140, 0.9)
-  );
-}
-
-.legend-chip.blackout {
-  background: rgba(255, 85, 85, 0.8);
+.day-cell.is-today .day-weekday {
+  color: #000;
 }
 
 @media (max-width: 820px) {

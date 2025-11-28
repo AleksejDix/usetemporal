@@ -156,11 +156,10 @@ function getRelativeDay(local: Date, reference: Date) {
 
 <style scoped>
 .tz-showcase {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
+  border: 2px solid #000;
+  border-radius: 8px;
   padding: 1rem;
-  background: rgba(15, 18, 40, 0.35);
-  backdrop-filter: blur(8px);
+  background: #fff;
   max-width: 760px;
   margin: 0 auto;
   display: flex;
@@ -174,37 +173,53 @@ header {
   gap: 1rem;
   flex-wrap: wrap;
   align-items: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.75rem;
+}
+
+header h4 {
+  margin: 0;
+  font-weight: 700;
+  color: #000;
 }
 
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #666;
   margin: 0;
+  font-weight: 600;
 }
 
 .hint {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #000;
   margin: 0;
+  font-weight: 500;
 }
 
 .rows {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .row {
   display: grid;
   grid-template-columns: 1.1fr 1.2fr 1.2fr 0.8fr 0.7fr;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 0.75rem;
+  border-radius: 4px;
+  background: #fff;
+  border: 1px solid #ccc;
   align-items: center;
   font-size: 0.85rem;
+  color: #000;
+}
+
+.row:hover {
+  border-color: #000;
 }
 
 .row span {
@@ -213,26 +228,38 @@ header {
   gap: 0.15rem;
 }
 
+.row span strong {
+  font-weight: 700;
+  color: #000;
+}
+
 .row span small {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: #666;
+  font-weight: 500;
 }
 
 .header-row {
   text-transform: uppercase;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  background: #f5f5f5;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: 700;
+}
+
+.header-row:hover {
+  border-color: #000;
 }
 
 .row.future {
-  border: 1px solid rgba(78, 197, 212, 0.4);
-  background: rgba(78, 197, 212, 0.08);
+  background: #fff;
+  border: 1px solid #ccc;
 }
 
 .row.past {
-  border: 1px solid rgba(255, 170, 61, 0.4);
-  background: rgba(255, 170, 61, 0.08);
+  background: #fff;
+  border: 1px solid #ccc;
 }
 </style>
