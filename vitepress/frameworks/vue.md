@@ -74,7 +74,9 @@ month calendar using provide/inject so every child automatically stays in sync.
 
 ### Live demo
 
-<Calendar />
+<ClientOnly>
+  <Calendar />
+</ClientOnly>
 
 The widget above runs directly in VitePress and pulls from the same Vue package
 you install locally. Use it as a reference while exploring the breakdown below.

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Period } from "@allystudio/usetemporal";
-import { ref, computed } from "vue";
-import { period, go } from "@allystudio/usetemporal";
+import { ref } from "vue";
+import { Temporal } from "@allystudio/usetemporal-vue";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 import YearView from "./YearView.vue";
 import MonthGrid from "./MonthGrid.vue";
@@ -9,22 +9,18 @@ import WeekView from "./WeekView.vue";
 
 const adapter = createNativeAdapter({ weekStartsOn: 1 });
 const initialDate = ref(new Date());
-const month = computed(() => period(adapter, initialDate.value, "month"));
 
 const selectedDay = ref<Period | null>(null);
 
 function selectDay(day: Period) {
   selectedDay.value = day;
 }
-
-function jump(per: Period, count: number) {
-  const newPeriod = go(adapter, per, count > 0 ? "next" : "prev", Math.abs(count));
-  initialDate.value = newPeriod.date;
-}
 </script>
 
 <template>
-  <CalendarViewState v-slot="{ unit, viewPeriod, setUnit }">
+  <Temporal :adapter="adapter" :date="initialDate">
+    <template #default="{ temporal }">
+      <CalendarViewState v-slot="{ unit, viewPeriod, setUnit }">
     <section class="vue-temporal-demo">
       
       <div class="view-switch">
@@ -57,7 +53,7 @@ function jump(per: Period, count: number) {
       </template>
       <template v-else>
         <MonthGrid
-          :month="month"
+          :month="viewPeriod"
           :selected-day="selectedDay"
           @select="selectDay"
         />
@@ -72,10 +68,12 @@ function jump(per: Period, count: number) {
           <p v-else>Tap a date to see details</p>
         </div>
         <div class="demo-actions">
-          <button @click="jump(viewPeriod, -1)">Jump -1 {{ unit }}</button>
-          <button @click="jump(viewPeriod, 1)">Jump +1 {{ unit }}</button>
+          <button @click="temporal.go(viewPeriod, -1)">Jump -1 {{ unit }}</button>
+          <button @click="temporal.go(viewPeriod, 1)">Jump +1 {{ unit }}</button>
         </div>
       </footer>
     </section>
   </CalendarViewState>
+    </template>
+  </Temporal>
 </template>
