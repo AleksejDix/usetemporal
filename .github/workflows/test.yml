@@ -24,7 +24,7 @@ jobs:
         run: npm ci --include=optional
 
       - name: Build packages
-        run: npm run build
+        run: npm run build --workspace=@allystudio/usetemporal --workspace=@allystudio/usetemporal-react --workspace=@allystudio/usetemporal-vue --workspace=@allystudio/usetemporal-svelte
 
       - name: Run tests
         run: npm run test
