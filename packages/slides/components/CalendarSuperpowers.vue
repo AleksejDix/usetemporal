@@ -71,7 +71,9 @@ const monthLabel = computed(() =>
 const featureStats = computed(() => {
   const days = calendarWeeks.value.flat();
   const outsideDays = days.filter((day) => !day.inMonth).length;
-  const reservedDays = days.filter((day) => day.tags.includes("reserved")).length;
+  const reservedDays = days.filter((day) =>
+    day.tags.includes("reserved")
+  ).length;
   return {
     outsideDays,
     reservedDays,
@@ -196,7 +198,9 @@ function shiftMonth(amount: number) {
             <option value="Europe/Zurich">Europe/Zurich</option>
             <option value="America/New_York">America/New_York</option>
             <option value="Asia/Singapore">Asia/Singapore</option>
-            <option value="Pacific/Kiritimati">Pacific/Kiritimati (first)</option>
+            <option value="Pacific/Kiritimati">
+              Pacific/Kiritimati (first)
+            </option>
             <option value="Pacific/Niue">Pacific/Niue (last)</option>
           </select>
         </label>
@@ -206,7 +210,10 @@ function shiftMonth(amount: number) {
     <div class="calendar-superpowers__body">
       <div class="calendar-grid">
         <div class="weekday-row">
-          <span v-for="(weekday, idx) in weekdayLabels" :key="`${weekday}-${idx}`">
+          <span
+            v-for="(weekday, idx) in weekdayLabels"
+            :key="`${weekday}-${idx}`"
+          >
             {{ weekday }}
           </span>
         </div>
@@ -241,12 +248,13 @@ function shiftMonth(amount: number) {
             — UI never jumps even in February.
           </li>
           <li>
-            Timezone toggle shows {{ featureStats.timezone }} instantly — data stays accurate,
-            labels reformat.
+            Timezone toggle shows {{ featureStats.timezone }} instantly — data
+            stays accurate, labels reformat.
           </li>
           <li>
-            Reserved windows ({{ featureStats.reservedDays }} cells) and blackout ranges live
-            alongside normal days with zero additional logic.
+            Reserved windows ({{ featureStats.reservedDays }} cells) and
+            blackout ranges live alongside normal days with zero additional
+            logic.
           </li>
         </ul>
         <div class="legend">
@@ -396,7 +404,9 @@ select {
   flex-direction: column;
   justify-content: space-between;
   cursor: default;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
 .day-cell.is-muted {
@@ -446,7 +456,7 @@ select {
 
 .superpower-panel ul {
   margin: 0;
- 	padding-left: 1rem;
+  padding-left: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;

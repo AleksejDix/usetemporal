@@ -13,6 +13,7 @@ info: |
 ---
 
 # Visual Guide to Building Reliable Calendars
+
 ### Step-by-step visuals from pain to solution
 
 <div class="text-lg opacity-80">
@@ -24,8 +25,10 @@ info: |
 </div>
 
 ---
+
 layout: center
 class: text-left
+
 ---
 
 # The Journey In Six Visual Steps
@@ -64,8 +67,10 @@ class: text-left
 </div>
 
 ---
+
 layout: center
 class: text-left
+
 ---
 
 # Mobility Story — October 26
@@ -157,7 +162,7 @@ import {
   startOfMonth,
   isSameMonth,
   format,
-} from 'date-fns';
+} from "date-fns";
 
 function buildGrid(cursor, weekStartsOn = 1) {
   const first = startOfWeek(startOfMonth(cursor), { weekStartsOn });
@@ -165,7 +170,7 @@ function buildGrid(cursor, weekStartsOn = 1) {
     const date = addDays(first, index);
     return {
       date,
-      label: format(date, 'd'),
+      label: format(date, "d"),
       isCurrentMonth: isSameMonth(date, cursor),
     };
   });
@@ -221,20 +226,23 @@ graph LR
 </div>
 
 ---
-layout: two-cols
----
+
+## layout: two-cols
 
 # Step 04 · After (Vue + `useTemporal`)
 
 ```vue {1-16|2-7|9-14}
 <!-- App.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Temporal } from '@allystudio/usetemporal-vue'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { ref } from "vue";
+import { Temporal } from "@allystudio/usetemporal-vue";
+import { createNativeAdapter } from "@allystudio/usetemporal/native";
 
-const adapter = createNativeAdapter({ weekStartsOn: 1, timeZone: 'Europe/Zurich' })
-const date = ref(new Date('2025-03-13'))
+const adapter = createNativeAdapter({
+  weekStartsOn: 1,
+  timeZone: "Europe/Zurich",
+});
+const date = ref(new Date("2025-03-13"));
 </script>
 
 <template>
@@ -249,28 +257,28 @@ const date = ref(new Date('2025-03-13'))
 ```vue {1-23|4-7|9-20}
 <!-- MonthGrid.vue -->
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useTemporal } from '@allystudio/usetemporal-vue'
-import { UNITS } from '@allystudio/usetemporal'
-import { createStableMonth } from '@allystudio/usetemporal/calendar'
+import { computed } from "vue";
+import { useTemporal } from "@allystudio/usetemporal-vue";
+import { UNITS } from "@allystudio/usetemporal";
+import { createStableMonth } from "@allystudio/usetemporal/calendar";
 
-const temporal = useTemporal()
+const temporal = useTemporal();
 
 const grid = computed(() => {
   const month = createStableMonth(
     temporal.adapter,
     temporal.weekStartsOn,
-    temporal.browsing.value.date,
-  )
+    temporal.browsing.value.date
+  );
 
   return temporal.divide(month, UNITS.week).map((week) =>
     temporal.divide(week, UNITS.day).map((day) => ({
       period: day,
       label: day.start.getDate().toString(),
       inMonth: temporal.contains(month, day),
-    })),
-  )
-})
+    }))
+  );
+});
 </script>
 
 <template>
@@ -372,8 +380,8 @@ const grid = computed(() => {
 </div>
 
 ---
-layout: center
----
+
+## layout: center
 
 # Step 05 · Demo Board (Horizontal)
 
@@ -424,8 +432,10 @@ graph LR
 - Adapter handles Swiss-local vs UTC offsets; the graph shape stays identical.
 
 ---
+
 layout: two-cols
 class: text-left
+
 ---
 
 # Step 05 · Natural Month Shapes

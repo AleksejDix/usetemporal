@@ -9,7 +9,11 @@ const zones = [
   { label: "New York", tz: "America/New_York", note: "US East Coast (DST)" },
   { label: "Zurich", tz: "Europe/Zurich", note: "Swiss office time" },
   { label: "Singapore", tz: "Asia/Singapore", note: "No DST" },
-  { label: "Kiritimati", tz: "Pacific/Kiritimati", note: "First place on Earth" },
+  {
+    label: "Kiritimati",
+    tz: "Pacific/Kiritimati",
+    note: "First place on Earth",
+  },
 ];
 
 let timer: ReturnType<typeof setInterval> | null = null;
@@ -95,7 +99,9 @@ function toZonedDate(date: Date, timeZone: string) {
 }
 
 function getRelativeDay(local: Date, reference: Date) {
-  const diffDays = Math.round((local.getTime() - reference.getTime()) / 86400000);
+  const diffDays = Math.round(
+    (local.getTime() - reference.getTime()) / 86400000
+  );
   if (diffDays === 0) return "Today";
   if (diffDays === -1) return "Yesterday";
   if (diffDays === 1) return "Tomorrow";
@@ -111,7 +117,8 @@ function getRelativeDay(local: Date, reference: Date) {
         <h4>March 13 · 12:00 UTC</h4>
       </div>
       <p class="hint">
-        Slide to the extremes: Niue is still yesterday while Kiritimati is tomorrow.
+        Slide to the extremes: Niue is still yesterday while Kiritimati is
+        tomorrow.
       </p>
     </header>
     <div class="rows">

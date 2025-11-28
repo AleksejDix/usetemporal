@@ -4,7 +4,16 @@
       <div class="clock-wrapper">
         <svg viewBox="-50 -50 100 100" class="clock">
           <circle class="clock-face" r="48" />
-          <line class="clock-tick" v-for="tick in 12" :key="tick" :x1="0" y1="-44" :x2="0" y2="-48" :transform="`rotate(${tick * 30})`" />
+          <line
+            class="clock-tick"
+            v-for="tick in 12"
+            :key="tick"
+            :x1="0"
+            y1="-44"
+            :x2="0"
+            y2="-48"
+            :transform="`rotate(${tick * 30})`"
+          />
           <path class="clock-wedge" d="M0 0 L35 20 A40 40 0 0 1 35 0 Z" />
           <line class="hand hand--hour" x1="0" y1="0" x2="0" y2="-20" />
           <line class="hand hand--minute" x1="0" y1="0" x2="32" y2="10" />
@@ -21,7 +30,16 @@
       <div class="clock-wrapper">
         <svg viewBox="-50 -50 100 100" class="clock">
           <circle class="clock-face" r="48" />
-          <line class="clock-tick" v-for="tick in 12" :key="`b-${tick}`" :x1="0" y1="-44" :x2="0" y2="-48" :transform="`rotate(${tick * 30})`" />
+          <line
+            class="clock-tick"
+            v-for="tick in 12"
+            :key="`b-${tick}`"
+            :x1="0"
+            y1="-44"
+            :x2="0"
+            y2="-48"
+            :transform="`rotate(${tick * 30})`"
+          />
           <path class="clock-wedge" d="M0 0 L35 0 A40 40 0 0 1 35 -20 Z" />
           <line class="hand hand--hour" x1="0" y1="0" x2="0" y2="-20" />
           <line class="hand hand--minute" x1="0" y1="0" x2="32" y2="-10" />
