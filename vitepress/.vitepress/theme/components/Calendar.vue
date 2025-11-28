@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import type { Period } from "@allystudio/usetemporal";
-import { ref } from "vue";
-import { createTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { ref, computed } from "vue";
+import { period, go } from "@allystudio/usetemporal";
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
 import YearView from "./YearView.vue";
 import MonthGrid from "./MonthGrid.vue";
 import WeekView from "./WeekView.vue";
 
+const adapter = createNativeAdapter({ weekStartsOn: 1 });
 const initialDate = ref(new Date());
-const temporal = createTemporal({
-  adapter: createNativeAdapter({ weekStartsOn: 1 }),
-  date: initialDate,
-});
-
-const month = usePeriod(temporal, "month");
+const month = computed(() => period(adapter, initialDate.value, "month"));
 
 const selectedDay = ref<Period | null>(null);
 
@@ -21,8 +17,9 @@ function selectDay(day: Period) {
   selectedDay.value = day;
 }
 
-function jump(period: Period, count: number) {
-  temporal.go(period, count);
+function jump(per: Period, count: number) {
+  const newPeriod = go(adapter, per, count > 0 ? "next" : "prev", Math.abs(count));
+  initialDate.value = newPeriod.date;
 }
 </script>
 
