@@ -231,19 +231,41 @@ export function testAdapterCompliance(
       it("should handle month-end dates correctly", () => {
         const jan31 = createDate(2024, 0, 31);
         const result = adapter.add(jan31, 1, "month");
-        // JavaScript's setMonth handles overflow - Jan 31 + 1 month = Feb 31 = Mar 3 (in leap year)
-        // This is expected behavior for the native JavaScript Date handling
-        // Different adapters may handle this differently (e.g., clamping to Feb 29)
-        // The exact behavior depends on the adapter implementation
-        // For native JS: Jan 31 + 1 month = Feb 31 (overflow) = Mar 2
-        expect([1, 2]).toContain(getMonthIndex(result)); // February or March
-        if (getMonthIndex(result) === 1) {
-          // If February, should be last day of Feb
-          expect(getDayOfMonth(result)).toBeLessThanOrEqual(29);
-        } else {
-          // If March, should be early March
-          expect(getDayOfMonth(result)).toBeLessThanOrEqual(3);
-        }
+        // Jan 31 + 1 month should clamp to Feb 29 in leap year
+        expect(getMonthIndex(result)).toBe(1); // February
+        expect(getDayOfMonth(result)).toBe(29); // 2024 is a leap year
+      });
+
+      it("should clamp Feb 29 when adding 1 year to non-leap year", () => {
+        const feb29 = createDate(2024, 1, 29); // Feb 29, 2024 (leap year)
+        const result = adapter.add(feb29, 1, "year");
+        expect(getYear(result)).toBe(2025);
+        expect(getMonthIndex(result)).toBe(1); // February
+        expect(getDayOfMonth(result)).toBe(28); // 2025 is not a leap year
+      });
+
+      it("should preserve Feb 29 when adding 4 years to another leap year", () => {
+        const feb29 = createDate(2024, 1, 29);
+        const result = adapter.add(feb29, 4, "year");
+        expect(getYear(result)).toBe(2028);
+        expect(getMonthIndex(result)).toBe(1); // February
+        expect(getDayOfMonth(result)).toBe(29); // 2028 is a leap year
+      });
+
+      it("should clamp Feb 29 when subtracting 1 year", () => {
+        const feb29 = createDate(2024, 1, 29);
+        const result = adapter.add(feb29, -1, "year");
+        expect(getYear(result)).toBe(2023);
+        expect(getMonthIndex(result)).toBe(1); // February
+        expect(getDayOfMonth(result)).toBe(28); // 2023 is not a leap year
+      });
+
+      it("should not affect non-Feb dates when adding years", () => {
+        const jan31 = createDate(2024, 0, 31);
+        const result = adapter.add(jan31, 1, "year");
+        expect(getYear(result)).toBe(2025);
+        expect(getMonthIndex(result)).toBe(0); // January
+        expect(getDayOfMonth(result)).toBe(31);
       });
 
       it("should preserve time components when appropriate", () => {

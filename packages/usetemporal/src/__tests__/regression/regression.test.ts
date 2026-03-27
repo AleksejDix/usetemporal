@@ -111,23 +111,20 @@ describe("regression tests for critical bugs", () => {
     });
 
     it("should handle leap year boundary crossing", () => {
-      // Test specific leap year scenarios mentioned in the story
       const feb29 = period(adapter, new Date(2024, 1, 29), "day");
 
-      // 365 days from Feb 29, 2024 with year-based logic
+      // 365 days from Feb 29, 2024: year.add() now clamps Feb 29 → Feb 28
       const nextYear = go(adapter, feb29, 365);
       expect(nextYear.start.getFullYear()).toBe(2025);
-      // With our year-based logic, it adds 1 year to get Feb 29, 2025,
-      // but Feb 29 doesn't exist in 2025, so JavaScript adjusts to Mar 1
-      expect(nextYear.start.getMonth()).toBe(2); // March
-      expect(nextYear.start.getDate()).toBe(1);
+      expect(nextYear.start.getMonth()).toBe(1); // February (clamped)
+      expect(nextYear.start.getDate()).toBe(28);
 
       // Test Dec 31 + 365 days scenario
       const dec31 = period(adapter, new Date(2023, 11, 31), "day");
       const afterYear = go(adapter, dec31, 365);
       expect(afterYear.start.getFullYear()).toBe(2024);
       expect(afterYear.start.getMonth()).toBe(11);
-      expect(afterYear.start.getDate()).toBe(31); // With year-based logic, same date next year
+      expect(afterYear.start.getDate()).toBe(31);
     });
   });
 });
