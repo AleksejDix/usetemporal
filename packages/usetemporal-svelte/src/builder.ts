@@ -48,14 +48,18 @@ export function createTemporalBuilder(
       if (typeof dateOrOptions === "object" && "start" in dateOrOptions) {
         return ops.period(temporal.adapter, dateOrOptions);
       }
-      return ops.period(temporal.adapter, dateOrOptions as Date, unit!);
+      return ops.period(
+        temporal.adapter,
+        dateOrOptions as Date,
+        unit! as AdapterUnit
+      );
     },
 
     divide(period: Period, unit: AdapterUnit): Period[] {
       return ops.divide(temporal.adapter, period, unit);
     },
 
-    merge(periods: Period[], targetUnit?: AdapterUnit): Period | null {
+    merge(periods: Period[], targetUnit?: AdapterUnit): Period {
       return ops.merge(temporal.adapter, periods, targetUnit);
     },
 

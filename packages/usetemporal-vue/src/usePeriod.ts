@@ -1,6 +1,6 @@
 import { computed, type ComputedRef, type Ref } from "vue";
 import { period } from "@allystudio/usetemporal/operations";
-import type { Period, Unit } from "@allystudio/usetemporal";
+import type { Period, AdapterUnit } from "@allystudio/usetemporal";
 import type { VueTemporal } from "./types";
 
 /**
@@ -14,7 +14,7 @@ import type { VueTemporal } from "./types";
  */
 export function usePeriod(
   temporal: VueTemporal,
-  unit: Unit | Ref<Unit> | ComputedRef<Unit>
+  unit: AdapterUnit | Ref<AdapterUnit> | ComputedRef<AdapterUnit>
 ): ComputedRef<Period> {
   return computed(() => {
     const unitValue = typeof unit === "string" ? unit : unit.value;

@@ -1,5 +1,5 @@
 import { derived, readable, type Readable } from "svelte/store";
-import type { Period, Unit } from "@allystudio/usetemporal";
+import type { Period, AdapterUnit } from "@allystudio/usetemporal";
 import { period } from "@allystudio/usetemporal/operations";
 import type { SvelteTemporal } from "./types";
 
@@ -8,9 +8,9 @@ import type { SvelteTemporal } from "./types";
  */
 export function usePeriod(
   temporal: SvelteTemporal,
-  unit: Unit | Readable<Unit>
+  unit: AdapterUnit | Readable<AdapterUnit>
 ): Readable<Period> {
-  const unitStore: Readable<Unit> =
+  const unitStore: Readable<AdapterUnit> =
     typeof unit === "string" ? readable(unit) : unit;
 
   return derived([temporal.browsing, unitStore], ([$browsing, $unit]) =>

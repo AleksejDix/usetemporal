@@ -9,7 +9,7 @@ export function merge(
   adapter: Adapter,
   periods: Period[],
   targetUnit?: AdapterUnit
-): Period | null {
+): Period {
   if (periods.length === 0) {
     throw new Error("merge() requires at least one period");
   }

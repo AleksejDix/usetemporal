@@ -24,7 +24,7 @@ export interface TemporalBuilder extends ReactTemporal {
   period(date: Date, unit: Unit): Period;
   period(options: { start: Date; end: Date }): Period;
   divide(period: Period, unit: AdapterUnit): Period[];
-  merge(periods: Period[], targetUnit?: AdapterUnit): Period | null;
+  merge(periods: Period[], targetUnit?: AdapterUnit): Period;
   next(period: Period, count?: number): Period;
   previous(period: Period, count?: number): Period;
   go(period: Period, count: number): Period;
