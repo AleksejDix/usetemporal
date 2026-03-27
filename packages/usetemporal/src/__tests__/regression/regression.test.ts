@@ -67,64 +67,61 @@ describe("regression tests for critical bugs", () => {
   });
 
   describe("go() regression tests", () => {
-    it("should handle leap year navigation for 365 days (bug #3)", () => {
-      // Previously failed due to incorrect date arithmetic
+    it("should add exact days without year-based shortcuts", () => {
+      // 2024 is a leap year (366 days), so 365 days from Jan 1 = Dec 31
       const startDay = period(adapter, new Date(2024, 0, 1), "day");
 
-      // Going 365 days from Jan 1, 2024 should land on Jan 1, 2025
-      const yearLater = go(adapter, startDay, 365);
-      expect(yearLater.start.getFullYear()).toBe(2025);
-      expect(yearLater.start.getMonth()).toBe(0);
-      expect(yearLater.start.getDate()).toBe(1);
-    });
+      const result365 = go(adapter, startDay, 365);
+      expect(result365.start.getFullYear()).toBe(2024);
+      expect(result365.start.getMonth()).toBe(11); // December
+      expect(result365.start.getDate()).toBe(31);
 
-    it("should handle leap year navigation for 366 days", () => {
-      // 2024 is a leap year, so 366 days should be Jan 2, 2025
-      const startDay = period(adapter, new Date(2024, 0, 1), "day");
-
-      const leapYearLater = go(adapter, startDay, 366);
-      expect(leapYearLater.start.getFullYear()).toBe(2025);
-      expect(leapYearLater.start.getMonth()).toBe(0);
-      expect(leapYearLater.start.getDate()).toBe(2);
+      // 366 days from Jan 1, 2024 = Jan 1, 2025
+      const result366 = go(adapter, startDay, 366);
+      expect(result366.start.getFullYear()).toBe(2025);
+      expect(result366.start.getMonth()).toBe(0);
+      expect(result366.start.getDate()).toBe(1);
     });
 
     it("should handle multiple year navigation correctly", () => {
-      // Test navigation across multiple years
+      // 2023 is not a leap year (365 days), so 365 days = Jan 1, 2024
       const startDay = period(adapter, new Date(2023, 0, 1), "day");
+      const oneYear = go(adapter, startDay, 365);
+      expect(oneYear.start.getFullYear()).toBe(2024);
+      expect(oneYear.start.getMonth()).toBe(0);
+      expect(oneYear.start.getDate()).toBe(1);
 
-      // Two years: go(365) twice should give same date 2 years later
-      const twoYears = go(adapter, go(adapter, startDay, 365), 365);
-      expect(twoYears.start.getFullYear()).toBe(2025);
-      expect(twoYears.start.getMonth()).toBe(0);
-      expect(twoYears.start.getDate()).toBe(1);
+      // Then 2024 is a leap year, so another 365 days = Dec 31, 2024
+      const twoYears = go(adapter, oneYear, 365);
+      expect(twoYears.start.getFullYear()).toBe(2024);
+      expect(twoYears.start.getMonth()).toBe(11);
+      expect(twoYears.start.getDate()).toBe(31);
     });
 
     it("should handle negative large day offsets", () => {
-      // Test going backwards by large amounts
+      // 2024 is a leap year, so going back 365 days from Jan 1, 2025
+      // lands on Jan 2, 2024 (not Jan 1, because 2024 has 366 days)
       const startDay = period(adapter, new Date(2025, 0, 1), "day");
-
-      // Go back 365 days should be Jan 1, 2024
       const yearBefore = go(adapter, startDay, -365);
       expect(yearBefore.start.getFullYear()).toBe(2024);
       expect(yearBefore.start.getMonth()).toBe(0);
-      expect(yearBefore.start.getDate()).toBe(1);
+      expect(yearBefore.start.getDate()).toBe(2);
     });
 
     it("should handle leap year boundary crossing", () => {
+      // Feb 29, 2024 + 365 days = Feb 28, 2025 (exact day math)
       const feb29 = period(adapter, new Date(2024, 1, 29), "day");
-
-      // 365 days from Feb 29, 2024: year.add() now clamps Feb 29 → Feb 28
       const nextYear = go(adapter, feb29, 365);
       expect(nextYear.start.getFullYear()).toBe(2025);
-      expect(nextYear.start.getMonth()).toBe(1); // February (clamped)
+      expect(nextYear.start.getMonth()).toBe(1); // February
       expect(nextYear.start.getDate()).toBe(28);
 
-      // Test Dec 31 + 365 days scenario
+      // Dec 31, 2023 + 365 days = Dec 30, 2024 (2024 is leap year)
       const dec31 = period(adapter, new Date(2023, 11, 31), "day");
       const afterYear = go(adapter, dec31, 365);
       expect(afterYear.start.getFullYear()).toBe(2024);
       expect(afterYear.start.getMonth()).toBe(11);
-      expect(afterYear.start.getDate()).toBe(31);
+      expect(afterYear.start.getDate()).toBe(30);
     });
   });
 });

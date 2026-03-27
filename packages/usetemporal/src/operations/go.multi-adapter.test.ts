@@ -132,14 +132,17 @@ withAllAdapters("go", (adapter) => {
     it("should handle large offsets", () => {
       const day = period(adapter, new Date(2024, 0, 1), "day");
 
+      // 2024 is a leap year (366 days), so 365 days from Jan 1 = Dec 31
       const yearLater = go(adapter, day, 365);
-      expect(yearLater.start.getFullYear()).toBe(2025);
-      expect(yearLater.start.getMonth()).toBe(0);
-      expect(yearLater.start.getDate()).toBe(1);
+      expect(yearLater.start.getFullYear()).toBe(2024);
+      expect(yearLater.start.getMonth()).toBe(11);
+      expect(yearLater.start.getDate()).toBe(31);
 
-      const leapYearLater = go(adapter, day, 366); // 2024 is a leap year
+      // 366 days from Jan 1, 2024 = Jan 1, 2025
+      const leapYearLater = go(adapter, day, 366);
       expect(leapYearLater.start.getFullYear()).toBe(2025);
-      expect(leapYearLater.start.getDate()).toBe(2);
+      expect(leapYearLater.start.getMonth()).toBe(0);
+      expect(leapYearLater.start.getDate()).toBe(1);
     });
   });
 });
