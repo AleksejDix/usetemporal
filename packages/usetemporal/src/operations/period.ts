@@ -1,73 +1,71 @@
 import type { Period, Adapter, AdapterUnit, Unit } from "../types";
 
-// Type for custom period options
-interface CustomPeriodOptions {
-  start: Date;
-  end: Date;
-}
-
 /**
- * Create a period of a specific type from a date
- * @param adapter - The adapter instance
- * @param date - The date to create the period from
- * @param unit - The unit type (must be an adapter unit, not "custom"/"stableMonth"/"stableYear")
- * @returns A period of the specified type
- */
-export function period(adapter: Adapter, date: Date, unit: AdapterUnit): Period;
-
-/**
- * Create a custom period with specific start and end dates
- * @param adapter - The adapter instance (for consistency)
- * @param options - Object with start and end dates
- * @returns A custom period
- */
-export function period(adapter: Adapter, options: CustomPeriodOptions): Period;
-
-/**
- * Create a period of a specific type from a date or create a custom period
+ * Derive a period's boundaries from the adapter for a given date and unit.
+ * The adapter calculates startOf/endOf for the unit containing the date.
  *
  * @example
- * // Standard period from date
- * period(adapter, new Date(), "month")
- *
- * @example
- * // Custom period with start and end
- * period(adapter, { start: new Date('2024-01-01'), end: new Date('2024-03-31') })
+ * derivePeriod(adapter, new Date("2025-03-15"), "month")
+ * // { start: Mar 1, end: Mar 31, type: "month", date: Mar 15 }
  */
-export function period(
+export function derivePeriod(
   adapter: Adapter,
-  dateOrOptions: Date | CustomPeriodOptions,
-  unit?: Unit
+  date: Date,
+  unit: AdapterUnit
 ): Period {
-  // Check if this is a custom period request
-  if ("start" in dateOrOptions && "end" in dateOrOptions) {
-    // Custom period logic
-    const { start, end } = dateOrOptions;
-    return {
-      start,
-      end,
-      type: "custom",
-      date: new Date((start.getTime() + end.getTime()) / 2),
-    };
-  }
-
-  // Standard period logic
-  const date = dateOrOptions as Date;
-  const type = unit!;
-
-  if (type === "custom" || type === "stableMonth" || type === "stableYear") {
+  if (
+    (unit as string) === "custom" ||
+    (unit as string) === "stableMonth" ||
+    (unit as string) === "stableYear"
+  ) {
     throw new Error(
-      `Cannot create period with unit "${type}" from a date. Use period(adapter, {start, end}) for custom periods, or createStableMonth()/createStableYear() from '@allystudio/usetemporal/calendar'.`
+      `Cannot derive period for unit "${unit}". Use createPeriod(start, end) for custom periods, or createStableMonth()/createStableYear() from '@allystudio/usetemporal/calendar'.`
     );
   }
 
-  const start = adapter.startOf(date, type);
-  const end = adapter.endOf(date, type);
+  const start = adapter.startOf(date, unit);
+  const end = adapter.endOf(date, unit);
 
   return {
     start,
     end,
-    type,
+    type: unit,
     date,
   };
+}
+
+/**
+ * Create a custom period with explicit start and end dates.
+ * No adapter needed — you define the boundaries.
+ *
+ * @example
+ * createPeriod(new Date("2025-01-01"), new Date("2025-03-31"))
+ * // { start: Jan 1, end: Mar 31, type: "custom", date: midpoint }
+ */
+export function createPeriod(start: Date, end: Date): Period {
+  return {
+    start,
+    end,
+    type: "custom",
+    date: new Date((start.getTime() + end.getTime()) / 2),
+  };
+}
+
+/**
+ * @deprecated Use `derivePeriod` for unit-based periods or `createPeriod` for custom periods.
+ */
+export function period(adapter: Adapter, date: Date, unit: AdapterUnit): Period;
+export function period(
+  adapter: Adapter,
+  options: { start: Date; end: Date }
+): Period;
+export function period(
+  adapter: Adapter,
+  dateOrOptions: Date | { start: Date; end: Date },
+  unit?: Unit
+): Period {
+  if ("start" in dateOrOptions && "end" in dateOrOptions) {
+    return createPeriod(dateOrOptions.start, dateOrOptions.end);
+  }
+  return derivePeriod(adapter, dateOrOptions as Date, unit! as AdapterUnit);
 }

@@ -1,6 +1,6 @@
 import type { Period, Adapter } from "../../types";
 import { isSame } from "../isSame";
-import { period } from "../period";
+import { derivePeriod } from "../period";
 
 /**
  * Checks if a period represents today
@@ -14,6 +14,6 @@ export function isToday(adapter: Adapter, now: Date, p: Period): boolean {
     return false;
   }
 
-  const today = period(adapter, now, "day");
+  const today = derivePeriod(adapter, now, "day");
   return isSame(adapter, p, today, "day");
 }

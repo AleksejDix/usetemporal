@@ -14,6 +14,8 @@ export {
   isSame,
   merge,
   next,
+  derivePeriod,
+  createPeriod,
   period,
   previous,
   split,

@@ -24,11 +24,11 @@ Every time range is a **Period**: `{ start, end, type, date }`. The `divide()` f
 
 ```typescript
 import { createNativeAdapter } from "@allystudio/usetemporal/native";
-import { period, divide } from "@allystudio/usetemporal/operations";
+import { derivePeriod, divide } from "@allystudio/usetemporal/operations";
 
 const adapter = createNativeAdapter({ weekStartsOn: 1 });
 
-const year = period(adapter, new Date(2025, 0, 1), "year");
+const year = derivePeriod(adapter, new Date(2025, 0, 1), "year");
 const months = divide(adapter, year, "month"); // 12 month periods
 const days = divide(adapter, months[2], "day"); // 31 day periods (March)
 const hours = divide(adapter, days[0], "hour"); // 24 hour periods
@@ -40,7 +40,8 @@ All operations are **pure functions** — no side effects, no global state.
 
 ```typescript
 import {
-  period, // Create a period from a date + unit
+  derivePeriod, // Derive boundaries from adapter for a date + unit
+  createPeriod, // Create a custom period from start/end dates (no adapter needed)
   divide, // Split a period into smaller units
   next, // Move to the next period
   previous, // Move to the previous period
@@ -63,7 +64,7 @@ import {
 ### Navigation
 
 ```typescript
-const march = period(adapter, new Date(2025, 2, 1), "month");
+const march = derivePeriod(adapter, new Date(2025, 2, 1), "month");
 const april = next(adapter, march);
 const february = previous(adapter, march);
 const june = go(adapter, march, 3);
@@ -72,22 +73,19 @@ const june = go(adapter, march, 3);
 ### Containment and comparison
 
 ```typescript
-const month = period(adapter, new Date(2025, 2, 15), "month");
+const month = derivePeriod(adapter, new Date(2025, 2, 15), "month");
 contains(month, new Date(2025, 2, 20)); // true
 contains(month, new Date(2025, 3, 1)); // false
 
-const day1 = period(adapter, new Date(2025, 2, 15), "day");
-const day2 = period(adapter, new Date(2025, 2, 15), "day");
+const day1 = derivePeriod(adapter, new Date(2025, 2, 15), "day");
+const day2 = derivePeriod(adapter, new Date(2025, 2, 15), "day");
 isSame(adapter, day1, day2, "month"); // true (same month)
 ```
 
 ### Custom periods
 
 ```typescript
-const q1 = period(adapter, {
-  start: new Date(2025, 0, 1),
-  end: new Date(2025, 2, 31),
-});
+const q1 = createPeriod(new Date(2025, 0, 1), new Date(2025, 2, 31));
 // q1.type === "custom"
 ```
 

@@ -5,6 +5,8 @@ export {
   previous,
   go,
   contains,
+  derivePeriod,
+  createPeriod,
   period,
   split,
   merge,

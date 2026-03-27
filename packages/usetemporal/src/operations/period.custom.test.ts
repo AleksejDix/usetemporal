@@ -101,13 +101,13 @@ describe("period with custom options", () => {
     const date = new Date(2024, 0, 15);
 
     expect(() => period(adapter, date, "custom" as any)).toThrow(
-      'Cannot create period with unit "custom"'
+      'Cannot derive period for unit "custom"'
     );
     expect(() => period(adapter, date, "stableMonth" as any)).toThrow(
-      'Cannot create period with unit "stableMonth"'
+      'Cannot derive period for unit "stableMonth"'
     );
     expect(() => period(adapter, date, "stableYear" as any)).toThrow(
-      'Cannot create period with unit "stableYear"'
+      'Cannot derive period for unit "stableYear"'
     );
   });
 });

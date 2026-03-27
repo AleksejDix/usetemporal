@@ -1,5 +1,5 @@
 import type { Period, Adapter, AdapterUnit } from "../types";
-import { period } from "./period";
+import { derivePeriod } from "./period";
 import { shiftCustomPeriod } from "./customPeriod";
 import { getPeriodNavigator } from "./periodNavigation";
 
@@ -19,5 +19,5 @@ export function next(adapter: Adapter, p: Period): Period {
   const unit: AdapterUnit = p.type;
   const nextValue = adapter.add(p.date, 1, unit);
 
-  return period(adapter, nextValue, unit);
+  return derivePeriod(adapter, nextValue, unit);
 }

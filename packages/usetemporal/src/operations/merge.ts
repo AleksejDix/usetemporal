@@ -1,5 +1,5 @@
 import type { Period, Adapter, AdapterUnit } from "../types";
-import { period } from "./period";
+import { derivePeriod } from "./period";
 import { validatePeriod } from "./validate";
 
 /**
@@ -20,7 +20,7 @@ export function merge(
   if (periods.length === 1) {
     // If target unit is specified, promote the single period to that unit
     if (targetUnit && targetUnit !== periods[0].type) {
-      return period(adapter, periods[0].date, targetUnit);
+      return derivePeriod(adapter, periods[0].date, targetUnit);
     }
     return periods[0];
   }
@@ -56,7 +56,7 @@ export function merge(
         start.getTime() === startOfWeek.getTime() &&
         end.getTime() === endOfWeek.getTime()
       ) {
-        return period(adapter, sorted[3].date, "week");
+        return derivePeriod(adapter, sorted[3].date, "week");
       }
     }
   }
@@ -73,7 +73,7 @@ export function merge(
       sorted[2].start.getFullYear() === firstYear &&
       sorted[2].start.getMonth() === firstMonth + 2
     ) {
-      return period(adapter, sorted[1].date, "quarter");
+      return derivePeriod(adapter, sorted[1].date, "quarter");
     }
   }
 
