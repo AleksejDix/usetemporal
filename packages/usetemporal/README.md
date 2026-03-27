@@ -1,14 +1,8 @@
 # @allystudio/usetemporal
 
+**~4.7 kB gzipped** (core + native adapter, zero dependencies)
+
 Declarative calendar library built on the **Period + divide()** pattern. Model time as hierarchical, immutable data — swap date engines without changing your UI.
-
-## Install
-
-```bash
-npm install @allystudio/usetemporal
-```
-
-## Bundle Size
 
 | What you import              | gzipped |
 | ---------------------------- | ------- |
@@ -18,7 +12,11 @@ npm install @allystudio/usetemporal
 | + date-fns adapter           | ~5.4 kB |
 | + date-fns-tz adapter        | ~8.2 kB |
 
-Luxon and Temporal adapters are heavier due to bundled library code (~45-50 kB). Use the native adapter for the smallest footprint.
+## Install
+
+```bash
+npm install @allystudio/usetemporal
+```
 
 ## Core Concept
 
