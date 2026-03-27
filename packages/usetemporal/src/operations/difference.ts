@@ -27,11 +27,11 @@ import type { Period, Adapter } from "../types";
  * // Returns 9-day custom period from Jan 1 to Jan 10
  *
  * @example
- * // Reversed order (negative duration)
+ * // Reversed order is normalized (start <= end always)
  * const later = new Date(2024, 0, 10);
  * const earlier = new Date(2024, 0, 1);
- * const reversed = difference(adapter, later, earlier);
- * // Returns period where end < start
+ * const span = difference(adapter, later, earlier);
+ * // Returns period from Jan 1 to Jan 10 (same as forward)
  */
 export function difference(
   _adapter: Adapter,
@@ -55,9 +55,14 @@ export function difference(
   let end: Date;
 
   if (from instanceof Date && to instanceof Date) {
-    // Date to Date: direct span
-    start = from;
-    end = to;
+    // Date to Date: always normalize start <= end
+    if (isForward) {
+      start = from;
+      end = to;
+    } else {
+      start = to;
+      end = from;
+    }
   } else if (from instanceof Date) {
     // Date to Period
     if (isForward) {

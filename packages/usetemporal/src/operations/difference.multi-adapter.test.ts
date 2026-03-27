@@ -185,6 +185,17 @@ withAllAdapters("difference", (adapter) => {
       expect(diff.end.getTime()).toBe(min5.start.getTime() - 1);
     });
 
+    it("should normalize reversed date-to-date so start <= end", () => {
+      const later = new Date(2024, 0, 10);
+      const earlier = new Date(2024, 0, 1);
+
+      const diff = difference(adapter, later, earlier);
+
+      expect(diff.type).toBe("custom");
+      expect(diff.start.getTime()).toBe(earlier.getTime());
+      expect(diff.end.getTime()).toBe(later.getTime());
+    });
+
     it("should handle year periods with large gaps", () => {
       const year2020 = period(adapter, new Date(2020, 0, 15), "year");
       const year2024 = period(adapter, new Date(2024, 0, 15), "year");
