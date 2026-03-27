@@ -135,6 +135,44 @@ withAllAdapters("merge", (adapter) => {
       );
     });
 
+    it("should not detect week from 7 non-consecutive days", () => {
+      // 6 consecutive days + 1 day from a different week
+      const days = [
+        period(adapter, new Date(2024, 0, 8), "day"), // Mon
+        period(adapter, new Date(2024, 0, 9), "day"), // Tue
+        period(adapter, new Date(2024, 0, 10), "day"), // Wed
+        period(adapter, new Date(2024, 0, 11), "day"), // Thu
+        period(adapter, new Date(2024, 0, 12), "day"), // Fri
+        period(adapter, new Date(2024, 0, 13), "day"), // Sat
+        period(adapter, new Date(2024, 0, 21), "day"), // Next Sun (gap!)
+      ];
+
+      const merged = merge(adapter, days);
+      expect(merged!.type).toBe("custom");
+    });
+
+    it("should not detect quarter from 3 months in different years", () => {
+      const months = [
+        period(adapter, new Date(2023, 0, 15), "month"), // Jan 2023
+        period(adapter, new Date(2024, 1, 15), "month"), // Feb 2024
+        period(adapter, new Date(2025, 2, 15), "month"), // Mar 2025
+      ];
+
+      const merged = merge(adapter, months);
+      expect(merged!.type).toBe("custom");
+    });
+
+    it("should detect quarter from 3 consecutive months in same year", () => {
+      const months = [
+        period(adapter, new Date(2024, 0, 15), "month"), // Jan 2024
+        period(adapter, new Date(2024, 1, 15), "month"), // Feb 2024
+        period(adapter, new Date(2024, 2, 15), "month"), // Mar 2024
+      ];
+
+      const merged = merge(adapter, months);
+      expect(merged!.type).toBe("quarter");
+    });
+
     it("should preserve reference date from first period", () => {
       const periods = [
         period(adapter, new Date(2024, 0, 10), "day"),

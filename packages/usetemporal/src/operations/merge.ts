@@ -30,30 +30,45 @@ export function merge(
 
   // Check for natural units
   if (periods.length === 7 && periods.every((p) => p.type === "day")) {
-    // Check if these 7 days form a complete week
-    const startOfWeek = adapter.startOf(periods[0].date, "week");
-    const endOfWeek = adapter.endOf(periods[6].date, "week");
+    // Verify 7 days are consecutive
+    let consecutive = true;
+    for (let i = 1; i < sorted.length; i++) {
+      const expected = adapter.add(sorted[i - 1].start, 1, "day");
+      if (
+        adapter.startOf(expected, "day").getTime() !== sorted[i].start.getTime()
+      ) {
+        consecutive = false;
+        break;
+      }
+    }
 
-    if (
-      start.getTime() === startOfWeek.getTime() &&
-      end.getTime() === endOfWeek.getTime()
-    ) {
-      return period(adapter, periods[3].date, "week"); // Middle day
+    if (consecutive) {
+      // Check if these 7 consecutive days form a complete week
+      const startOfWeek = adapter.startOf(sorted[0].date, "week");
+      const endOfWeek = adapter.endOf(sorted[6].date, "week");
+
+      if (
+        start.getTime() === startOfWeek.getTime() &&
+        end.getTime() === endOfWeek.getTime()
+      ) {
+        return period(adapter, sorted[3].date, "week");
+      }
     }
   }
 
   if (periods.length === 3 && periods.every((p) => p.type === "month")) {
-    // Check if these form a quarter - they must be consecutive months
-    const months = sorted.map((p) => p.date.getMonth());
-    const firstMonth = months[0];
+    // Check if these form a quarter - must be consecutive months in the same year
+    const firstYear = sorted[0].start.getFullYear();
+    const firstMonth = sorted[0].start.getMonth();
 
-    // Check if it's a valid quarter start (0, 3, 6, 9) and consecutive
     if (
       firstMonth % 3 === 0 &&
-      months[1] === firstMonth + 1 &&
-      months[2] === firstMonth + 2
+      sorted[1].start.getFullYear() === firstYear &&
+      sorted[1].start.getMonth() === firstMonth + 1 &&
+      sorted[2].start.getFullYear() === firstYear &&
+      sorted[2].start.getMonth() === firstMonth + 2
     ) {
-      return period(adapter, periods[1].date, "quarter");
+      return period(adapter, sorted[1].date, "quarter");
     }
   }
 
