@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useTemporal } from "./useTemporal";
+import { useMinuta } from "./useMinuta";
 import { usePeriod } from "./usePeriod";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
-import type { Adapter } from "@allystudio/usetemporal";
+import { createNativeAdapter } from "minuta/native";
+import type { Adapter } from "minuta";
 
 describe("React reactivity", () => {
   let mockAdapter: Adapter;
@@ -17,7 +17,7 @@ describe("React reactivity", () => {
   describe("usePeriod reactivity", () => {
     it("should create period from temporal browsing", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -28,12 +28,12 @@ describe("React reactivity", () => {
       );
 
       expect(periodResult.current.type).toBe("month");
-      expect(periodResult.current.date).toEqual(testDate);
+      expect(periodResult.current.start.getDate()).toBe(testDate.getDate());
     });
 
     it("should update period when browsing changes", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -52,12 +52,12 @@ describe("React reactivity", () => {
       rerender();
 
       expect(periodResult.current).not.toBe(initialYear);
-      expect(periodResult.current.date).not.toEqual(initialYear.date);
+      expect(periodResult.current.start).not.toEqual(initialYear.start);
     });
 
     it("should handle multiple periods from same temporal", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -73,12 +73,12 @@ describe("React reactivity", () => {
 
       expect(yearResult.current.type).toBe("year");
       expect(monthResult.current.type).toBe("month");
-      expect(yearResult.current.date).toEqual(monthResult.current.date);
+      expect(yearResult.current.start).toEqual(monthResult.current.start);
     });
 
     it("should memoize period when dependencies unchanged", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -100,7 +100,7 @@ describe("React reactivity", () => {
   describe("navigation reactivity", () => {
     it("should update periods when navigating derived period", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -120,12 +120,12 @@ describe("React reactivity", () => {
 
       const februaryMonth = monthResult.current;
       expect(februaryMonth).not.toBe(januaryMonth);
-      expect(februaryMonth.date.getMonth()).toBe(1);
+      expect(februaryMonth.start.getMonth()).toBe(1);
     });
 
     it("should trigger period update on next navigation", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -136,7 +136,7 @@ describe("React reactivity", () => {
       );
 
       const januaryMonth = monthResult.current;
-      expect(januaryMonth.date.getMonth()).toBe(0); // January
+      expect(januaryMonth.start.getMonth()).toBe(0); // January
 
       act(() => {
         // Navigate browsing forward by 31 days to get to February
@@ -146,12 +146,12 @@ describe("React reactivity", () => {
       rerender();
 
       const februaryMonth = monthResult.current;
-      expect(februaryMonth.date.getMonth()).toBe(1); // February
+      expect(februaryMonth.start.getMonth()).toBe(1); // February
     });
 
     it("should trigger period update on previous navigation", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -169,13 +169,13 @@ describe("React reactivity", () => {
       rerender();
 
       const decemberMonth = monthResult.current;
-      expect(decemberMonth.date.getMonth()).toBe(11); // December
-      expect(decemberMonth.date.getFullYear()).toBe(2023);
+      expect(decemberMonth.start.getMonth()).toBe(11); // December
+      expect(decemberMonth.start.getFullYear()).toBe(2023);
     });
 
     it("should trigger period update on go navigation", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -194,7 +194,7 @@ describe("React reactivity", () => {
       rerender();
 
       const year2024Later = yearResult.current;
-      expect(year2024Later.date).not.toEqual(year2024.date);
+      expect(year2024Later.start).not.toEqual(year2024.start);
     });
   });
 
@@ -202,7 +202,7 @@ describe("React reactivity", () => {
     it("should update periods when adapter changes", () => {
       const { result: temporalResult, rerender: rerenderTemporal } = renderHook(
         ({ adapter }) =>
-          useTemporal({
+          useMinuta({
             date: testDate,
             adapter,
           }),
@@ -228,7 +228,7 @@ describe("React reactivity", () => {
   describe("divide operation reactivity", () => {
     it("should divide periods that update with browsing", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -256,14 +256,14 @@ describe("React reactivity", () => {
         "week"
       );
       expect(februaryWeeks.length).toBeGreaterThan(0);
-      expect(februaryWeeks[0].date).not.toEqual(januaryWeeks[0].date);
+      expect(februaryWeeks[0].start).not.toEqual(januaryWeeks[0].start);
     });
   });
 
   describe("integration with multiple hooks", () => {
     it("should coordinate multiple usePeriod hooks", () => {
       const { result: temporalResult } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })

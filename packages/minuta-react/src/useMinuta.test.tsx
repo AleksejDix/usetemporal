@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useTemporal, type UseTemporalOptions } from "./useTemporal";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
-import type { Adapter } from "@allystudio/usetemporal";
+import { useMinuta, type UseMinutaOptions } from "./useMinuta";
+import { createNativeAdapter } from "minuta/native";
+import type { Adapter } from "minuta";
 
 // Helper to suppress console errors and stderr for expected error tests
 function suppressErrorOutput<T>(fn: () => T): T {
@@ -23,7 +23,7 @@ function suppressErrorOutput<T>(fn: () => T): T {
   }
 }
 
-describe("useTemporal", () => {
+describe("useMinuta", () => {
   let mockAdapter: Adapter;
   let testDate: Date;
 
@@ -36,13 +36,13 @@ describe("useTemporal", () => {
     it("should throw error when adapter is not provided", () => {
       const options = {
         date: testDate,
-      } as UseTemporalOptions;
+      } as UseMinutaOptions;
 
       suppressErrorOutput(() => {
         expect(() => {
-          renderHook(() => useTemporal(options));
+          renderHook(() => useMinuta(options));
         }).toThrow(
-          "A date adapter is required. Please install and provide an adapter from @allystudio/usetemporal/* packages."
+          "A date adapter is required. Please install and provide an adapter from minuta/* packages."
         );
       });
     });
@@ -55,7 +55,7 @@ describe("useTemporal", () => {
 
       suppressErrorOutput(() => {
         expect(() => {
-          renderHook(() => useTemporal(options));
+          renderHook(() => useMinuta(options));
         }).toThrow("A date adapter is required");
       });
     });
@@ -68,7 +68,7 @@ describe("useTemporal", () => {
 
       suppressErrorOutput(() => {
         expect(() => {
-          renderHook(() => useTemporal(options));
+          renderHook(() => useMinuta(options));
         }).toThrow("A date adapter is required");
       });
     });
@@ -77,7 +77,7 @@ describe("useTemporal", () => {
   describe("basic initialization", () => {
     it("should create temporal with required options", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -93,7 +93,7 @@ describe("useTemporal", () => {
     it("should accept custom weekStartsOn values", () => {
       for (let day = 0; day <= 6; day++) {
         const { result } = renderHook(() =>
-          useTemporal({
+          useMinuta({
             date: testDate,
             adapter: mockAdapter,
             weekStartsOn: day,
@@ -106,27 +106,27 @@ describe("useTemporal", () => {
     it("should use provided now date", () => {
       const nowDate = new Date(2024, 0, 20, 10, 0, 0);
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
           now: nowDate,
         })
       );
 
-      expect(result.current.now.date).toEqual(nowDate);
+      expect(result.current.now.start.getSeconds()).toBe(nowDate.getSeconds());
     });
 
     it("should default now to current date when not provided", () => {
       const beforeCreate = new Date();
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
       const afterCreate = new Date();
 
-      const nowTime = result.current.now.date.getTime();
+      const nowTime = result.current.now.start.getTime();
       expect(nowTime).toBeGreaterThanOrEqual(beforeCreate.getTime());
       expect(nowTime).toBeLessThanOrEqual(afterCreate.getTime());
     });
@@ -135,19 +135,19 @@ describe("useTemporal", () => {
   describe("browsing period", () => {
     it("should create browsing period with day unit", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
       expect(result.current.browsing.type).toBe("day");
-      expect(result.current.browsing.date).toEqual(testDate);
+      expect(result.current.browsing.start.getDate()).toBe(testDate.getDate());
     });
 
     it("should create now period with second unit", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -160,26 +160,26 @@ describe("useTemporal", () => {
   describe("builder methods", () => {
     it("should provide period method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const year = result.current.period(testDate, "year");
+      const year = result.current.derivePeriod(testDate, "year");
       expect(year.type).toBe("year");
-      expect(year.date).toEqual(testDate);
+      expect(year.start).toEqual(testDate);
     });
 
     it("should provide divide method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const year = result.current.period(testDate, "year");
+      const year = result.current.derivePeriod(testDate, "year");
       const months = result.current.divide(year, "month");
 
       expect(months).toHaveLength(12);
@@ -188,13 +188,13 @@ describe("useTemporal", () => {
 
     it("should provide merge method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const year = result.current.period(testDate, "year");
+      const year = result.current.derivePeriod(testDate, "year");
       const months = result.current.divide(year, "month");
       const merged = result.current.merge(months.slice(0, 3));
 
@@ -204,7 +204,7 @@ describe("useTemporal", () => {
 
     it("should support custom period creation", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -212,7 +212,7 @@ describe("useTemporal", () => {
 
       const start = new Date(2024, 0, 1);
       const end = new Date(2024, 0, 31);
-      const customPeriod = result.current.period({ start, end });
+      const customPeriod = result.current.createPeriod(start, end);
 
       expect(customPeriod.start).toEqual(start);
       expect(customPeriod.end).toEqual(end);
@@ -223,7 +223,7 @@ describe("useTemporal", () => {
   describe("navigation methods", () => {
     it("should navigate to next period", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -235,15 +235,15 @@ describe("useTemporal", () => {
         result.current.next(result.current.browsing);
       });
 
-      expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
-      expect(result.current.browsing.date.getTime()).toBeGreaterThan(
-        initialBrowsing.date.getTime()
+      expect(result.current.browsing.start).not.toEqual(initialBrowsing.start);
+      expect(result.current.browsing.start.getTime()).toBeGreaterThan(
+        initialBrowsing.start.getTime()
       );
     });
 
     it("should navigate to previous period", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -255,15 +255,15 @@ describe("useTemporal", () => {
         result.current.previous(result.current.browsing);
       });
 
-      expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
-      expect(result.current.browsing.date.getTime()).toBeLessThan(
-        initialBrowsing.date.getTime()
+      expect(result.current.browsing.start).not.toEqual(initialBrowsing.start);
+      expect(result.current.browsing.start.getTime()).toBeLessThan(
+        initialBrowsing.start.getTime()
       );
     });
 
     it("should navigate with go method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -275,12 +275,12 @@ describe("useTemporal", () => {
         result.current.go(result.current.browsing, 5);
       });
 
-      expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
+      expect(result.current.browsing.start).not.toEqual(initialBrowsing.start);
     });
 
     it("should navigate multiple periods with next count", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -292,12 +292,12 @@ describe("useTemporal", () => {
         result.current.next(result.current.browsing, 3);
       });
 
-      expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
+      expect(result.current.browsing.start).not.toEqual(initialBrowsing.start);
     });
 
     it("should navigate multiple periods with previous count", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -309,18 +309,21 @@ describe("useTemporal", () => {
         result.current.previous(result.current.browsing, 2);
       });
 
-      expect(result.current.browsing.date).not.toEqual(initialBrowsing.date);
+      expect(result.current.browsing.start).not.toEqual(initialBrowsing.start);
     });
 
     it("should update browsing when navigating non-browsing period", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const otherPeriod = result.current.period(new Date(2025, 0, 1), "month");
+      const otherPeriod = result.current.derivePeriod(
+        new Date(2025, 0, 1),
+        "month"
+      );
       const initialBrowsing = result.current.browsing;
 
       act(() => {
@@ -328,21 +331,21 @@ describe("useTemporal", () => {
       });
 
       expect(result.current.browsing).not.toEqual(initialBrowsing);
-      expect(result.current.browsing.date.getMonth()).toBe(1);
-      expect(result.current.browsing.date.getFullYear()).toBe(2025);
+      expect(result.current.browsing.start.getMonth()).toBe(1);
+      expect(result.current.browsing.start.getFullYear()).toBe(2025);
     });
   });
 
   describe("utility methods", () => {
     it("should provide split method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const year = result.current.period(testDate, "year");
+      const year = result.current.derivePeriod(testDate, "year");
       const splitDate = new Date(2024, 5, 1); // June 1st
       const [before, after] = result.current.split(year, splitDate);
 
@@ -357,13 +360,13 @@ describe("useTemporal", () => {
 
     it("should provide contains method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
       );
 
-      const month = result.current.period(testDate, "month");
+      const month = result.current.derivePeriod(testDate, "month");
       const dateInMonth = new Date(2024, 0, 20);
       const dateOutsideMonth = new Date(2024, 1, 1);
 
@@ -373,7 +376,7 @@ describe("useTemporal", () => {
 
     it("should provide isSame method", () => {
       const { result } = renderHook(() =>
-        useTemporal({
+        useMinuta({
           date: testDate,
           adapter: mockAdapter,
         })
@@ -381,8 +384,8 @@ describe("useTemporal", () => {
 
       const date1 = new Date(2024, 0, 15, 10, 0, 0);
       const date2 = new Date(2024, 0, 15, 14, 0, 0);
-      const period1 = result.current.period(date1, "day");
-      const period2 = result.current.period(date2, "day");
+      const period1 = result.current.derivePeriod(date1, "day");
+      const period2 = result.current.derivePeriod(date2, "day");
 
       expect(result.current.isSame(period1, period2, "day")).toBe(true);
       expect(result.current.isSame(period1, period2, "hour")).toBe(false);
@@ -393,7 +396,7 @@ describe("useTemporal", () => {
     it("should update browsing when adapter changes", () => {
       const { result, rerender } = renderHook(
         ({ adapter }) =>
-          useTemporal({
+          useMinuta({
             date: testDate,
             adapter,
           }),
