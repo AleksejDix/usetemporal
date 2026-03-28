@@ -9,3 +9,4 @@
 export { isWeekend } from "./operations/utils/isWeekend";
 export { isWeekday } from "./operations/utils/isWeekday";
 export { isToday } from "./operations/utils/isToday";
+export { isOverlapping } from "./operations/utils/isOverlapping";
