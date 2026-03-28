@@ -10,29 +10,20 @@ export interface StableYearMeta {
   yearStart: Date;
 }
 
-/**
- * Core data structure for representing time periods
- * This is a plain data structure - no methods, just data
- */
-export type Period =
-  | {
-      start: Date;
-      end: Date;
-      type: "stableMonth";
-      meta: StableMonthMeta;
-    }
-  | {
-      start: Date;
-      end: Date;
-      type: "stableYear";
-      meta: StableYearMeta;
-    }
-  | {
-      start: Date;
-      end: Date;
-      type: Exclude<Unit, "stableMonth" | "stableYear">;
-      meta?: undefined;
-    };
+/** A single time range — derived from adapter or custom boundaries */
+export interface TimePeriod {
+  start: Date;
+  end: Date;
+  type: AdapterUnit | "custom";
+}
+
+/** A predictable sequence container — exists to be subdivided */
+export type PeriodSeries =
+  | { start: Date; end: Date; type: "stableMonth"; meta: StableMonthMeta }
+  | { start: Date; end: Date; type: "stableYear"; meta: StableYearMeta };
+
+/** Either a time period or a series container */
+export type Period = TimePeriod | PeriodSeries;
 
 /**
  * Registry for unit types - extend this interface to add custom units
@@ -94,12 +85,23 @@ export const CUSTOM = "custom" as const;
 export type UnitsObject = typeof UNITS;
 
 /**
- * Minimal temporal context needed for operations
- * This is the core type used by pure functional operations
+ * A navigator knows how to advance a derived period type (e.g., stableMonth).
+ * Unlike adapter.add(), navigators reconstruct the period properly.
+ */
+export type PeriodNavigator = (
+  adapter: Adapter,
+  period: Period,
+  steps: number
+) => Period;
+
+/**
+ * Context for temporal operations.
+ * Holds the adapter for time math and optional navigators for derived period types.
  */
 export interface TemporalContext {
   adapter: Adapter;
   weekStartsOn: number;
+  navigators: ReadonlyMap<string, PeriodNavigator>;
 }
 
 // Adapter Types

@@ -13,12 +13,18 @@ export {
 } from "./operations";
 export type { SplitOptions } from "./types";
 
+// Context
+export { createContext } from "./context";
+
 // Utility functions
 export { isWeekend, isWeekday, isToday } from "./operations/utils";
 
 // Types
 export type {
   Period,
+  TimePeriod,
+  PeriodSeries,
+  PeriodNavigator,
   Unit,
   UnitRegistry,
   AdapterUnit,
