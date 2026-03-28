@@ -1,16 +1,15 @@
-# minuta
+# Minuta
 
 **~4.7 kB gzipped** (core + native adapter, zero dependencies)
 
-Declarative calendar library built on the **Period + divide()** pattern. Model time as hierarchical, immutable data — swap date engines without changing your UI.
+Divide time into pieces. Pure functional calendar library with a 4-method adapter contract.
 
 | What you import              | gzipped |
 | ---------------------------- | ------- |
 | Core + operations            | ~3.7 kB |
 | + Native adapter (zero deps) | ~4.7 kB |
 | + Calendar utilities         | ~5.1 kB |
-| + date-fns adapter           | ~5.4 kB |
-| + date-fns-tz adapter        | ~8.2 kB |
+| + Helpers                    | ~5.2 kB |
 
 ## Install
 
@@ -20,18 +19,18 @@ npm install minuta
 
 ## Core Concept
 
-Every time range is a **Period**: `{ start, end, type, date }`. The `divide()` function splits any period into smaller ones. That's the entire model.
+Every time range is a **Period**: `{ start, end, type }`. The `divide()` function splits any period into smaller ones. That's the entire model.
 
 ```typescript
 import { createNativeAdapter } from "minuta/native";
-import { derivePeriod, divide } from "minuta/operations";
+import { derivePeriod, divide } from "minuta";
 
 const adapter = createNativeAdapter({ weekStartsOn: 1 });
 
 const year = derivePeriod(adapter, new Date(2025, 0, 1), "year");
-const months = divide(adapter, year, "month"); // 12 month periods
-const days = divide(adapter, months[2], "day"); // 31 day periods (March)
-const hours = divide(adapter, days[0], "hour"); // 24 hour periods
+const months = divide(adapter, year, "month"); // 12 periods
+const days = divide(adapter, months[2], "day"); // 31 periods (March)
+const hours = divide(adapter, days[0], "hour"); // 24 periods
 ```
 
 ## Operations
@@ -41,7 +40,7 @@ All operations are **pure functions** — no side effects, no global state.
 ```typescript
 import {
   derivePeriod, // Derive boundaries from adapter for a date + unit
-  createPeriod, // Create a custom period from start/end dates (no adapter needed)
+  createPeriod, // Create a custom period from start/end dates
   divide, // Split a period into smaller units
   next, // Move to the next period
   previous, // Move to the previous period
@@ -51,10 +50,7 @@ import {
   merge, // Combine periods into one
   split, // Split a period at a specific date
   difference, // Calculate the gap between two periods
-} from "minuta/operations";
-
-// Utilities
-import { isToday, isWeekend, isWeekday } from "minuta/operations";
+} from "minuta";
 ```
 
 ### Navigation
@@ -66,16 +62,12 @@ const february = previous(adapter, march);
 const june = go(adapter, march, 3);
 ```
 
-### Containment and comparison
+### Containment
 
 ```typescript
 const month = derivePeriod(adapter, new Date(2025, 2, 15), "month");
 contains(month, new Date(2025, 2, 20)); // true
 contains(month, new Date(2025, 3, 1)); // false
-
-const day1 = derivePeriod(adapter, new Date(2025, 2, 15), "day");
-const day2 = derivePeriod(adapter, new Date(2025, 2, 15), "day");
-isSame(adapter, day1, day2, "month"); // true (same month)
 ```
 
 ### Custom periods
@@ -85,9 +77,21 @@ const q1 = createPeriod(new Date(2025, 0, 1), new Date(2025, 2, 31));
 // q1.type === "custom"
 ```
 
-## Calendar Utilities
+## Helpers
 
-Optional import for calendar grid layouts:
+Optional UI utilities for calendar apps:
+
+```typescript
+import { isWeekend, isWeekday, isToday, isOverlapping } from "minuta/helpers";
+
+isWeekend(saturdayPeriod); // true
+isToday(adapter, new Date(), day); // true if day is today
+isOverlapping(meetingA, meetingB); // true if they share time
+```
+
+## Calendar Grids
+
+Optional import for fixed-size calendar layouts:
 
 ```typescript
 import { createStableMonth, createStableYear } from "minuta/calendar";
@@ -100,96 +104,63 @@ const days = weeks.map((week) => divide(adapter, week, "day"));
 
 ## Adapters
 
-Swap the date engine without changing your code. The adapter interface is 4 methods: `startOf`, `endOf`, `add`, `diff`.
-
-### Native (zero dependencies)
+Swap the date engine without changing your code. 4 methods: `startOf`, `endOf`, `add`, `diff`.
 
 ```typescript
+// Native (zero dependencies)
 import { createNativeAdapter } from "minuta/native";
-const adapter = createNativeAdapter({ weekStartsOn: 1 });
-```
 
-### date-fns
-
-```bash
-npm install date-fns
-```
-
-```typescript
+// date-fns
 import { createDateFnsAdapter } from "minuta/date-fns";
-const adapter = createDateFnsAdapter({ weekStartsOn: 1 });
-```
 
-### date-fns-tz (timezone support)
-
-```bash
-npm install date-fns date-fns-tz
-```
-
-```typescript
+// date-fns-tz (timezone support)
 import { createDateFnsTzAdapter } from "minuta/date-fns-tz";
-const adapter = createDateFnsTzAdapter({
-  timezone: "Europe/Zurich",
-  weekStartsOn: 1,
-});
-```
 
-### Luxon
-
-```bash
-npm install luxon
-```
-
-```typescript
+// Luxon
 import { createLuxonAdapter } from "minuta/luxon";
-const adapter = createLuxonAdapter({ weekStartsOn: 1 });
-```
 
-### Temporal API (polyfill)
-
-```bash
-npm install @js-temporal/polyfill
-```
-
-```typescript
+// Temporal API
 import { createTemporalAdapter } from "minuta/temporal";
-const adapter = createTemporalAdapter({ weekStartsOn: 1 });
 ```
 
 ## Framework Integrations
 
-| Framework  | Package         | Status |
-| ---------- | --------------- | ------ |
-| Vue 3      | `minuta-vue`    | Beta   |
-| React 18+  | `minuta-react`  | Beta   |
-| Svelte 4/5 | `minuta-svelte` | Beta   |
+```typescript
+// Vue
+import { createMinuta, useMinuta, usePeriod, Minuta } from "minuta-vue";
+
+// React
+import { useMinuta, usePeriod } from "minuta-react";
+
+// Svelte
+import { createMinuta, useMinuta, usePeriod } from "minuta-svelte";
+```
 
 ## Types
 
 ```typescript
-interface Period {
-  start: Date; // Inclusive start
-  end: Date; // Inclusive end
-  type: Unit; // "year" | "quarter" | "month" | "week" | "day" | "hour" | "minute" | "second" | "custom" | "stableMonth" | "stableYear"
-  date: Date; // Reference date used to create this period
+// A single time range
+interface TimePeriod {
+  start: Date;
+  end: Date;
+  type: AdapterUnit | "custom";
 }
 
+// A calendar grid container (stableMonth: 42 days, stableYear: 52-53 weeks)
+type PeriodSeries =
+  | { start: Date; end: Date; type: "stableMonth"; meta: StableMonthMeta }
+  | { start: Date; end: Date; type: "stableYear"; meta: StableYearMeta };
+
+// The union — most operations accept this
+type Period = TimePeriod | PeriodSeries;
+
+// 4-method contract for date engines
 interface Adapter {
   startOf(date: Date, unit: AdapterUnit): Date;
   endOf(date: Date, unit: AdapterUnit): Date;
   add(date: Date, amount: number, unit: AdapterUnit): Date;
   diff(from: Date, to: Date, unit: AdapterUnit): number;
 }
-
-type AdapterUnit =
-  | "year"
-  | "quarter"
-  | "month"
-  | "week"
-  | "day"
-  | "hour"
-  | "minute"
-  | "second";
 ```
 
 ## License
