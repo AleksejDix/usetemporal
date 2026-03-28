@@ -2,11 +2,15 @@
  * Calendar-specific utilities
  *
  * Import from '@allystudio/usetemporal/calendar'
- *
- * These are optional imports for calendar-specific functionality.
- * Not importing this module saves 5-10KB from your bundle.
  */
+export { createStableMonth, stableMonthNavigator } from "./stableMonth";
+export { createStableYear, stableYearNavigator } from "./stableYear";
 
-// Re-export helper functions
-export { createStableMonth } from "./stableMonth";
-export { createStableYear } from "./stableYear";
+import { stableMonthNavigator } from "./stableMonth";
+import { stableYearNavigator } from "./stableYear";
+
+/** All calendar navigators — pass to createContext() */
+export const calendarNavigators = {
+  stableMonth: stableMonthNavigator,
+  stableYear: stableYearNavigator,
+};

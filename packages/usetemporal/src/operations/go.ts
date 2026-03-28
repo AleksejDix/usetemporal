@@ -1,17 +1,16 @@
-import type { Period, Adapter, AdapterUnit } from "../types";
+import type { Period, AdapterUnit, TemporalContext } from "../types";
 import { derivePeriod } from "./period";
 import { shiftCustomPeriod } from "./customPeriod";
-import { getPeriodNavigator } from "./periodNavigation";
 
 /**
  * Move by a specific number of periods
  */
-export function go(adapter: Adapter, p: Period, steps: number): Period {
+export function go(ctx: TemporalContext, p: Period, steps: number): Period {
   if (steps === 0) return p;
 
-  const navigator = getPeriodNavigator(p.type);
+  const navigator = ctx.navigators.get(p.type);
   if (navigator) {
-    return navigator(adapter, p, steps);
+    return navigator(ctx.adapter, p, steps);
   }
 
   if (p.type === "custom") {
@@ -19,7 +18,7 @@ export function go(adapter: Adapter, p: Period, steps: number): Period {
   }
 
   const unit: AdapterUnit = p.type;
-  const newValue = adapter.add(p.start, steps, unit);
+  const newValue = ctx.adapter.add(p.start, steps, unit);
 
-  return derivePeriod(adapter, newValue, unit);
+  return derivePeriod(ctx.adapter, newValue, unit);
 }

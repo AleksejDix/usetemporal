@@ -2,7 +2,6 @@ import type { Period, Adapter, AdapterUnit } from "../types";
 
 /**
  * Derive a period's boundaries from the adapter for a given date and unit.
- * The adapter calculates startOf/endOf for the unit containing the date.
  *
  * @example
  * derivePeriod(adapter, new Date("2025-03-15"), "month")
@@ -13,16 +12,6 @@ export function derivePeriod(
   date: Date,
   unit: AdapterUnit
 ): Period {
-  if (
-    (unit as string) === "custom" ||
-    (unit as string) === "stableMonth" ||
-    (unit as string) === "stableYear"
-  ) {
-    throw new Error(
-      `Cannot derive period for unit "${unit}". Use createPeriod(start, end) for custom periods, or createStableMonth()/createStableYear() from '@allystudio/usetemporal/calendar'.`
-    );
-  }
-
   const start = adapter.startOf(date, unit);
   const end = adapter.endOf(date, unit);
 

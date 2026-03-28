@@ -1,9 +1,10 @@
 import { describe } from "vitest";
-import type { Adapter } from "../types";
+import type { Adapter, TemporalContext } from "../types";
 import { createNativeAdapter } from "../adapters/native";
 import { createDateFnsAdapter } from "../adapters/date-fns";
 import { createLuxonAdapter } from "../adapters/luxon";
 import { createTemporalAdapter } from "../adapters/temporal";
+import { createContext } from "../context";
 
 // Define adapter configurations
 export interface AdapterConfig {
@@ -39,14 +40,15 @@ export const testAdapters: AdapterConfig[] = [
  */
 export function withAllAdapters(
   suiteName: string,
-  testFn: (adapter: Adapter, adapterName: string) => void
+  testFn: (adapter: Adapter, adapterName: string, ctx: TemporalContext) => void
 ) {
   describe(suiteName, () => {
     testAdapters.forEach(({ name, createAdapter, skip }) => {
       const describeFn = skip ? describe.skip : describe;
       describeFn(`with ${name} adapter`, () => {
         const adapter = createAdapter();
-        testFn(adapter, name);
+        const ctx = createContext({ adapter });
+        testFn(adapter, name, ctx);
       });
     });
   });

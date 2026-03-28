@@ -13,19 +13,8 @@ describe("derivePeriod", () => {
     expect(monthPeriod.start.getDate()).toBe(1);
   });
 
-  it("should throw for non-adapter units", () => {
-    const date = new Date(2024, 0, 15);
-
-    expect(() => derivePeriod(adapter, date, "custom" as any)).toThrow(
-      'Cannot derive period for unit "custom"'
-    );
-    expect(() => derivePeriod(adapter, date, "stableMonth" as any)).toThrow(
-      'Cannot derive period for unit "stableMonth"'
-    );
-    expect(() => derivePeriod(adapter, date, "stableYear" as any)).toThrow(
-      'Cannot derive period for unit "stableYear"'
-    );
-  });
+  // Non-adapter units ("custom", "stableMonth", "stableYear") are prevented
+  // by the type system — derivePeriod only accepts AdapterUnit.
 });
 
 describe("createPeriod", () => {

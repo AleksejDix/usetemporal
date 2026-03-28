@@ -1,17 +1,15 @@
 import { describe, it, expect } from "vitest";
 
 import { createNativeAdapter } from "../../adapters/native";
+import { createContext } from "../../context";
 import { merge } from "../../operations/merge";
 import { go } from "../../operations/go";
 import { derivePeriod as period } from "../../operations/period";
 import { divide } from "../../operations/divide";
 
-/**
- * Regression tests for bugs fixed in story 005.01
- * These tests ensure that previously identified bugs remain fixed
- */
 describe("regression tests for critical bugs", () => {
   const adapter = createNativeAdapter();
+  const ctx = createContext({ adapter });
 
   describe("merge() regression tests", () => {
     it("should throw on empty array (bug #1)", () => {
@@ -71,13 +69,13 @@ describe("regression tests for critical bugs", () => {
       // 2024 is a leap year (366 days), so 365 days from Jan 1 = Dec 31
       const startDay = period(adapter, new Date(2024, 0, 1), "day");
 
-      const result365 = go(adapter, startDay, 365);
+      const result365 = go(ctx, startDay, 365);
       expect(result365.start.getFullYear()).toBe(2024);
       expect(result365.start.getMonth()).toBe(11); // December
       expect(result365.start.getDate()).toBe(31);
 
       // 366 days from Jan 1, 2024 = Jan 1, 2025
-      const result366 = go(adapter, startDay, 366);
+      const result366 = go(ctx, startDay, 366);
       expect(result366.start.getFullYear()).toBe(2025);
       expect(result366.start.getMonth()).toBe(0);
       expect(result366.start.getDate()).toBe(1);
@@ -86,13 +84,13 @@ describe("regression tests for critical bugs", () => {
     it("should handle multiple year navigation correctly", () => {
       // 2023 is not a leap year (365 days), so 365 days = Jan 1, 2024
       const startDay = period(adapter, new Date(2023, 0, 1), "day");
-      const oneYear = go(adapter, startDay, 365);
+      const oneYear = go(ctx, startDay, 365);
       expect(oneYear.start.getFullYear()).toBe(2024);
       expect(oneYear.start.getMonth()).toBe(0);
       expect(oneYear.start.getDate()).toBe(1);
 
       // Then 2024 is a leap year, so another 365 days = Dec 31, 2024
-      const twoYears = go(adapter, oneYear, 365);
+      const twoYears = go(ctx, oneYear, 365);
       expect(twoYears.start.getFullYear()).toBe(2024);
       expect(twoYears.start.getMonth()).toBe(11);
       expect(twoYears.start.getDate()).toBe(31);
@@ -102,7 +100,7 @@ describe("regression tests for critical bugs", () => {
       // 2024 is a leap year, so going back 365 days from Jan 1, 2025
       // lands on Jan 2, 2024 (not Jan 1, because 2024 has 366 days)
       const startDay = period(adapter, new Date(2025, 0, 1), "day");
-      const yearBefore = go(adapter, startDay, -365);
+      const yearBefore = go(ctx, startDay, -365);
       expect(yearBefore.start.getFullYear()).toBe(2024);
       expect(yearBefore.start.getMonth()).toBe(0);
       expect(yearBefore.start.getDate()).toBe(2);
@@ -111,14 +109,14 @@ describe("regression tests for critical bugs", () => {
     it("should handle leap year boundary crossing", () => {
       // Feb 29, 2024 + 365 days = Feb 28, 2025 (exact day math)
       const feb29 = period(adapter, new Date(2024, 1, 29), "day");
-      const nextYear = go(adapter, feb29, 365);
+      const nextYear = go(ctx, feb29, 365);
       expect(nextYear.start.getFullYear()).toBe(2025);
       expect(nextYear.start.getMonth()).toBe(1); // February
       expect(nextYear.start.getDate()).toBe(28);
 
       // Dec 31, 2023 + 365 days = Dec 30, 2024 (2024 is leap year)
       const dec31 = period(adapter, new Date(2023, 11, 31), "day");
-      const afterYear = go(adapter, dec31, 365);
+      const afterYear = go(ctx, dec31, 365);
       expect(afterYear.start.getFullYear()).toBe(2024);
       expect(afterYear.start.getMonth()).toBe(11);
       expect(afterYear.start.getDate()).toBe(30);

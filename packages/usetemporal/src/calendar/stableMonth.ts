@@ -1,8 +1,7 @@
 /**
  * StableMonth unit - Always returns a 42-day (6-week) grid for consistent calendar layouts
  */
-import type { Adapter, Period } from "../types";
-import { registerPeriodNavigator } from "../operations/periodNavigation";
+import type { Adapter, Period, PeriodNavigator } from "../types";
 
 /**
  * Helper to calculate the stable month grid boundaries
@@ -12,10 +11,8 @@ function getStableMonthBounds(
   adapter: Adapter,
   weekStartsOn: number = 1
 ) {
-  // Get the first day of the month
   const monthStart = adapter.startOf(date, "month");
 
-  // Find the start of the week containing the first day of the month
   let gridStart = monthStart;
   const firstDayOfWeek = gridStart.getDay();
   const daysToSubtract = (firstDayOfWeek - weekStartsOn + 7) % 7;
@@ -24,7 +21,6 @@ function getStableMonthBounds(
     gridStart = adapter.add(gridStart, -daysToSubtract, "day");
   }
 
-  // Grid spans 42 days (6 weeks): add 41 days to get to the 42nd day
   const gridEnd = adapter.add(gridStart, 41, "day");
   const gridEndTime = adapter.endOf(gridEnd, "day");
 
@@ -50,8 +46,9 @@ export function createStableMonth(
   };
 }
 
-registerPeriodNavigator("stableMonth", (adapter, p, steps) => {
+/** Navigator for stableMonth — reconstructs the grid for the target month */
+export const stableMonthNavigator: PeriodNavigator = (adapter, p, steps) => {
   if (p.type !== "stableMonth") return p;
   const newMonthDate = adapter.add(p.meta.monthStart, steps, "month");
   return createStableMonth(adapter, p.meta.weekStartsOn, newMonthDate);
-});
+};
