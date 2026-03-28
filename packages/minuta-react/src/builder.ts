@@ -1,29 +1,29 @@
 import * as ops from "minuta/operations";
 import type { AdapterUnit, Period } from "minuta";
-import type { TemporalBuilder, ReactTemporal } from "./types";
+import type { MinutaBuilder, ReactMinuta } from "./types";
 
 /**
- * Create a temporal builder with convenient method wrappers
+ * Create a minuta builder with convenient method wrappers
  *
  * This wraps pure operations with automatic adapter passing.
  * Each method is tree-shakable - unused methods add 0KB to bundle.
  *
- * @param temporal - The base temporal instance
+ * @param temporal - The base minuta instance
  * @param setBrowsingDate - React state setter for browsing date
- * @returns A temporal builder with convenience methods
+ * @returns A minuta builder with convenience methods
  *
  * @example
  * ```typescript
- * const temporal = useTemporal({ adapter: nativeAdapter, date: new Date() });
+ * const temporal = useMinuta({ adapter: nativeAdapter, date: new Date() });
  *
  * const year = temporal.period(new Date(), 'year');
  * const months = temporal.divide(year, 'month');
  * ```
  */
-export function createTemporalBuilder(
-  temporal: ReactTemporal,
+export function createMinutaBuilder(
+  temporal: ReactMinuta,
   setBrowsingDate: (date: Date) => void
-): TemporalBuilder {
+): MinutaBuilder {
   return {
     ...temporal,
 

@@ -1,24 +1,20 @@
 import { computed, getCurrentInstance, ref } from "vue";
-import { createTemporalBuilder } from "./builder";
-import type {
-  TemporalBuilder,
-  CreateTemporalOptions,
-  VueTemporal,
-} from "./types";
-import { provideTemporal } from "./temporalContext";
+import { createMinutaBuilder } from "./builder";
+import type { MinutaBuilder, CreateMinutaOptions, VueMinuta } from "./types";
+import { provideMinuta } from "./minutaContext";
 
 /**
- * Creates a temporal instance with builder methods (Level 2 API)
+ * Creates a minuta instance with builder methods (Level 2 API)
  *
- * Returns a temporal builder that provides convenience methods
+ * Returns a minuta builder that provides convenience methods
  * wrapping pure operations. Methods automatically pass the adapter.
  *
  * @param options - Configuration options
- * @returns A temporal builder with convenience methods
+ * @returns A minuta builder with convenience methods
  *
  * @example
  * ```typescript
- * const temporal = createTemporal({
+ * const temporal = createMinuta({
  *   adapter: nativeAdapter,
  *   date: ref(new Date())
  * });
@@ -27,9 +23,7 @@ import { provideTemporal } from "./temporalContext";
  * const months = temporal.divide(year, "month");
  * ```
  */
-export function createTemporal(
-  options: CreateTemporalOptions
-): TemporalBuilder {
+export function createMinuta(options: CreateMinutaOptions): MinutaBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from minuta/* packages."
@@ -55,7 +49,7 @@ export function createTemporal(
     };
   });
 
-  const temporal: VueTemporal = {
+  const temporal: VueMinuta = {
     adapter: options.adapter,
     weekStartsOn: options.weekStartsOn ?? 1, // Default to Monday
     locale: options.locale ?? "en",
@@ -63,9 +57,9 @@ export function createTemporal(
     now,
   };
 
-  const builder = createTemporalBuilder(temporal);
+  const builder = createMinutaBuilder(temporal);
   if (getCurrentInstance()) {
-    provideTemporal(builder);
+    provideMinuta(builder);
   }
   return builder;
 }

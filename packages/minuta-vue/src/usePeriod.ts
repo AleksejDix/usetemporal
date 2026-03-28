@@ -1,7 +1,7 @@
 import { computed, type ComputedRef, type Ref } from "vue";
 import { derivePeriod } from "minuta/operations";
 import type { Period, AdapterUnit } from "minuta";
-import type { VueTemporal } from "./types";
+import type { VueMinuta } from "./types";
 
 /**
  * Creates a reactive period of any unit type
@@ -13,7 +13,7 @@ import type { VueTemporal } from "./types";
  * const customUnit = usePeriod(temporal, unitRef) // reactive unit
  */
 export function usePeriod(
-  temporal: VueTemporal,
+  temporal: VueMinuta,
   unit: AdapterUnit | Ref<AdapterUnit> | ComputedRef<AdapterUnit>
 ): ComputedRef<Period> {
   return computed(() => {

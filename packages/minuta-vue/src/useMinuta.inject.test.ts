@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ref } from "vue";
-import type { TemporalBuilder } from "./types";
-import { createTemporal } from "./createTemporal";
-import { useTemporal } from "./useTemporal";
+import type { MinutaBuilder } from "./types";
+import { createMinuta } from "./createMinuta";
+import { useMinuta } from "./useMinuta";
 import { createNativeAdapter } from "minuta/native";
 
 type VueModule = typeof import("vue");
 
-const context = new Map<symbol, TemporalBuilder>();
+const context = new Map<symbol, MinutaBuilder>();
 let hasInstance = false;
 
 vi.mock("vue", async () => {
@@ -15,14 +15,14 @@ vi.mock("vue", async () => {
   return {
     ...actual,
     getCurrentInstance: () => (hasInstance ? {} : null),
-    provide: (key: symbol, value: TemporalBuilder) => {
+    provide: (key: symbol, value: MinutaBuilder) => {
       context.set(key, value);
     },
     inject: (key: symbol) => context.get(key),
   };
 });
 
-describe("useTemporal injector", () => {
+describe("useMinuta injector", () => {
   const adapter = createNativeAdapter();
 
   beforeEach(() => {
@@ -30,18 +30,18 @@ describe("useTemporal injector", () => {
     hasInstance = false;
   });
 
-  it("injects the nearest provided temporal instance", () => {
+  it("injects the nearest provided minuta instance", () => {
     hasInstance = true;
-    const provided = createTemporal({
+    const provided = createMinuta({
       date: ref(new Date(2024, 0, 1)),
       adapter,
     });
-    const injected = useTemporal();
+    const injected = useMinuta();
     expect(injected).toBe(provided);
   });
 
   it("throws a helpful error when no provider exists", () => {
     context.clear();
-    expect(() => useTemporal()).toThrow("No temporal instance provided");
+    expect(() => useMinuta()).toThrow("No minuta instance provided");
   });
 });

@@ -2,9 +2,9 @@ import type { Adapter, AdapterUnit, Period, Unit } from "minuta";
 import type { Readable, Writable } from "svelte/store";
 
 /**
- * Base Svelte temporal instance with reactive stores.
+ * Base Svelte minuta instance with reactive stores.
  */
-export interface SvelteTemporal {
+export interface SvelteMinuta {
   adapter: Adapter;
   weekStartsOn: number;
   locale: string;
@@ -13,9 +13,9 @@ export interface SvelteTemporal {
 }
 
 /**
- * Options for creating a Svelte temporal instance.
+ * Options for creating a Svelte minuta instance.
  */
-export interface CreateTemporalOptions {
+export interface CreateMinutaOptions {
   adapter: Adapter;
   date?: Writable<Date>;
   now?: Readable<Date>;
@@ -26,7 +26,7 @@ export interface CreateTemporalOptions {
 /**
  * Temporal builder users interact with.
  */
-export interface TemporalBuilder extends SvelteTemporal {
+export interface MinutaBuilder extends SvelteMinuta {
   derivePeriod(date: Date, unit: AdapterUnit): Period;
   createPeriod(start: Date, end: Date): Period;
   divide(period: Period, unit: AdapterUnit): Period[];

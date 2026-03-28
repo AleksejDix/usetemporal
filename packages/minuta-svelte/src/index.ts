@@ -1,12 +1,8 @@
-// export { createTemporal } from "./createTemporal"; // Deprecated - use useTemporal
-export { useTemporal } from "./useTemporal";
+// export { createMinuta } from "./createMinuta"; // Deprecated - use useMinuta
+export { useMinuta } from "./useMinuta";
 export { usePeriod } from "./usePeriod";
-export { createTemporalBuilder } from "./builder";
-export type {
-  SvelteTemporal,
-  CreateTemporalOptions,
-  TemporalBuilder,
-} from "./types";
+export { createMinutaBuilder } from "./builder";
+export type { SvelteMinuta, CreateMinutaOptions, MinutaBuilder } from "./types";
 export { CalendarExample, Navigator } from "./components";
 
 export {

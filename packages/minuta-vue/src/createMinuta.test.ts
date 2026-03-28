@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createTemporal } from "./createTemporal";
-import type { CreateTemporalOptions } from "./types";
+import { createMinuta } from "./createMinuta";
+import type { CreateMinutaOptions } from "./types";
 import { ref, isRef, effect, computed } from "vue";
 import { createNativeAdapter } from "minuta/native";
 import type { Adapter } from "minuta";
 
-describe("createTemporal", () => {
+describe("createMinuta", () => {
   let mockAdapter: Adapter;
   let testDate: Date;
 
@@ -18,9 +18,9 @@ describe("createTemporal", () => {
     it("should throw error when adapter is not provided", () => {
       const options = {
         date: ref(testDate),
-      } as CreateTemporalOptions;
+      } as CreateMinutaOptions;
 
-      expect(() => createTemporal(options)).toThrow(
+      expect(() => createMinuta(options)).toThrow(
         "A date adapter is required. Please install and provide an adapter from minuta/* packages."
       );
     });
@@ -31,9 +31,7 @@ describe("createTemporal", () => {
         adapter: null as any,
       };
 
-      expect(() => createTemporal(options)).toThrow(
-        "A date adapter is required"
-      );
+      expect(() => createMinuta(options)).toThrow("A date adapter is required");
     });
 
     it("should throw error when adapter is undefined", () => {
@@ -42,15 +40,13 @@ describe("createTemporal", () => {
         adapter: undefined as any,
       };
 
-      expect(() => createTemporal(options)).toThrow(
-        "A date adapter is required"
-      );
+      expect(() => createMinuta(options)).toThrow("A date adapter is required");
     });
   });
 
   describe("basic initialization", () => {
     it("should create temporal with required options", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -64,7 +60,7 @@ describe("createTemporal", () => {
 
     it("should accept custom weekStartsOn values", () => {
       for (let day = 0; day <= 6; day++) {
-        const temporal = createTemporal({
+        const temporal = createMinuta({
           date: ref(testDate),
           adapter: mockAdapter,
           weekStartsOn: day,
@@ -74,7 +70,7 @@ describe("createTemporal", () => {
     });
 
     it("should default locale to en", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -82,7 +78,7 @@ describe("createTemporal", () => {
     });
 
     it("should accept custom locale", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         locale: "zh-CN",
@@ -92,7 +88,7 @@ describe("createTemporal", () => {
 
     it("should use provided now date", () => {
       const nowDate = new Date(2024, 0, 20, 10, 0, 0);
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         now: ref(nowDate),
@@ -103,7 +99,7 @@ describe("createTemporal", () => {
 
     it("should default now to current date when not provided", () => {
       const beforeCreate = new Date();
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -118,7 +114,7 @@ describe("createTemporal", () => {
   describe("reactive date handling", () => {
     it("should accept ref date and preserve reactivity", () => {
       const dateRef = ref(testDate);
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: dateRef,
         adapter: mockAdapter,
       });
@@ -133,7 +129,7 @@ describe("createTemporal", () => {
 
     it("should accept ref now and preserve reactivity", () => {
       const nowRef = ref(new Date(2024, 0, 20));
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         now: nowRef,
@@ -159,7 +155,7 @@ describe("createTemporal", () => {
 
   describe("period initialization", () => {
     it("should initialize browsing period correctly", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -173,7 +169,7 @@ describe("createTemporal", () => {
 
     it("should initialize now period as computed", () => {
       const nowDate = new Date(2024, 0, 20, 15, 30, 45);
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         now: ref(nowDate),
@@ -189,7 +185,7 @@ describe("createTemporal", () => {
 
   describe("reactivity behavior", () => {
     it("should trigger effects when browsing changes", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -218,7 +214,7 @@ describe("createTemporal", () => {
     });
 
     it("should support computed properties based on temporal state", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -242,7 +238,7 @@ describe("createTemporal", () => {
     });
 
     it("should cleanup reactive effects properly", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -288,7 +284,7 @@ describe("createTemporal", () => {
       const dateRef = ref(testDate);
       const nowRef = ref(new Date(2024, 0, 20));
 
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: dateRef,
         adapter: mockAdapter,
         now: nowRef,
@@ -324,7 +320,7 @@ describe("createTemporal", () => {
   describe("edge cases", () => {
     it("should handle dates at year boundaries", () => {
       const endOfYear = new Date(2023, 11, 31, 23, 59, 59);
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(endOfYear),
         adapter: mockAdapter,
       });
@@ -334,7 +330,7 @@ describe("createTemporal", () => {
 
     it("should handle leap year dates", () => {
       const leapDay = new Date(2024, 1, 29); // Feb 29, 2024
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(leapDay),
         adapter: mockAdapter,
       });
@@ -343,7 +339,7 @@ describe("createTemporal", () => {
     });
 
     it("should handle invalid weekStartsOn gracefully", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         weekStartsOn: -1 as any,
@@ -353,7 +349,7 @@ describe("createTemporal", () => {
     });
 
     it("should handle weekStartsOn as undefined", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
         weekStartsOn: undefined,
@@ -373,7 +369,7 @@ describe("createTemporal", () => {
         diff: vi.fn(),
       };
 
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: customAdapter,
       });
@@ -382,7 +378,7 @@ describe("createTemporal", () => {
     });
 
     it("should preserve adapter reference", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter: mockAdapter,
       });
@@ -396,7 +392,7 @@ describe("createTemporal", () => {
       const mondayAdapter = createNativeAdapter({ weekStartsOn: 1 });
       const sundayAdapter = createNativeAdapter({ weekStartsOn: 0 });
 
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date,
         adapter: mondayAdapter,
       });
@@ -419,7 +415,7 @@ describe("createTemporal", () => {
       const start = performance.now();
 
       for (let i = 0; i < 100; i++) {
-        createTemporal({
+        createMinuta({
           date: ref(new Date()),
           adapter: mockAdapter,
         });
@@ -441,7 +437,7 @@ describe("createTemporal", () => {
 
       it(`should assign browsing period for ${label}`, () => {
         const baseDate = new Date(Date.UTC(2024, 0, 1));
-        const temporal = createTemporal({
+        const temporal = createMinuta({
           date: ref(baseDate),
           adapter: createNativeAdapter(),
         });

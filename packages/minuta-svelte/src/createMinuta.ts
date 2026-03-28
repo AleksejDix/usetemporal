@@ -8,17 +8,13 @@ import {
 } from "svelte/store";
 import { derivePeriod } from "minuta/operations";
 import type { Period } from "minuta";
-import { createTemporalBuilder } from "./builder";
-import type {
-  CreateTemporalOptions,
-  TemporalBuilder,
-  SvelteTemporal,
-} from "./types";
-import { provideTemporal } from "./temporalContext";
+import { createMinutaBuilder } from "./builder";
+import type { CreateMinutaOptions, MinutaBuilder, SvelteMinuta } from "./types";
+import { provideMinuta } from "./minutaContext";
 
-function tryProvideTemporal(builder: TemporalBuilder) {
+function tryProvideTemporal(builder: MinutaBuilder) {
   try {
-    provideTemporal(builder);
+    provideMinuta(builder);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : String(error ?? "");
@@ -32,11 +28,9 @@ function tryProvideTemporal(builder: TemporalBuilder) {
 }
 
 /**
- * Creates a temporal instance with builder methods for Svelte.
+ * Creates a minuta instance with builder methods for Svelte.
  */
-export function createTemporal(
-  options: CreateTemporalOptions
-): TemporalBuilder {
+export function createMinuta(options: CreateMinutaOptions): MinutaBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from minuta/* packages."
@@ -54,7 +48,7 @@ export function createTemporal(
     derivePeriod(options.adapter, $now, "second")
   );
 
-  const temporal: SvelteTemporal = {
+  const temporal: SvelteMinuta = {
     adapter: options.adapter,
     weekStartsOn: options.weekStartsOn ?? 1,
     locale: options.locale ?? "en",
@@ -62,7 +56,7 @@ export function createTemporal(
     now,
   };
 
-  const builder = createTemporalBuilder(temporal);
+  const builder = createMinutaBuilder(temporal);
   tryProvideTemporal(builder);
   return builder;
 }

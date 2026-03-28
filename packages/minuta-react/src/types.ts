@@ -1,10 +1,10 @@
 import type { Adapter, AdapterUnit, Period, Unit } from "minuta";
 
 /**
- * Base React temporal instance with reactive state.
- * This is the internal state container, similar to VueTemporal.
+ * Base React minuta instance with reactive state.
+ * This is the internal state container, similar to VueMinuta.
  */
-export interface ReactTemporal {
+export interface ReactMinuta {
   adapter: Adapter;
   weekStartsOn: number;
   browsing: Period;
@@ -13,9 +13,9 @@ export interface ReactTemporal {
 
 /**
  * Temporal builder with convenience methods wrapping operations.
- * This is what useTemporal() returns to users.
+ * This is what useMinuta() returns to users.
  */
-export interface TemporalBuilder extends ReactTemporal {
+export interface MinutaBuilder extends ReactMinuta {
   derivePeriod(date: Date, unit: AdapterUnit): Period;
   createPeriod(start: Date, end: Date): Period;
   divide(period: Period, unit: AdapterUnit): Period[];
@@ -33,9 +33,9 @@ export interface TemporalBuilder extends ReactTemporal {
 }
 
 /**
- * Options for creating a React temporal instance.
+ * Options for creating a React minuta instance.
  */
-export interface UseTemporalOptions {
+export interface UseMinutaOptions {
   adapter: Adapter;
   date?: Date;
   now?: Date;

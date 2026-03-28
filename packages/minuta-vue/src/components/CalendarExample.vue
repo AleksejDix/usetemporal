@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import type { Period } from "minuta";
 import { createNativeAdapter } from "minuta/native";
-import { createTemporal } from "../createTemporal";
+import { createMinuta } from "../createMinuta";
 import { usePeriod } from "../usePeriod";
 
 const WEEKDAY_ORDER: Record<0 | 1, string[]> = {
@@ -25,7 +25,7 @@ const now = ref(new Date());
 const weekStartsOn = ref<0 | 1>(1);
 const adapter = ref(createNativeAdapter({ weekStartsOn: weekStartsOn.value }));
 
-const temporal = createTemporal({
+const temporal = createMinuta({
   adapter: adapter.value,
   date,
   now,
@@ -84,7 +84,7 @@ function isToday(day: Period) {
   <section class="calendar-shell" data-testid="calendar-example">
     <header class="calendar-header">
       <div>
-        <h1>useTemporal Vue Demo</h1>
+        <h1>useMinuta Vue Demo</h1>
         <p class="subheading">
           Derived periods, divide() pattern, and adapter reactivity packaged as
           a component.

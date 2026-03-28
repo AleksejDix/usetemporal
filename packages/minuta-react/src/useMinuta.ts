@@ -1,24 +1,20 @@
 import { useState, useMemo } from "react";
 import { derivePeriod } from "minuta";
-import { createTemporalBuilder } from "./builder";
-import type {
-  UseTemporalOptions,
-  TemporalBuilder,
-  ReactTemporal,
-} from "./types";
+import { createMinutaBuilder } from "./builder";
+import type { UseMinutaOptions, MinutaBuilder, ReactMinuta } from "./types";
 
 /**
- * Creates a temporal instance with builder methods
+ * Creates a minuta instance with builder methods
  *
- * Returns a temporal builder that provides convenience methods
+ * Returns a minuta builder that provides convenience methods
  * wrapping pure operations. Methods automatically pass the adapter.
  *
  * @param options - Configuration options
- * @returns A temporal builder with convenience methods
+ * @returns A minuta builder with convenience methods
  *
  * @example
  * ```typescript
- * const temporal = useTemporal({
+ * const temporal = useMinuta({
  *   adapter: nativeAdapter,
  *   date: new Date()
  * });
@@ -27,7 +23,7 @@ import type {
  * const months = temporal.divide(year, "month");
  * ```
  */
-export function useTemporal(options: UseTemporalOptions): TemporalBuilder {
+export function useMinuta(options: UseMinutaOptions): MinutaBuilder {
   if (!options.adapter) {
     throw new Error(
       "A date adapter is required. Please install and provide an adapter from minuta/* packages."
@@ -56,12 +52,12 @@ export function useTemporal(options: UseTemporalOptions): TemporalBuilder {
   );
 
   // Create base temporal state
-  const reactTemporal: ReactTemporal = {
+  const reactTemporal: ReactMinuta = {
     adapter,
     weekStartsOn,
     browsing,
     now,
   };
 
-  return createTemporalBuilder(reactTemporal, setBrowsingDate);
+  return createMinutaBuilder(reactTemporal, setBrowsingDate);
 }

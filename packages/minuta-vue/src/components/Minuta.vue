@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Adapter } from "minuta";
 import { ref, watch, type Ref } from "vue";
-import { createTemporal } from "../createTemporal";
-import type { TemporalBuilder } from "../types";
+import { createMinuta } from "../createMinuta";
+import type { MinutaBuilder } from "../types";
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +19,7 @@ const props = withDefaults(
 );
 
 const slots = defineSlots<{
-  default?: (scope: { temporal: TemporalBuilder }) => any;
+  default?: (scope: { temporal: MinutaBuilder }) => any;
 }>();
 
 const fallbackDate = ref(new Date());
@@ -28,7 +28,7 @@ const fallbackNow = ref(new Date());
 const dateRef = props.date ?? fallbackDate;
 const nowRef = props.now ?? fallbackNow;
 
-const temporal = createTemporal({
+const temporal = createMinuta({
   adapter: props.adapter,
   date: dateRef,
   now: nowRef,

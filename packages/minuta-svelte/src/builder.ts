@@ -1,13 +1,11 @@
 import * as ops from "minuta/operations";
 import type { AdapterUnit, Period } from "minuta";
-import type { TemporalBuilder, SvelteTemporal } from "./types";
+import type { MinutaBuilder, SvelteMinuta } from "./types";
 
 /**
- * Create a temporal builder with convenient method wrappers.
+ * Create a minuta builder with convenient method wrappers.
  */
-export function createTemporalBuilder(
-  temporal: SvelteTemporal
-): TemporalBuilder {
+export function createMinutaBuilder(temporal: SvelteMinuta): MinutaBuilder {
   return {
     get adapter() {
       return temporal.adapter;

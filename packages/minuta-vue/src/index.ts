@@ -1,13 +1,9 @@
-export { createTemporal } from "./createTemporal";
-export { useTemporal } from "./useTemporal";
+export { createMinuta } from "./createMinuta";
+export { useMinuta } from "./useMinuta";
 export { usePeriod } from "./usePeriod";
-export { createTemporalBuilder } from "./builder";
-export { Temporal, CalendarExample } from "./components";
-export type {
-  VueTemporal,
-  CreateTemporalOptions,
-  TemporalBuilder,
-} from "./types";
+export { createMinutaBuilder } from "./builder";
+export { Minuta, CalendarExample } from "./components";
+export type { VueMinuta, CreateMinutaOptions, MinutaBuilder } from "./types";
 
 export {
   derivePeriod,

@@ -3,7 +3,7 @@ import { ref, computed, effect, isRef, reactive } from "vue";
 import { createNativeAdapter } from "minuta/native";
 import { divide, go, next } from "minuta/operations";
 import type { Adapter, Period } from "minuta";
-import { createTemporal } from "./createTemporal";
+import { createMinuta } from "./createMinuta";
 import { usePeriod } from "./usePeriod";
 
 describe("Vue Reactivity Integration", () => {
@@ -17,7 +17,7 @@ describe("Vue Reactivity Integration", () => {
 
   describe("Temporal reactivity", () => {
     it("should update browsing period reactively", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -45,7 +45,7 @@ describe("Vue Reactivity Integration", () => {
     it("should handle reactive now updates", () => {
       const nowRef = ref(new Date(2024, 0, 1, 12, 0, 0));
 
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
         now: nowRef,
@@ -70,7 +70,7 @@ describe("Vue Reactivity Integration", () => {
     });
 
     it("should support computed properties based on temporal state", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -111,7 +111,7 @@ describe("Vue Reactivity Integration", () => {
 
   describe("usePeriod composable reactivity", () => {
     it("should create reactive period from temporal", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -139,7 +139,7 @@ describe("Vue Reactivity Integration", () => {
     });
 
     it("should support multiple reactive periods", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -170,7 +170,7 @@ describe("Vue Reactivity Integration", () => {
 
   describe("Complex reactive workflows", () => {
     it("should handle calendar drill-down reactively", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -204,7 +204,7 @@ describe("Vue Reactivity Integration", () => {
     });
 
     it("should handle reactive period selection", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -238,7 +238,7 @@ describe("Vue Reactivity Integration", () => {
     });
 
     it("should clean up effects properly", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -272,7 +272,7 @@ describe("Vue Reactivity Integration", () => {
 
     it("should handle concurrent reactive updates efficiently", () => {
       const dateRef = ref(testDate);
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: dateRef,
         adapter,
       });
@@ -327,7 +327,7 @@ describe("Vue Reactivity Integration", () => {
 
   describe("Reactive state management patterns", () => {
     it("should support reactive calendar state", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -381,7 +381,7 @@ describe("Vue Reactivity Integration", () => {
     });
 
     it("should handle reactive period highlighting", () => {
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });
@@ -415,7 +415,7 @@ describe("Vue Reactivity Integration", () => {
     it("all reactive tests should complete in under 100ms", () => {
       const start = performance.now();
 
-      const temporal = createTemporal({
+      const temporal = createMinuta({
         date: ref(testDate),
         adapter,
       });

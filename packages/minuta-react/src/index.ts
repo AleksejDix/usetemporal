@@ -1,11 +1,7 @@
-export { useTemporal } from "./useTemporal";
+export { useMinuta } from "./useMinuta";
 export { usePeriod } from "./usePeriod";
-export { createTemporalBuilder } from "./builder";
-export type {
-  ReactTemporal,
-  UseTemporalOptions,
-  TemporalBuilder,
-} from "./types";
+export { createMinutaBuilder } from "./builder";
+export type { ReactMinuta, UseMinutaOptions, MinutaBuilder } from "./types";
 export { CalendarExample } from "./components/CalendarExample";
 
 export {

@@ -2,11 +2,11 @@ import type { Adapter, AdapterUnit, Period, Unit } from "minuta";
 import type { ComputedRef, Ref } from "vue";
 
 /**
- * Vue-specific temporal instance with reactive state.
+ * Vue-specific minuta instance with reactive state.
  * Browsing and now periods remain fully reactive while core adapter logic
  * comes from minuta.
  */
-export interface VueTemporal {
+export interface VueMinuta {
   adapter: Adapter;
   weekStartsOn: number;
   locale: string;
@@ -15,10 +15,10 @@ export interface VueTemporal {
 }
 
 /**
- * Options for creating a Vue temporal instance.
+ * Options for creating a Vue minuta instance.
  * Callers must manage reactivity by passing refs for date/now.
  */
-export interface CreateTemporalOptions {
+export interface CreateMinutaOptions {
   date: Ref<Date>;
   now?: Ref<Date>;
   adapter: Adapter;
@@ -26,7 +26,7 @@ export interface CreateTemporalOptions {
   locale?: string;
 }
 
-export interface TemporalBuilder extends VueTemporal {
+export interface MinutaBuilder extends VueMinuta {
   derivePeriod(date: Date, unit: AdapterUnit): Period;
   createPeriod(start: Date, end: Date): Period;
   divide(period: Period, unit: AdapterUnit): Period[];
