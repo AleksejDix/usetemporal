@@ -18,7 +18,4 @@ export {
   createPeriod,
   previous,
   split,
-  isToday,
-  isWeekday,
-  isWeekend,
 } from "./operations/index";

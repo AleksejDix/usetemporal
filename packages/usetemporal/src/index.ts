@@ -12,9 +12,6 @@ export {
   isSame,
 } from "./operations";
 
-// Utility functions
-export { isWeekend, isWeekday, isToday } from "./operations/utils";
-
 // Types
 export type {
   Period,

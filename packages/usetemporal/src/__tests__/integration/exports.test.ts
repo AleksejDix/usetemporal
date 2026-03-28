@@ -30,9 +30,6 @@ describe("Export Verification Tests", () => {
         "next",
         "previous",
         "split",
-        "isWeekend",
-        "isWeekday",
-        "isToday",
       ];
 
       expectedOperations.forEach((op) => {
@@ -70,11 +67,7 @@ describe("Export Verification Tests", () => {
       });
     });
 
-    it("should export utility functions", () => {
-      expect(mainExports.isWeekend).toBeDefined();
-      expect(mainExports.isWeekday).toBeDefined();
-      expect(mainExports.isToday).toBeDefined();
-    });
+    // Helpers (isWeekend, isWeekday, isToday) are in @allystudio/usetemporal/helpers
 
     it("should export unit constants", () => {
       expect(mainExports.UNITS).toBeDefined();
@@ -170,9 +163,6 @@ describe("Export Verification Tests", () => {
         "split",
         "merge",
         "isSame",
-        "isWeekend",
-        "isWeekday",
-        "isToday",
         "UNITS",
         "YEAR",
         "QUARTER",

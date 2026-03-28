@@ -15,6 +15,7 @@ export default defineConfig({
         index: resolve(__dirname, "src/index.ts"),
         operations: resolve(__dirname, "src/operations.ts"),
         calendar: resolve(__dirname, "src/calendar.ts"),
+        helpers: resolve(__dirname, "src/helpers.ts"),
         native: resolve(__dirname, "src/native.ts"),
         "date-fns": resolve(__dirname, "src/date-fns.ts"),
         "date-fns-tz": resolve(__dirname, "src/date-fns-tz.ts"),

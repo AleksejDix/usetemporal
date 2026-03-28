@@ -8,4 +8,3 @@ export { merge } from "./merge";
 export { next } from "./next";
 export { previous } from "./previous";
 export { split } from "./split";
-export { isWeekend, isWeekday, isToday } from "./utils";

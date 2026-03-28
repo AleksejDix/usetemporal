@@ -19,9 +19,6 @@ export {
   go,
   contains,
   isSame,
-  isToday,
-  isWeekday,
-  isWeekend,
 } from "@allystudio/usetemporal/operations";
 
 export type {
