@@ -27,18 +27,11 @@ withAllAdapters("isSame operation", (adapter) => {
   });
 
   describe("custom period comparison", () => {
-    it("should return true for custom periods with same start", () => {
+    it("should return true for custom periods with same boundaries", () => {
       const start = new Date(2024, 5, 15, 14, 30, 45, 123);
-      const period1: Period = {
-        start,
-        end: new Date(start.getTime() + 1000 * 60 * 60 * 24),
-        type: "custom",
-      };
-      const period2: Period = {
-        start,
-        end: new Date(start.getTime() + 1000 * 60 * 60),
-        type: "custom",
-      };
+      const end = new Date(start.getTime() + 1000 * 60 * 60 * 24);
+      const period1: Period = { start, end, type: "custom" };
+      const period2: Period = { start, end, type: "custom" };
 
       expect(isSame(adapter, period1, period2, "custom")).toBe(true);
     });

@@ -1,16 +1,13 @@
 import type { Period } from "../types";
 
 /**
- * Calculate the difference (gap) between two periods or dates.
- * Pure timestamp math — no adapter needed.
+ * Calculate the gap or span between two temporal points.
  *
- * @example
- * // Gap between two months
- * const gap = difference(jan, march);
+ * - Date + Date → span between them (normalized: start <= end)
+ * - Period + Period → gap between them (from end of first to start of second)
+ * - Mixed → gap from the date/period boundary to the other
  *
- * @example
- * // Span between two dates (normalized: start <= end)
- * const span = difference(new Date(2024, 0, 1), new Date(2024, 0, 10));
+ * Returns a custom TimePeriod. If periods overlap, start > end (negative gap).
  */
 export function difference(from: Period | Date, to: Period | Date): Period {
   const fromStart = from instanceof Date ? from : from.start;

@@ -2,6 +2,9 @@ import type { Period, Adapter, AdapterUnit } from "../types";
 import { derivePeriod } from "./period";
 import { validatePeriod } from "./validate";
 
+const DAYS_PER_WEEK = 7;
+const MONTHS_PER_QUARTER = 3;
+
 /**
  * Merge multiple periods into a single period
  */
@@ -35,7 +38,10 @@ export function merge(
   // unit, promote the result instead of returning a custom period.
 
   // 7 consecutive days that align to week boundaries → week
-  if (periods.length === 7 && periods.every((p) => p.type === "day")) {
+  if (
+    periods.length === DAYS_PER_WEEK &&
+    periods.every((p) => p.type === "day")
+  ) {
     let consecutive = true;
     for (let i = 1; i < sorted.length; i++) {
       const expected = adapter.add(sorted[i - 1].start, 1, "day");
@@ -61,12 +67,15 @@ export function merge(
   }
 
   // 3 consecutive months starting at a quarter boundary (Jan/Apr/Jul/Oct) → quarter
-  if (periods.length === 3 && periods.every((p) => p.type === "month")) {
+  if (
+    periods.length === MONTHS_PER_QUARTER &&
+    periods.every((p) => p.type === "month")
+  ) {
     const firstYear = sorted[0].start.getFullYear();
     const firstMonth = sorted[0].start.getMonth();
 
     if (
-      firstMonth % 3 === 0 &&
+      firstMonth % MONTHS_PER_QUARTER === 0 &&
       sorted[1].start.getFullYear() === firstYear &&
       sorted[1].start.getMonth() === firstMonth + 1 &&
       sorted[2].start.getFullYear() === firstYear &&

@@ -101,17 +101,23 @@ export interface AdapterOptions {
 }
 
 /**
- * Known adapter units (units that adapters must implement)
- */
-
-/**
- * Simplified functional adapter interface (RFC 015)
- * Only 4 core operations needed for date manipulation
+ * Adapter interface — 4 operations for date manipulation.
+ *
+ * Implementers must ensure:
+ * - startOf returns the earliest millisecond of the unit (e.g., midnight for "day")
+ * - endOf returns the latest millisecond of the unit (e.g., 23:59:59.999 for "day")
+ * - add(date, N, unit) followed by add(result, -N, unit) returns the original date
+ * - diff(a, b, unit) returns the number of complete units between a and b
+ * - All methods preserve millisecond precision
  */
 export interface Adapter {
+  /** Return the earliest moment of the unit containing date */
   startOf(date: Date, unit: AdapterUnit): Date;
+  /** Return the latest moment (23:59:59.999) of the unit containing date */
   endOf(date: Date, unit: AdapterUnit): Date;
+  /** Move date forward or backward by amount units */
   add(date: Date, amount: number, unit: AdapterUnit): Date;
+  /** Count complete units between from and to */
   diff(from: Date, to: Date, unit: AdapterUnit): number;
 }
 

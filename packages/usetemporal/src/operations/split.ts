@@ -22,6 +22,8 @@ export function split(period: Period, splitDate: Date): [Period, Period] {
     return [period, { start: period.end, end: period.end, type: period.type }];
   }
 
+  // Inclusive-inclusive boundaries: before ends 1ms before the split point,
+  // after starts at the split point. Every millisecond belongs to exactly one half.
   const before: Period = {
     start: period.start,
     end: new Date(splitTime - 1),

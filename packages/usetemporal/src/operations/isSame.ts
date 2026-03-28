@@ -2,7 +2,8 @@ import type { Period, Adapter, AdapterUnit } from "../types";
 
 /**
  * Check if two periods are the same for a given unit.
- * Compares period start dates normalized to the given unit.
+ * For adapter units: compares start dates normalized to the unit boundary.
+ * For custom: compares both start and end (exact match).
  */
 export function isSame(
   adapter: Adapter,
@@ -11,7 +12,10 @@ export function isSame(
   unit: AdapterUnit | "custom"
 ): boolean {
   if (unit === "custom") {
-    return a.start.getTime() === b.start.getTime();
+    return (
+      a.start.getTime() === b.start.getTime() &&
+      a.end.getTime() === b.end.getTime()
+    );
   }
 
   const startA = adapter.startOf(a.start, unit);
