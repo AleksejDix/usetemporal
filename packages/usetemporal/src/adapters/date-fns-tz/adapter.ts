@@ -16,13 +16,13 @@ import { createSecondHandler } from "./units/second";
  * @param options.weekStartsOn - First day of the week (0 = Sunday, 1 = Monday, etc.)
  * @returns Adapter instance with timezone support
  */
-export function createDateFnsTzAdapter(options?: {
+export function createDateFnsTzAdapter({
+  timezone = "UTC",
+  weekStartsOn = 1,
+}: {
   timezone?: string;
   weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-}): Adapter {
-  const timezone = options?.timezone ?? "UTC";
-  const weekStartsOn = options?.weekStartsOn ?? 1;
-
+} = {}): Adapter {
   // Create timezone-aware handlers
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: createYearHandler(timezone),

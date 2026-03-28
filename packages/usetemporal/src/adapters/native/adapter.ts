@@ -12,11 +12,9 @@ import { quarterHandler } from "./units/quarter";
  * Create a functional native date adapter
  * Composes unit handlers into a unified adapter interface
  */
-export function createNativeAdapter(options?: {
-  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-}): Adapter {
-  const weekStartsOn = options?.weekStartsOn ?? 1;
-
+export function createNativeAdapter({
+  weekStartsOn = 1,
+}: { weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 } = {}): Adapter {
   // Create handlers map
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: yearHandler,

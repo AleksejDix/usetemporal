@@ -17,15 +17,12 @@ if (typeof (globalThis as any).Temporal === "undefined") {
 /**
  * Create a functional Temporal API adapter with modular unit handlers
  */
-export function createTemporalAdapter(options?: {
-  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-}): Adapter {
-  // Check if Temporal API is available (should always be true now)
+export function createTemporalAdapter({
+  weekStartsOn = 1,
+}: { weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 } = {}): Adapter {
   if (typeof (globalThis as any).Temporal === "undefined") {
     throw new Error("Temporal API is not available in this environment.");
   }
-
-  const weekStartsOn = options?.weekStartsOn ?? 1;
 
   // Create handlers map with proper typing
   const handlers: Record<AdapterUnit, UnitHandler> = {

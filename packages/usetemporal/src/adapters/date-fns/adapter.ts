@@ -11,11 +11,9 @@ import { secondHandler } from "./units/second";
 /**
  * Create a functional date-fns adapter with modular unit handlers
  */
-export function createDateFnsAdapter(options?: {
-  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-}): Adapter {
-  const weekStartsOn = options?.weekStartsOn ?? 1;
-
+export function createDateFnsAdapter({
+  weekStartsOn = 1,
+}: { weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 } = {}): Adapter {
   // Create handlers map with proper typing
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: yearHandler,

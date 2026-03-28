@@ -15,11 +15,9 @@ export function divide(
   adapter: Adapter,
   period: Period,
   unit: AdapterUnit,
-  options?: DivideOptions
+  { maxPeriods = DEFAULT_MAX_PERIODS }: DivideOptions = {}
 ): Period[] {
   validatePeriod(period);
-
-  const maxPeriods = options?.maxPeriods ?? DEFAULT_MAX_PERIODS;
   const periods: Period[] = [];
   let current = new Date(period.start);
 

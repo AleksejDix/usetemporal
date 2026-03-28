@@ -11,11 +11,9 @@ import { secondHandler } from "./units/second";
 /**
  * Create a functional Luxon adapter with modular unit handlers
  */
-export function createLuxonAdapter(options?: {
-  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-}): Adapter {
-  const weekStartsOn = options?.weekStartsOn ?? 1;
-
+export function createLuxonAdapter({
+  weekStartsOn = 1,
+}: { weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 } = {}): Adapter {
   // Create handlers map with proper typing
   const handlers: Record<AdapterUnit, UnitHandler> = {
     year: yearHandler,

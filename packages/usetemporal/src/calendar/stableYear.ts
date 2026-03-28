@@ -73,8 +73,7 @@ export function createStableYear(
 }
 
 registerPeriodNavigator("stableYear", (adapter, p, steps) => {
-  const weekStartsOn = (p.meta?.weekStartsOn as number) ?? 1;
-  const yearStart = (p.meta?.yearStart as Date) ?? p.start;
-  const newYearDate = adapter.add(yearStart, steps, "year");
-  return createStableYear(adapter, weekStartsOn, newYearDate);
+  const meta = p.meta as { weekStartsOn: number; yearStart: Date };
+  const newYearDate = adapter.add(meta.yearStart, steps, "year");
+  return createStableYear(adapter, meta.weekStartsOn, newYearDate);
 });
