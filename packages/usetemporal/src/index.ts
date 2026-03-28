@@ -26,7 +26,6 @@ export type {
   Duration,
   UnitsObject,
 } from "./types";
-export type { SplitOptions } from "./types";
 
 // Unit constants
 export {

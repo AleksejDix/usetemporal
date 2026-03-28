@@ -10,19 +10,41 @@ export interface StableYearMeta {
   yearStart: Date;
 }
 
-/** A single time range — derived from adapter or custom boundaries */
+/**
+ * A single time range with a start and end.
+ *
+ * Created by derivePeriod(adapter, date, "month") for adapter units,
+ * or createPeriod(start, end) for custom ranges.
+ *
+ * Used with: go(), next(), previous(), divide(), merge(), isSame()
+ */
 export interface TimePeriod {
   start: Date;
   end: Date;
   type: AdapterUnit | "custom";
 }
 
-/** A predictable sequence container — exists to be subdivided */
+/**
+ * A predictable sequence container — a time range designed to be subdivided
+ * into a fixed number of sub-periods for calendar grid layouts.
+ *
+ * Created by createStableMonth() (42-day / 6-week grid)
+ * or createStableYear() (52-53 week grid).
+ *
+ * Use divide(adapter, series, "day") to get the grid cells.
+ * Navigate by calling createStableMonth/Year directly with a new date.
+ */
 export type PeriodSeries =
   | { start: Date; end: Date; type: "stableMonth"; meta: StableMonthMeta }
   | { start: Date; end: Date; type: "stableYear"; meta: StableYearMeta };
 
-/** Either a time period or a series container */
+/**
+ * The union of TimePeriod and PeriodSeries.
+ *
+ * Operations like contains(), split(), isOverlapping() accept any Period.
+ * Navigation operations (go, next, previous) accept only TimePeriod.
+ * Check p.type to narrow: "stableMonth"/"stableYear" = PeriodSeries, anything else = TimePeriod.
+ */
 export type Period = TimePeriod | PeriodSeries;
 
 /**
@@ -130,16 +152,4 @@ export interface UnitHandler {
   endOf(date: Date): Date;
   add(date: Date, amount: number): Date;
   diff(from: Date, to: Date): number;
-}
-
-// Split operation options
-export interface SplitOptions {
-  by?: Exclude<Unit, "custom">; // Split by unit type
-  count?: number; // Split into N equal parts
-  duration?: {
-    // Split by duration
-    days?: number;
-    hours?: number;
-    weeks?: number;
-  };
 }
