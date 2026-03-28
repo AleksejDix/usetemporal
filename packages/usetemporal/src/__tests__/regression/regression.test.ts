@@ -25,17 +25,17 @@ describe("regression tests for critical bugs", () => {
       const day = period(adapter, new Date(2024, 0, 15), "day");
 
       const promotedWeek = merge(adapter, [day], "week");
-      expect(promotedWeek!.type).toBe("week");
-      expect(promotedWeek!.start.getTime()).toBeLessThanOrEqual(
+      expect(promotedWeek.type).toBe("week");
+      expect(promotedWeek.start.getTime()).toBeLessThanOrEqual(
         day.start.getTime()
       );
-      expect(promotedWeek!.end.getTime()).toBeGreaterThanOrEqual(
+      expect(promotedWeek.end.getTime()).toBeGreaterThanOrEqual(
         day.end.getTime()
       );
 
       const promotedMonth = merge(adapter, [day], "month");
-      expect(promotedMonth!.type).toBe("month");
-      expect(promotedMonth!.start.getDate()).toBe(1);
+      expect(promotedMonth.type).toBe("month");
+      expect(promotedMonth.start.getDate()).toBe(1);
     });
 
     it("should preserve exact start/end times for partial period merges", () => {
@@ -47,10 +47,10 @@ describe("regression tests for critical bugs", () => {
       const morningHours = hours.slice(0, 12);
       const merged = merge(adapter, morningHours, "day");
 
-      expect(merged!.type).toBe("day");
-      expect(merged!.start.getHours()).toBe(0);
-      expect(merged!.end.getHours()).toBe(11);
-      expect(merged!.end.getMinutes()).toBe(59);
+      expect(merged.type).toBe("day");
+      expect(merged.start.getHours()).toBe(0);
+      expect(merged.end.getHours()).toBe(11);
+      expect(merged.end.getMinutes()).toBe(59);
     });
 
     it("should preserve reference date from first period", () => {
@@ -62,7 +62,7 @@ describe("regression tests for critical bugs", () => {
       ];
 
       const merged = merge(adapter, periods, "week");
-      expect(merged!.start.getTime()).toBe(periods[0].start.getTime());
+      expect(merged.start.getTime()).toBe(periods[0].start.getTime());
     });
   });
 

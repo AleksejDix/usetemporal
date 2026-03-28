@@ -11,9 +11,9 @@ withAllAdapters("merge", (adapter) => {
       const days = divide(adapter, week, "day");
 
       const mergedWeek = merge(adapter, days, "week");
-      expect(mergedWeek!.type).toBe("week");
-      expect(mergedWeek!.start.getTime()).toBe(week.start.getTime());
-      expect(mergedWeek!.end.getTime()).toBe(week.end.getTime());
+      expect(mergedWeek.type).toBe("week");
+      expect(mergedWeek.start.getTime()).toBe(week.start.getTime());
+      expect(mergedWeek.end.getTime()).toBe(week.end.getTime());
     });
 
     it("should merge months into a year", () => {
@@ -21,10 +21,10 @@ withAllAdapters("merge", (adapter) => {
       const months = divide(adapter, year, "month");
 
       const mergedYear = merge(adapter, months, "year");
-      expect(mergedYear!.type).toBe("year");
-      expect(mergedYear!.start.getFullYear()).toBe(2024);
-      expect(mergedYear!.start.getMonth()).toBe(0);
-      expect(mergedYear!.end.getMonth()).toBe(11);
+      expect(mergedYear.type).toBe("year");
+      expect(mergedYear.start.getFullYear()).toBe(2024);
+      expect(mergedYear.start.getMonth()).toBe(0);
+      expect(mergedYear.end.getMonth()).toBe(11);
     });
 
     it("should merge hours into a day", () => {
@@ -32,10 +32,10 @@ withAllAdapters("merge", (adapter) => {
       const hours = divide(adapter, day, "hour");
 
       const mergedDay = merge(adapter, hours, "day");
-      expect(mergedDay!.type).toBe("day");
-      expect(mergedDay!.start.getDate()).toBe(15);
-      expect(mergedDay!.start.getHours()).toBe(0);
-      expect(mergedDay!.end.getHours()).toBe(23);
+      expect(mergedDay.type).toBe("day");
+      expect(mergedDay.start.getDate()).toBe(15);
+      expect(mergedDay.start.getHours()).toBe(0);
+      expect(mergedDay.end.getHours()).toBe(23);
     });
 
     it("should merge partial periods", () => {
@@ -46,10 +46,10 @@ withAllAdapters("merge", (adapter) => {
       const morningHours = hours.slice(0, 12);
       const mergedMorning = merge(adapter, morningHours, "day");
 
-      expect(mergedMorning!.type).toBe("day");
-      expect(mergedMorning!.start.getHours()).toBe(0);
-      expect(mergedMorning!.end.getHours()).toBe(11);
-      expect(mergedMorning!.end.getMinutes()).toBe(59);
+      expect(mergedMorning.type).toBe("day");
+      expect(mergedMorning.start.getHours()).toBe(0);
+      expect(mergedMorning.end.getHours()).toBe(11);
+      expect(mergedMorning.end.getMinutes()).toBe(59);
     });
 
     it("should handle non-contiguous periods", () => {
@@ -60,14 +60,12 @@ withAllAdapters("merge", (adapter) => {
 
       const merged = merge(adapter, [monday, wednesday, friday], "week");
 
-      expect(merged!.type).toBe("week");
+      expect(merged.type).toBe("week");
       // Should span from Monday to Friday's week
-      expect(merged!.start.getTime()).toBeLessThanOrEqual(
+      expect(merged.start.getTime()).toBeLessThanOrEqual(
         monday.start.getTime()
       );
-      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(
-        friday.end.getTime()
-      );
+      expect(merged.end.getTime()).toBeGreaterThanOrEqual(friday.end.getTime());
     });
 
     it("should merge minutes into an hour", () => {
@@ -75,10 +73,10 @@ withAllAdapters("merge", (adapter) => {
       const minutes = divide(adapter, hour, "minute");
 
       const mergedHour = merge(adapter, minutes, "hour");
-      expect(mergedHour!.type).toBe("hour");
-      expect(mergedHour!.start.getHours()).toBe(14);
-      expect(mergedHour!.start.getMinutes()).toBe(0);
-      expect(mergedHour!.end.getMinutes()).toBe(59);
+      expect(mergedHour.type).toBe("hour");
+      expect(mergedHour.start.getHours()).toBe(14);
+      expect(mergedHour.start.getMinutes()).toBe(0);
+      expect(mergedHour.end.getMinutes()).toBe(59);
     });
 
     it("should merge seconds into a minute", () => {
@@ -86,22 +84,22 @@ withAllAdapters("merge", (adapter) => {
       const seconds = divide(adapter, minute, "second");
 
       const mergedMinute = merge(adapter, seconds, "minute");
-      expect(mergedMinute!.type).toBe("minute");
-      expect(mergedMinute!.start.getMinutes()).toBe(30);
-      expect(mergedMinute!.start.getSeconds()).toBe(0);
-      expect(mergedMinute!.end.getSeconds()).toBe(59);
+      expect(mergedMinute.type).toBe("minute");
+      expect(mergedMinute.start.getMinutes()).toBe(30);
+      expect(mergedMinute.start.getSeconds()).toBe(0);
+      expect(mergedMinute.end.getSeconds()).toBe(59);
     });
 
     it("should handle single period merge", () => {
       const day = period(adapter, new Date(2024, 0, 15), "day");
 
       const mergedWeek = merge(adapter, [day], "week");
-      expect(mergedWeek!.type).toBe("week");
+      expect(mergedWeek.type).toBe("week");
       // The week should contain the day
-      expect(mergedWeek!.start.getTime()).toBeLessThanOrEqual(
+      expect(mergedWeek.start.getTime()).toBeLessThanOrEqual(
         day.start.getTime()
       );
-      expect(mergedWeek!.end.getTime()).toBeGreaterThanOrEqual(
+      expect(mergedWeek.end.getTime()).toBeGreaterThanOrEqual(
         day.end.getTime()
       );
     });
@@ -125,12 +123,12 @@ withAllAdapters("merge", (adapter) => {
       );
 
       // Should create a month period that contains all days
-      expect(merged!.type).toBe("month");
+      expect(merged.type).toBe("month");
       // The exact month depends on the merge algorithm
-      expect(merged!.start.getTime()).toBeLessThanOrEqual(
+      expect(merged.start.getTime()).toBeLessThanOrEqual(
         lastDayOfJan.start.getTime()
       );
-      expect(merged!.end.getTime()).toBeGreaterThanOrEqual(
+      expect(merged.end.getTime()).toBeGreaterThanOrEqual(
         secondDayOfFeb.end.getTime()
       );
     });
@@ -148,7 +146,7 @@ withAllAdapters("merge", (adapter) => {
       ];
 
       const merged = merge(adapter, days);
-      expect(merged!.type).toBe("custom");
+      expect(merged.type).toBe("custom");
     });
 
     it("should not detect quarter from 3 months in different years", () => {
@@ -159,7 +157,7 @@ withAllAdapters("merge", (adapter) => {
       ];
 
       const merged = merge(adapter, months);
-      expect(merged!.type).toBe("custom");
+      expect(merged.type).toBe("custom");
     });
 
     it("should detect quarter from 3 consecutive months in same year", () => {
@@ -170,7 +168,7 @@ withAllAdapters("merge", (adapter) => {
       ];
 
       const merged = merge(adapter, months);
-      expect(merged!.type).toBe("quarter");
+      expect(merged.type).toBe("quarter");
     });
 
     it("should preserve reference date from first period", () => {
@@ -183,7 +181,7 @@ withAllAdapters("merge", (adapter) => {
       const merged = merge(adapter, periods, "week");
 
       // Reference date should come from the first period
-      expect(merged!.start.getTime()).toBe(periods[0].start.getTime());
+      expect(merged.start.getTime()).toBe(periods[0].start.getTime());
     });
   });
 });
