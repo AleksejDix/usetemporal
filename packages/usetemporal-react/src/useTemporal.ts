@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { derivePeriod } from "@allystudio/usetemporal/operations";
+import { derivePeriod } from "@allystudio/usetemporal";
 import { createTemporalBuilder } from "./builder";
 import type {
   UseTemporalOptions,
@@ -63,6 +63,5 @@ export function useTemporal(options: UseTemporalOptions): TemporalBuilder {
     now,
   };
 
-  // Return builder with wrapped operations and state management
   return createTemporalBuilder(reactTemporal, setBrowsingDate);
 }

@@ -3,18 +3,18 @@ import { go } from "./go";
 import { derivePeriod as period } from "./period";
 import { withAllAdapters } from "../test/shared-adapter-tests";
 
-withAllAdapters("go", (adapter, _name, ctx) => {
+withAllAdapters("go", (adapter) => {
   describe("navigation operations", () => {
     it("should navigate forward by positive amounts", () => {
       const startDate = new Date(2024, 0, 15);
       const day = period(adapter, startDate, "day");
 
-      const nextWeek = go(ctx, day, 7);
+      const nextWeek = go(adapter, day, 7);
       expect(nextWeek.type).toBe("day");
       expect(nextWeek.start.getDate()).toBe(22);
       expect(nextWeek.start.getMonth()).toBe(0);
 
-      const nextMonth = go(ctx, day, 31);
+      const nextMonth = go(adapter, day, 31);
       expect(nextMonth.start.getMonth()).toBe(1); // February
       expect(nextMonth.start.getDate()).toBe(15);
     });
@@ -23,12 +23,12 @@ withAllAdapters("go", (adapter, _name, ctx) => {
       const startDate = new Date(2024, 5, 15); // June 15
       const month = period(adapter, startDate, "month");
 
-      const twoMonthsAgo = go(ctx, month, -2);
+      const twoMonthsAgo = go(adapter, month, -2);
       expect(twoMonthsAgo.type).toBe("month");
       expect(twoMonthsAgo.start.getMonth()).toBe(3); // April
       expect(twoMonthsAgo.start.getFullYear()).toBe(2024);
 
-      const sixMonthsAgo = go(ctx, month, -6);
+      const sixMonthsAgo = go(adapter, month, -6);
       expect(sixMonthsAgo.start.getMonth()).toBe(11); // December
       expect(sixMonthsAgo.start.getFullYear()).toBe(2023);
     });
@@ -37,7 +37,7 @@ withAllAdapters("go", (adapter, _name, ctx) => {
       const date = new Date(2024, 0, 15);
       const week = period(adapter, date, "week");
 
-      const sameWeek = go(ctx, week, 0);
+      const sameWeek = go(adapter, week, 0);
       expect(sameWeek.type).toBe("week");
       expect(sameWeek.start.getTime()).toBe(week.start.getTime());
       expect(sameWeek.end.getTime()).toBe(week.end.getTime());
@@ -46,18 +46,18 @@ withAllAdapters("go", (adapter, _name, ctx) => {
     it("should navigate years correctly", () => {
       const year = period(adapter, new Date(2024, 5, 15), "year");
 
-      const nextYear = go(ctx, year, 1);
+      const nextYear = go(adapter, year, 1);
       expect(nextYear.start.getFullYear()).toBe(2025);
       expect(nextYear.end.getFullYear()).toBe(2025);
 
-      const tenYearsAgo = go(ctx, year, -10);
+      const tenYearsAgo = go(adapter, year, -10);
       expect(tenYearsAgo.start.getFullYear()).toBe(2014);
     });
 
     it("should navigate weeks correctly", () => {
       const week = period(adapter, new Date(2024, 0, 10), "week");
 
-      const fourWeeksLater = go(ctx, week, 4);
+      const fourWeeksLater = go(adapter, week, 4);
       // Should be approximately 28 days later
       const daysDiff = Math.round(
         (fourWeeksLater.start.getTime() - week.start.getTime()) /
@@ -69,7 +69,7 @@ withAllAdapters("go", (adapter, _name, ctx) => {
     it("should navigate hours correctly", () => {
       const hour = period(adapter, new Date(2024, 0, 15, 10), "hour");
 
-      const fifteenHoursLater = go(ctx, hour, 15);
+      const fifteenHoursLater = go(adapter, hour, 15);
       expect(fifteenHoursLater.start.getDate()).toBe(16); // Next day
       expect(fifteenHoursLater.start.getHours()).toBe(1); // 10 + 15 = 25, so 1 AM next day
     });
@@ -78,13 +78,13 @@ withAllAdapters("go", (adapter, _name, ctx) => {
       // Start on January 31
       const day = period(adapter, new Date(2024, 0, 31), "day");
 
-      const nextDay = go(ctx, day, 1);
+      const nextDay = go(adapter, day, 1);
       expect(nextDay.start.getMonth()).toBe(1); // February
       expect(nextDay.start.getDate()).toBe(1);
 
       // Navigate months from January 31
       const month = period(adapter, new Date(2024, 0, 31), "month");
-      const nextMonth = go(ctx, month, 1);
+      const nextMonth = go(adapter, month, 1);
       expect(nextMonth.start.getMonth()).toBe(1); // February
       expect(nextMonth.end.getDate()).toBe(29); // Feb 29 (leap year)
     });
@@ -92,11 +92,11 @@ withAllAdapters("go", (adapter, _name, ctx) => {
     it("should handle year boundaries correctly", () => {
       const december = period(adapter, new Date(2023, 11, 15), "month");
 
-      const january = go(ctx, december, 1);
+      const january = go(adapter, december, 1);
       expect(january.start.getFullYear()).toBe(2024);
       expect(january.start.getMonth()).toBe(0);
 
-      const november = go(ctx, december, -1);
+      const november = go(adapter, december, -1);
       expect(november.start.getFullYear()).toBe(2023);
       expect(november.start.getMonth()).toBe(10);
     });
@@ -104,7 +104,7 @@ withAllAdapters("go", (adapter, _name, ctx) => {
     it("should handle daylight saving time transitions", () => {
       // Test navigation across DST boundary (spring forward)
       const beforeDST = period(adapter, new Date(2024, 2, 9), "day"); // March 9
-      const afterDST = go(ctx, beforeDST, 2); // March 11
+      const afterDST = go(adapter, beforeDST, 2); // March 11
 
       expect(afterDST.start.getDate()).toBe(11);
       expect(afterDST.type).toBe("day");
@@ -124,7 +124,7 @@ withAllAdapters("go", (adapter, _name, ctx) => {
 
       units.forEach((unit) => {
         const p = period(adapter, date, unit);
-        const navigated = go(ctx, p, 1);
+        const navigated = go(adapter, p, 1);
         expect(navigated.type).toBe(unit);
       });
     });
@@ -133,13 +133,13 @@ withAllAdapters("go", (adapter, _name, ctx) => {
       const day = period(adapter, new Date(2024, 0, 1), "day");
 
       // 2024 is a leap year (366 days), so 365 days from Jan 1 = Dec 31
-      const yearLater = go(ctx, day, 365);
+      const yearLater = go(adapter, day, 365);
       expect(yearLater.start.getFullYear()).toBe(2024);
       expect(yearLater.start.getMonth()).toBe(11);
       expect(yearLater.start.getDate()).toBe(31);
 
       // 366 days from Jan 1, 2024 = Jan 1, 2025
-      const leapYearLater = go(ctx, day, 366);
+      const leapYearLater = go(adapter, day, 366);
       expect(leapYearLater.start.getFullYear()).toBe(2025);
       expect(leapYearLater.start.getMonth()).toBe(0);
       expect(leapYearLater.start.getDate()).toBe(1);

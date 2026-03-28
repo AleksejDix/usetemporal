@@ -1,9 +1,9 @@
-import type { Period, TemporalContext } from "../types";
+import type { Period, Adapter } from "../types";
 import { go } from "./go";
 
 /**
  * Move to the previous period
  */
-export function previous(ctx: TemporalContext, p: Period): Period {
-  return go(ctx, p, -1);
+export function previous(adapter: Adapter, p: Period): Period {
+  return go(adapter, p, -1);
 }

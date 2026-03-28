@@ -1,5 +1,4 @@
 import { computed, getCurrentInstance, ref } from "vue";
-import type { Period } from "@allystudio/usetemporal";
 import { createTemporalBuilder } from "./builder";
 import type {
   TemporalBuilder,

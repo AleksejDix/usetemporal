@@ -46,6 +46,7 @@
     "@changesets/cli": "^2.27.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@tsconfig/svelte": "^5.0.6",
+    "@vitest/coverage-v8": "^4.0.13",
     "husky": "^9.1.7",
     "jsdom": "^25.0.1",
     "oxlint": "^1.29.0",

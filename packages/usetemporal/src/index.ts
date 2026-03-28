@@ -1,4 +1,4 @@
-// Operations - functional API (Level 1 API - Pure Functions)
+// Operations - pure functions
 export {
   divide,
   next,
@@ -11,10 +11,6 @@ export {
   merge,
   isSame,
 } from "./operations";
-export type { SplitOptions } from "./types";
-
-// Context
-export { createContext } from "./context";
 
 // Utility functions
 export { isWeekend, isWeekday, isToday } from "./operations/utils";
@@ -24,17 +20,16 @@ export type {
   Period,
   TimePeriod,
   PeriodSeries,
-  PeriodNavigator,
   Unit,
   UnitRegistry,
   AdapterUnit,
-  TemporalContext,
   Adapter,
   UnitHandler,
   AdapterOptions,
   Duration,
   UnitsObject,
 } from "./types";
+export type { SplitOptions } from "./types";
 
 // Unit constants
 export {

@@ -84,26 +84,6 @@ export const CUSTOM = "custom" as const;
  */
 export type UnitsObject = typeof UNITS;
 
-/**
- * A navigator knows how to advance a derived period type (e.g., stableMonth).
- * Unlike adapter.add(), navigators reconstruct the period properly.
- */
-export type PeriodNavigator = (
-  adapter: Adapter,
-  period: Period,
-  steps: number
-) => Period;
-
-/**
- * Context for temporal operations.
- * Holds the adapter for time math and optional navigators for derived period types.
- */
-export interface TemporalContext {
-  adapter: Adapter;
-  weekStartsOn: number;
-  navigators: ReadonlyMap<string, PeriodNavigator>;
-}
-
 // Adapter Types
 export interface Duration {
   years?: number;
