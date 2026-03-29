@@ -5,7 +5,7 @@ const { now, go } = useMinuta();
 </script>
 
 <template>
-  <button class="temporal-nav-button" @click="go(now, 0)">
+  <button class="minuta-nav-button" @click="go(now, 0)">
     <slot>Today</slot>
   </button>
 </template>

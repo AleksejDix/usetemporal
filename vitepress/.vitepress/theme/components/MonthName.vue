@@ -8,10 +8,10 @@ const props = defineProps<{
   period?: Period | Ref<Period>;
 }>();
 
-const temporal = useMinuta();
-const month = usePeriod(temporal, "month");
+const minuta = useMinuta();
+const month = usePeriod(minuta, "month");
 
-const formatter = new Intl.DateTimeFormat(temporal.locale, { month: "long" });
+const formatter = new Intl.DateTimeFormat(minuta.locale, { month: "long" });
 
 const targetMonth = computed(() => {
   const provided = props.period;
@@ -20,7 +20,7 @@ const targetMonth = computed(() => {
 </script>
 
 <template>
-  <span class="temporal-month-name">
+  <span class="minuta-month-name">
     {{ formatter.format(targetMonth.start) }}
   </span>
 </template>

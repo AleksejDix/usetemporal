@@ -64,12 +64,12 @@ This release introduces significant breaking changes to the core API by removing
 2.  **Operation Signature Changes**:
     -   All core operations (e.g., `period`, `divide`, `merge`, `next`, `previous`, `go`, `isSame`, `isToday`) no longer accept a `Temporal` instance as their first argument.
     -   Instead, they now explicitly require an `Adapter` instance as their first argument.
-    -   **Before**: `operation(temporal: Temporal, ...)`
+    -   **Before**: `operation(adapter: Adapter, ...)`
     -   **After**: `operation(adapter: Adapter, ...)`
 
 3.  **Calendar Helper Function Signature Changes**:
     -   The `createStableMonth()` and `createStableYear()` helper functions have also been updated.
-    -   **Before**: `createStableMonth(temporal: Temporal, date: Date)`
+    -   **Before**: `createStableMonth(adapter: Adapter, date: Date)`
     -   **After**: `createStableMonth(adapter: Adapter, weekStartsOn: number, date: Date)`
     -   The `weekStartsOn` configuration, previously accessed via `temporal.weekStartsOn`, must now be passed explicitly.
 
@@ -84,8 +84,8 @@ This release introduces significant breaking changes to the core API by removing
 ### Migration Steps
 
 1.  **Update Operation Calls**:
-    -   Go through your codebase and replace all instances of `operation(temporal, ...)` with `operation(temporal.adapter, ...)`.
-    -   For `createStableMonth()` and `createStableYear()`, you will need to extract `weekStartsOn` from your `Temporal` instance (if you are still using one) and pass it explicitly: `createStableMonth(temporal.adapter, temporal.weekStartsOn, date)`.
+    -   Go through your codebase and replace all instances of `operation(temporal, ...)` with `operation(minuta.adapter, ...)`.
+    -   For `createStableMonth()` and `createStableYear()`, you will need to extract `weekStartsOn` from your `Temporal` instance (if you are still using one) and pass it explicitly: `createStableMonth(minuta.adapter, temporal.weekStartsOn, date)`.
 
 2.  **Refactor Custom Units**:
     -   If you had custom units defined using `defineUnit()`, you must rewrite their logic using one of the recommended alternatives above.
@@ -110,7 +110,7 @@ defineUnit('fiscalYear', {
 });
 
 const adapter = createNativeAdapter();
-const temporal = createTemporal({ adapter, date: new Date() });
+const minuta = createTemporal({ adapter, date: new Date() });
 
 const monthPeriod = period(temporal, new Date(), 'month');
 const fiscalYearPeriod = period(temporal, new Date(), 'fiscalYear');
@@ -130,7 +130,7 @@ function createFiscalYear(adapter: Adapter, date: Date): Period {
 }
 
 const adapter = createNativeAdapter();
-const temporal = createTemporal({ adapter, date: new Date() }); // temporal still exists for composables
+const minuta = createTemporal({ adapter, date: new Date() }); // temporal still exists for composables
 
 const monthPeriod = period(adapter, new Date(), 'month'); // Pass adapter directly
 const fiscalYearPeriod = createFiscalYear(adapter, new Date()); // Use custom helper
@@ -234,7 +234,7 @@ import { createDateFnsAdapter } from 'minuta/date-fns';
 import { createTemporal } from 'minuta';
 
 const adapter = createDateFnsAdapter();
-const temporal = createTemporal({ adapter });
+const minuta = createTemporal({ adapter });
 ```
 
 ### After
@@ -244,7 +244,7 @@ import { createDateFnsAdapter } from 'minuta/date-fns';
 import { createTemporal } from 'minuta';
 
 const adapter = createDateFnsAdapter();
-const temporal = createTemporal({ adapter });
+const minuta = createTemporal({ adapter });
 ```
 
 The API remains exactly the same - only the import path changes!

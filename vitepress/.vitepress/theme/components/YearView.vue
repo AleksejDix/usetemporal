@@ -9,8 +9,8 @@ const props = defineProps<{
   year: Period;
 }>();
 
-const temporal = useMinuta();
-const months = computed(() => temporal.divide(props.year, "month"));
+const minuta = useMinuta();
+const months = computed(() => minuta.divide(props.year, "month"));
 </script>
 
 <template>

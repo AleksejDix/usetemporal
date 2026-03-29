@@ -20,10 +20,10 @@ const slots = defineSlots<{
   }) => any;
 }>();
 
-const temporal = useMinuta();
+const minuta = useMinuta();
 const viewUnit = ref<Unit>(props.initialUnit);
 const unitComputed = computed(() => viewUnit.value);
-const viewPeriod = usePeriod(temporal, unitComputed);
+const viewPeriod = usePeriod(minuta, unitComputed);
 
 function setUnit(next: Unit) {
   viewUnit.value = next;

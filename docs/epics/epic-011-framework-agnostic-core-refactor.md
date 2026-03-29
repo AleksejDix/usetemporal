@@ -142,7 +142,7 @@ import { createNativeAdapter } from 'minuta/native'
 const weekStartsOn = ref(1)  // ← Reactive adapter setting
 
 // Adapter is recreated when weekStartsOn changes
-const temporal = useMinuta({
+const minuta = useMinuta({
   adapter: computed(() => createNativeAdapter({ weekStartsOn: weekStartsOn.value })),
   date: ref(new Date())  // ← Reactive browsing date
 })
@@ -163,7 +163,7 @@ function MyComponent() {
   const [weekStartsOn, setWeekStartsOn] = useState(1)
 
   // Adapter recreates when weekStartsOn changes
-  const temporal = useMinuta({
+  const minuta = useMinuta({
     adapter: useMemo(
       () => createNativeAdapter({ weekStartsOn }),
       [weekStartsOn]

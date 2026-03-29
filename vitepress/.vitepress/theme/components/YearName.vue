@@ -12,16 +12,16 @@ const props = withDefaults(
   }
 );
 
-const temporal = useMinuta();
+const minuta = useMinuta();
 const unitRef = computed(() => props.unit);
-const targetPeriod = usePeriod(temporal, unitRef);
+const targetPeriod = usePeriod(minuta, unitRef);
 const formatter = computed(
-  () => new Intl.DateTimeFormat(temporal.locale ?? "en", { year: "numeric" })
+  () => new Intl.DateTimeFormat(minuta.locale ?? "en", { year: "numeric" })
 );
 </script>
 
 <template>
-  <span class="temporal-year-name">
+  <span class="minuta-year-name">
     {{ formatter.format(targetPeriod.date) }}
   </span>
 </template>

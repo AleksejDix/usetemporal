@@ -47,7 +47,7 @@ defineUnit("month", { period: ..., mergesTo: "year" });
 // ... 7 more units auto-registered
 
 // Operations depend on global state
-export function period(temporal: Temporal, date: Date, unit: Unit): Period {
+export function period(adapter: Adapter, date: Date, unit: Unit): Period {
   const unitDefinition = getUnitDefinition(type);  // ← Reads from global
   // ...
 }
@@ -74,13 +74,13 @@ const months = divide(adapter, year, 'month');
 import { createTemporal } from 'minuta';
 import { nativeAdapter } from 'minuta/native';
 
-const temporal = createTemporal({
+const minuta = createTemporal({
   adapter: nativeAdapter,
   weekStartsOn: 1
 });
 
-const year = temporal.period(new Date(), 'year');
-const months = temporal.divide(year, 'month');
+const year = minuta.period(new Date(), 'year');
+const months = minuta.divide(year, 'month');
 ```
 
 **Level 3: Full DX (Current API, Tree-Shakable)**
@@ -89,7 +89,7 @@ const months = temporal.divide(year, 'month');
 import { createTemporal, usePeriod } from 'minuta';
 import { nativeAdapter } from 'minuta/native';
 
-const temporal = createTemporal({
+const minuta = createTemporal({
   adapter: nativeAdapter,
   date: new Date()
 });
@@ -120,7 +120,7 @@ interface Adapter {
 **3. Pure Operations**
 ```typescript
 // Before: Depends on global state
-export function period(temporal: Temporal, date: Date, unit: Unit): Period
+export function period(adapter: Adapter, date: Date, unit: Unit): Period
 
 // After: Explicit dependencies
 export function period(adapter: Adapter, date: Date, unit: Unit): Period
@@ -328,7 +328,7 @@ This epic directly supports the "Calculus for Time" philosophy:
 import { createTemporal, usePeriod } from 'minuta';
 import { nativeAdapter } from 'minuta/native';
 
-const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
+const minuta = createTemporal({ adapter: nativeAdapter, date: new Date() });
 const month = usePeriod(temporal, 'month');
 const weeks = divide(temporal, month.value, 'week');
 // Calendar UI renders weeks
@@ -350,9 +350,9 @@ const weeks = divide(adapter, month, 'week');
 import { createTemporal } from 'minuta';
 import { nativeAdapter } from 'minuta/native';
 
-const temporal = createTemporal({ adapter: nativeAdapter, weekStartsOn: 1 });
-const month = temporal.period(new Date(), 'month');
-const weeks = temporal.divide(month, 'week');
+const minuta = createTemporal({ adapter: nativeAdapter, weekStartsOn: 1 });
+const month = minuta.period(new Date(), 'month');
+const weeks = minuta.divide(month, 'week');
 // Calendar UI renders weeks - cleaner API
 ```
 
@@ -361,7 +361,7 @@ const weeks = temporal.divide(month, 'week');
 import { createTemporal, usePeriod } from 'minuta';
 import { nativeAdapter } from 'minuta/native';
 
-const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
+const minuta = createTemporal({ adapter: nativeAdapter, date: new Date() });
 const month = usePeriod(temporal, 'month');
 const weeks = divide(temporal, month.value, 'week');
 // Identical to current API, but tree-shakable

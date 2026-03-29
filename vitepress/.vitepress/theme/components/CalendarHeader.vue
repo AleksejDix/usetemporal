@@ -26,8 +26,8 @@ const unitComponent = computed(() => {
 </script>
 
 <template>
-  <header class="temporal-calendar-header">
-    <div class="temporal-header-title">
+  <header class="minuta-calendar-header">
+    <div class="minuta-header-title">
       <component :is="unitComponent" :unit="unitValue" />
     </div>
     <div class="navigation">

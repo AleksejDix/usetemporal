@@ -403,7 +403,7 @@ import { computed } from "vue";
 import { useMinuta, usePeriod } from "minuta-vue";
 import { divide } from "minuta/operations";
 
-const temporal = useMinuta();
+const minuta = useMinuta();
 const month = usePeriod(temporal, "month");
 const days = computed(() => divide(temporal.adapter, month.value, "day"));
 </script>

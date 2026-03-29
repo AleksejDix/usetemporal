@@ -12,17 +12,17 @@ const props = withDefaults(
   }
 );
 
-const temporal = useMinuta();
+const minuta = useMinuta();
 const unitRef = computed(() => props.unit);
-const targetPeriod = usePeriod(temporal, unitRef);
+const targetPeriod = usePeriod(minuta, unitRef);
 
 function goNext() {
-  temporal.next(targetPeriod.value);
+  minuta.next(targetPeriod.value);
 }
 </script>
 
 <template>
-  <button class="temporal-nav-button" @click="goNext">
+  <button class="minuta-nav-button" @click="goNext">
     <slot>Next</slot>
   </button>
 </template>
