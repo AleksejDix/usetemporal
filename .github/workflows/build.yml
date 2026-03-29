@@ -23,7 +23,7 @@ jobs:
         run: rm -f package-lock.json && npm install
 
       - name: Build packages
-        run: npm run build --workspace=@allystudio/usetemporal --workspace=@allystudio/usetemporal-react --workspace=@allystudio/usetemporal-vue --workspace=@allystudio/usetemporal-svelte
+        run: npm run build --workspace=minuta --workspace=minuta-react --workspace=minuta-vue --workspace=minuta-svelte
 
       - name: Run type checking
         run: npm run type-check
