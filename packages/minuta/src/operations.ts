@@ -8,6 +8,8 @@
  */
 export {
   contains,
+  equals,
+  strictEquals,
   gap,
   divide,
   go,

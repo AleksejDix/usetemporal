@@ -1,4 +1,5 @@
 export { contains } from "./contains";
+export { equals, strictEquals } from "./equals";
 export { derivePeriod, createPeriod } from "./period";
 export { gap } from "./gap";
 export { divide } from "./divide";

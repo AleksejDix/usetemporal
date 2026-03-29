@@ -5,6 +5,8 @@ export {
   previous,
   go,
   contains,
+  equals,
+  strictEquals,
   derivePeriod,
   createPeriod,
   split,
