@@ -1,20 +1,16 @@
 import type { Adapter } from "../../types";
 import { createAdapter } from "../createAdapter";
-import { createYearHandler } from "./units/year";
-import { createQuarterHandler } from "./units/quarter";
-import { createMonthHandler } from "./units/month";
+import {
+  createYearHandler,
+  createQuarterHandler,
+  createMonthHandler,
+  createDayHandler,
+  createHourHandler,
+  createMinuteHandler,
+  createSecondHandler,
+} from "./handlers";
 import { createWeekHandler } from "./units/week";
-import { createDayHandler } from "./units/day";
-import { createHourHandler } from "./units/hour";
-import { createMinuteHandler } from "./units/minute";
-import { createSecondHandler } from "./units/second";
 
-/**
- * Create a timezone-aware date-fns adapter
- *
- * @param options.timezone - IANA timezone string (e.g., 'Europe/Zurich')
- * @param options.weekStartsOn - First day of the week (0 = Sunday, 1 = Monday)
- */
 export function createDateFnsTzAdapter({
   timezone = "UTC",
   weekStartsOn = 1,

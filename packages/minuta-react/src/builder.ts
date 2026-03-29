@@ -1,5 +1,5 @@
 import * as ops from "minuta/operations";
-import type { AdapterUnit, Period } from "minuta";
+import type { AdapterUnit, Period, TimePeriod } from "minuta";
 import type { MinutaBuilder, ReactMinuta } from "./types";
 
 /**
@@ -46,8 +46,8 @@ export function createMinutaBuilder(
     next(period: Period, count: number = 1): Period {
       const result =
         count === 1
-          ? ops.next(temporal.adapter, period)
-          : ops.go(temporal.adapter, period, count);
+          ? ops.next(temporal.adapter, period as TimePeriod)
+          : ops.go(temporal.adapter, period as TimePeriod, count);
 
       setBrowsingDate(result.start);
 
@@ -57,8 +57,8 @@ export function createMinutaBuilder(
     previous(period: Period, count: number = 1): Period {
       const result =
         count === 1
-          ? ops.previous(temporal.adapter, period)
-          : ops.go(temporal.adapter, period, -count);
+          ? ops.previous(temporal.adapter, period as TimePeriod)
+          : ops.go(temporal.adapter, period as TimePeriod, -count);
 
       setBrowsingDate(result.start);
 
@@ -66,7 +66,7 @@ export function createMinutaBuilder(
     },
 
     go(period: Period, count: number): Period {
-      const result = ops.go(temporal.adapter, period, count);
+      const result = ops.go(temporal.adapter, period as TimePeriod, count);
 
       setBrowsingDate(result.start);
 

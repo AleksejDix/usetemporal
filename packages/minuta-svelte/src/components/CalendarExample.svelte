@@ -1,15 +1,15 @@
 <script lang="ts">
   import { derived, get, writable } from "svelte/store";
-  import type { Period } from "@allystudio/usetemporal";
-  import { createNativeAdapter } from "@allystudio/usetemporal/native";
-  import { createTemporal } from "../createTemporal";
+  import type { Period } from "minuta";
+  import { createNativeAdapter } from "minuta/native";
+  import { createMinuta } from "../createMinuta";
   import { usePeriod } from "../usePeriod";
   import Navigator from "./Navigator.svelte";
 
   const date = writable(new Date());
   const now = writable(new Date());
 
-  const temporal = createTemporal({
+  const temporal = createMinuta({
     adapter: createNativeAdapter({ weekStartsOn: 1 }),
     date,
     now,
@@ -68,7 +68,7 @@
           class="day {isCurrentMonth(day) ? '' : 'inactive'} {isToday(day) ? 'selected' : ''}"
         >
           <button type="button" on:click={() => select(day)}>
-            <span class="date-label">{day.date.getDate()}</span>
+            <span class="date-label">{day.start.getDate()}</span>
             <small>{day.start.toLocaleDateString(temporal.locale, { weekday: "short" })}</small>
           </button>
         </div>

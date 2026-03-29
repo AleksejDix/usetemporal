@@ -1,4 +1,4 @@
-import type { Adapter, AdapterUnit, Period, Unit } from "minuta";
+import type { Adapter, AdapterUnit, Period } from "minuta";
 
 /**
  * Base React minuta instance with reactive state.

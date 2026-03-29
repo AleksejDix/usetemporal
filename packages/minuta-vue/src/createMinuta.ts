@@ -1,4 +1,5 @@
 import { computed, getCurrentInstance, ref } from "vue";
+import type { Period } from "minuta";
 import { createMinutaBuilder } from "./builder";
 import type { MinutaBuilder, CreateMinutaOptions, VueMinuta } from "./types";
 import { provideMinuta } from "./minutaContext";

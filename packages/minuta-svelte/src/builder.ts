@@ -1,5 +1,5 @@
 import * as ops from "minuta/operations";
-import type { AdapterUnit, Period } from "minuta";
+import type { AdapterUnit, Period, TimePeriod } from "minuta";
 import type { MinutaBuilder, SvelteMinuta } from "./types";
 
 /**
@@ -61,8 +61,8 @@ export function createMinutaBuilder(temporal: SvelteMinuta): MinutaBuilder {
     next(period: Period, count: number = 1): Period {
       const result =
         count === 1
-          ? ops.next(temporal.adapter, period)
-          : ops.go(temporal.adapter, period, count);
+          ? ops.next(temporal.adapter, period as TimePeriod)
+          : ops.go(temporal.adapter, period as TimePeriod, count);
 
       temporal.browsing.set(result);
       return result;
@@ -71,15 +71,15 @@ export function createMinutaBuilder(temporal: SvelteMinuta): MinutaBuilder {
     previous(period: Period, count: number = 1): Period {
       const result =
         count === 1
-          ? ops.previous(temporal.adapter, period)
-          : ops.go(temporal.adapter, period, -count);
+          ? ops.previous(temporal.adapter, period as TimePeriod)
+          : ops.go(temporal.adapter, period as TimePeriod, -count);
 
       temporal.browsing.set(result);
       return result;
     },
 
     go(period: Period, count: number): Period {
-      const result = ops.go(temporal.adapter, period, count);
+      const result = ops.go(temporal.adapter, period as TimePeriod, count);
       temporal.browsing.set(result);
       return result;
     },

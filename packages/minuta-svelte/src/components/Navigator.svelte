@@ -1,11 +1,11 @@
 <script lang="ts">
   import { get, type Readable } from "svelte/store";
-  import type { Period } from "@allystudio/usetemporal";
-  import { useTemporal } from "../useTemporal";
+  import type { Period } from "minuta";
+  import { useMinuta } from "../useMinuta";
 
   export let month!: Readable<Period>;
 
-  const temporal = useTemporal();
+  const temporal = useMinuta();
 
   function previous() {
     temporal.previous(get(month));
