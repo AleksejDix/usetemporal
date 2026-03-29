@@ -27,6 +27,7 @@ describe("Export Verification Tests", () => {
         "go",
         "isSame",
         "merge",
+        "moveTo",
         "next",
         "previous",
         "split",
@@ -53,7 +54,9 @@ describe("Export Verification Tests", () => {
         "createPeriod",
         "split",
         "merge",
+        "moveTo",
         "isSame",
+        "gap",
       ];
 
       expectedOperations.forEach((op) => {
@@ -125,7 +128,9 @@ describe("Export Verification Tests", () => {
         "createPeriod",
         "split",
         "merge",
+        "moveTo",
         "isSame",
+        "gap",
       ];
 
       operationNames.forEach((op) => {

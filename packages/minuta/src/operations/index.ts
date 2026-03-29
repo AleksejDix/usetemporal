@@ -7,4 +7,5 @@ export { isSame } from "./isSame";
 export { merge } from "./merge";
 export { next } from "./next";
 export { previous } from "./previous";
+export { moveTo } from "./moveTo";
 export { split } from "./split";

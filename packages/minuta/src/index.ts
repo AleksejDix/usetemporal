@@ -11,6 +11,7 @@ export {
   merge,
   isSame,
   gap,
+  moveTo,
 } from "./operations";
 
 // Types
