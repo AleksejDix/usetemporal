@@ -35,7 +35,7 @@ packages/
 └── tsconfig/                      # Shared TypeScript configs
 ```
 
-### UseTemporal Package Structure
+### Minuta Package Structure
 
 ```
 packages/minuta/

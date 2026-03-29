@@ -43,7 +43,7 @@ function Calendar() {
 
 ```tsx
 import { useMemo, useState } from "react";
-import { useTemporal } from "minuta-react";
+import { Minuta } from "minuta-react";
 import { createNativeAdapter } from "minuta/native";
 
 function App() {
@@ -164,7 +164,7 @@ Creates a reactive period that updates when `browsing` changes.
 
 **Parameters:**
 
-- `temporal: TemporalBuilder` - The temporal instance from `useTemporal`
+- `temporal: TemporalBuilder` - The temporal instance from `Minuta`
 - `unit: Unit` - Period unit type (`'year'`, `'month'`, `'week'`, `'day'`, etc.)
 
 **Returns:** A period that automatically updates when browsing changes

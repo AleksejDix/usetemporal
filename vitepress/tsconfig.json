@@ -2,9 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "minuta-vue": ["../packages/usetemporal-vue/src"],
-      "minuta/native": ["../packages/usetemporal/src/native.ts"],
-      "minuta/calendar": ["../packages/usetemporal/src/calendar/index.ts"]
+      "minuta-vue": ["../packages/minuta-vue/src"],
+      "minuta/native": ["../packages/minuta/src/native.ts"],
+      "minuta/calendar": ["../packages/minuta/src/calendar/index.ts"]
     },
     "types": ["vitepress/client"]
   },

@@ -32,7 +32,7 @@ export default defineConfig({
     nav: [
       {
         text: "Guide",
-        link: "/guide/what-is-usetemporal",
+        link: "/guide/what-is-minuta",
         activeMatch: "/guide/",
       },
       {
@@ -64,7 +64,7 @@ export default defineConfig({
           items: [
             {
               text: "What is Minuta?",
-              link: "/guide/what-is-usetemporal",
+              link: "/guide/what-is-minuta",
             },
             { text: "Getting Started", link: "/guide/getting-started" },
           ],
@@ -293,15 +293,15 @@ export default defineConfig({
       alias: {
         "minuta-vue": path.resolve(
           __dirname,
-          "../../packages/usetemporal-vue/src"
+          "../../packages/minuta-vue/src"
         ),
         "minuta/native": path.resolve(
           __dirname,
-          "../../packages/usetemporal/src/native.ts"
+          "../../packages/minuta/src/native.ts"
         ),
         "minuta/calendar": path.resolve(
           __dirname,
-          "../../packages/usetemporal/src/calendar/index.ts"
+          "../../packages/minuta/src/calendar/index.ts"
         ),
       },
     },

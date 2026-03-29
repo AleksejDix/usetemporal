@@ -202,8 +202,8 @@ I want to establish foundational BMad documents (PRD and Architecture),
 so that all future development follows a structured, professional process.
 
 #### Acceptance Criteria
-1. PRD document created at `/docs/prd/usetemporal-prd.md` following BMad template
-2. Architecture document created at `/docs/architecture/usetemporal-architecture.md` with focus on core and adapters
+1. PRD document created at `/docs/prd/minuta-prd.md` following BMad template
+2. Architecture document created at `/docs/architecture/minuta-architecture.md` with focus on core and adapters
 3. Both documents reflect actual current state (not aspirational)
 4. Documents are cross-referenced and consistent
 5. CLAUDE.md updated to reference these new documents

@@ -96,12 +96,12 @@ packages/
 │       └── temporal.ts
 │
 ├── minuta-vue/                # Vue.js integration (COMPLETE REACTIVE SOLUTION)
-│   ├── useTemporal.ts             # Main Vue composable (replaces createTemporal)
+│   ├── Minuta.ts             # Main Vue composable (replaces createTemporal)
 │   ├── usePeriod.ts               # Reactive period composable
 │   └── index.ts                   # Re-exports core operations for convenience
 │
 ├── minuta-react/              # React integration (new)
-│   ├── useTemporal.ts             # Main React hook
+│   ├── Minuta.ts             # Main React hook
 │   ├── usePeriod.ts               # Reactive period hook
 │   └── index.ts                   # Re-exports core operations
 │
@@ -138,7 +138,7 @@ const week = period(sundayAdapter, new Date(), 'week')
 import { useTemporal, usePeriod } from 'minuta-vue'
 import { createNativeAdapter } from 'minuta/native'
 
-// useTemporal is the main composable (replaces createTemporal)
+// Minuta is the main composable (replaces createTemporal)
 const weekStartsOn = ref(1)  // ← Reactive adapter setting
 
 // Adapter is recreated when weekStartsOn changes
@@ -392,8 +392,8 @@ This validates that adapter configuration management belongs in framework packag
    ```
 
 4. **Renamed Main Function**
-   - `createTemporal` → `useTemporal` (better reflects reactive nature)
-   - Each framework package exports its own `useTemporal`
+   - `createTemporal` → `Minuta` (better reflects reactive nature)
+   - Each framework package exports its own `Minuta`
 
 ### Migration Strategy
 
@@ -514,7 +514,7 @@ This epic directly supports the "Calculus for Time" philosophy:
 - Framework packages compose core operations with reactivity
 - Users can choose their framework or stay pure functional
 - No forced dependencies or "one size fits all" approach
-- `useTemporal` is a composition of core operations + framework reactivity
+- `Minuta` is a composition of core operations + framework reactivity
 
 **Minimal API Surface**
 - Core package has zero framework dependencies
@@ -611,14 +611,14 @@ This epic represents a fundamental architectural shift that aligns the codebase 
 - The "builder pattern" (`createTemporal`) is actually a framework-specific reactive state container
 - `weekStartsOn` is an **adapter setting**, not a temporal setting - changing it requires adapter recreation
 - Reactive adapter configuration management is a framework concern (Vue: computed adapter, React: useMemo adapter)
-- `createTemporal` should be renamed to `useTemporal` to reflect its reactive nature
+- `createTemporal` should be renamed to `Minuta` to reflect its reactive nature
 - Each framework implements its own reactive state management (Vue: Refs, React: useState, etc.)
 - Framework packages manage adapter lifecycle when settings change
 
 **Key Decision Points:**
 1. Remove @vue/reactivity from core? **RECOMMENDED: YES**
 2. Remove `createTemporal` from core? **RECOMMENDED: YES** (moves to framework packages)
-3. Rename to `useTemporal`? **RECOMMENDED: YES** (better reflects reactive nature)
+3. Rename to `Minuta`? **RECOMMENDED: YES** (better reflects reactive nature)
 4. Make settings reactive? **RECOMMENDED: YES** (weekStartsOn changes should trigger recalc)
 5. Create separate framework packages? **RECOMMENDED: YES**
 6. Support React in v2.0.0? **RECOMMENDED: YES**

@@ -3,7 +3,7 @@
 `minuta-react` exposes idiomatic hooks so React apps get the
 same reactive builder API as Vue without any globals.
 
-- Hooks follow standard patterns (`useTemporal`, `usePeriod`).
+- Hooks follow standard patterns (`Minuta`, `usePeriod`).
 - Works with `useMemo` adapters for dynamic configuration.
 - Builder exposes every operation so advanced flows stay in React land.
 
@@ -58,7 +58,7 @@ export function MonthCalendar() {
 
 ```tsx
 import { useMemo, useState } from "react";
-import { useTemporal } from "minuta-react";
+import { Minuta } from "minuta-react";
 import { createNativeAdapter } from "minuta/native";
 
 export function App() {

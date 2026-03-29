@@ -1,4 +1,4 @@
-# useTemporal Adapter Consolidation Brownfield Enhancement PRD (Retrospective)
+# Minuta Adapter Consolidation Brownfield Enhancement PRD (Retrospective)
 
 **Status:** COMPLETED (Sprint: 2025-01-25)
 
@@ -11,7 +11,7 @@
 **Analysis Source:** IDE-based fresh analysis from the current project context
 
 **Current Project State:**
-useTemporal is a revolutionary time library featuring a unique `divide()` pattern for hierarchical time management. The project is organized as a monorepo with framework-agnostic architecture. Prior to this enhancement, the project had separate packages for each date library adapter (native, temporal, luxon, date-fns), which caused issues with test coverage visibility and bundle optimization.
+Minuta is a revolutionary time library featuring a unique `divide()` pattern for hierarchical time management. The project is organized as a monorepo with framework-agnostic architecture. Prior to this enhancement, the project had separate packages for each date library adapter (native, temporal, luxon, date-fns), which caused issues with test coverage visibility and bundle optimization.
 
 ### Documentation Analysis
 
@@ -48,7 +48,7 @@ Consolidation of four separate adapter packages (minuta/native, /adapter-tempora
 - Enable better maintainability with consolidated codebase
 
 **Background Context:**
-The useTemporal library had grown to include four separate adapter packages, each in its own npm package. This separation, while initially logical, created several pain points: test coverage showed 0% for adapter packages (since tests lived in core), bundle optimization was suboptimal due to package boundaries, and developers had to install and manage multiple packages. 
+The Minuta library had grown to include four separate adapter packages, each in its own npm package. This separation, while initially logical, created several pain points: test coverage showed 0% for adapter packages (since tests lived in core), bundle optimization was suboptimal due to package boundaries, and developers had to install and manage multiple packages. 
 
 The consolidation into the core package addresses these issues while maintaining the library's "Calculus for Time" philosophy of providing fundamental operations that compose into complex solutions. This enhancement aligns with the library's goal of minimal API surface while maximizing developer efficiency.
 

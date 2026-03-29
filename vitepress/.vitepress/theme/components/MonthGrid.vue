@@ -2,8 +2,8 @@
 import type { Period } from "minuta";
 import type { Ref } from "vue";
 import { computed, unref } from "vue";
-import { useTemporal } from "minuta-vue";
-import { createStableMonth } from "../../../../packages/usetemporal/src/calendar";
+import { Minuta } from "minuta-vue";
+import { createStableMonth } from "../../../../packages/minuta/src/calendar";
 import WeekNamesView from "./WeekNamesView.vue";
 
 const props = withDefaults(

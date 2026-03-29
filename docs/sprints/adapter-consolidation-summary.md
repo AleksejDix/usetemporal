@@ -133,4 +133,4 @@ These will be removed in v3.0.0 (planned for 2025 Q3).
 - Tree-shaking benefits confirmed
 - Documentation updates were more extensive than anticipated
 
-This sprint successfully achieved all primary objectives and sets up useTemporal for better maintainability and developer experience.
+This sprint successfully achieved all primary objectives and sets up Minuta for better maintainability and developer experience.

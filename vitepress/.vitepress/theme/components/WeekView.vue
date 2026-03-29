@@ -2,7 +2,7 @@
 import type { Period } from "minuta";
 import type { Ref } from "vue";
 import { computed, unref } from "vue";
-import { useTemporal } from "minuta-vue";
+import { Minuta } from "minuta-vue";
 import WeekNamesView from "./WeekNamesView.vue";
 
 const HOURS = Array.from({ length: 24 }, (_, index) => index);

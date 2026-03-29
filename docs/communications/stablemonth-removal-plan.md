@@ -6,7 +6,7 @@ This plan outlines how we'll communicate the removal of `stableMonth` from the c
 ## Key Messages
 
 ### Primary Message
-"We're improving useTemporal's architecture by moving calendar-specific units like `stableMonth` to a dedicated package, keeping the core library focused on fundamental time operations."
+"We're improving Minuta's architecture by moving calendar-specific units like `stableMonth` to a dedicated package, keeping the core library focused on fundamental time operations."
 
 ### Supporting Messages
 1. **No functionality lost** - stableMonth will be available in minuta/calendar
@@ -87,7 +87,7 @@ Until the package is released, use the pattern shown below.
 **Channels**: Discord, Twitter, Reddit (if applicable)
 **Message**:
 ```
-📢 useTemporal Architecture Update
+📢 Minuta Architecture Update
 
 We're improving our library structure! Calendar-specific units like stableMonth 
 are moving to a dedicated minuta/calendar package.

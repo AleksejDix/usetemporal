@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemporal } from "minuta-vue";
+import { Minuta } from "minuta-vue";
 
 const { now, go } = useTemporal();
 </script>
