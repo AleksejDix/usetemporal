@@ -1,9 +1,9 @@
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
-import type { Period } from "@allystudio/usetemporal";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
-import { useTemporal } from "../useTemporal";
+import type { Period } from "minuta";
+import { createNativeAdapter } from "minuta/native";
+import { useMinuta } from "../useMinuta";
 import { usePeriod } from "../usePeriod";
-import type { TemporalBuilder } from "../types";
+import type { MinutaBuilder } from "../types";
 
 const WEEKDAY_ORDER: Record<0 | 1, string[]> = {
   0: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -39,7 +39,7 @@ export function CalendarExample() {
     [weekStartsOn]
   );
 
-  const temporal = useTemporal({
+  const temporal = useMinuta({
     adapter,
     date: new Date(),
   });
@@ -82,7 +82,7 @@ export function CalendarExample() {
         {weeks.map((week) => (
           <div key={week.period.start.toISOString()} className="week-row">
             {week.days.map((day) => {
-              const isOutside = !temporal.contains(month, day.date);
+              const isOutside = !temporal.contains(month, day.start);
               const isToday = temporal.isSame(day, temporal.now, "day");
               return (
                 <button
@@ -96,11 +96,11 @@ export function CalendarExample() {
                     .filter(Boolean)
                     .join(" ")}
                   onClick={() => temporal.go(day, 0)}
-                  title={dayFormatter.format(day.date)}
+                  title={dayFormatter.format(day.start)}
                 >
-                  <span className="date-number">{day.date.getDate()}</span>
+                  <span className="date-number">{day.start.getDate()}</span>
                   <span className="weekday-label">
-                    {dayFormatter.format(day.date)}
+                    {dayFormatter.format(day.start)}
                   </span>
                 </button>
               );
@@ -112,7 +112,7 @@ export function CalendarExample() {
   );
 }
 
-function buildWeeks(temporal: TemporalBuilder, month: Period): WeekWithDays[] {
+function buildWeeks(temporal: MinutaBuilder, month: Period): WeekWithDays[] {
   return temporal.divide(month, "week").map((week) => ({
     period: week,
     days: temporal.divide(week, "day"),
@@ -123,7 +123,7 @@ function NavigationControls({
   temporal,
   targetPeriod,
 }: {
-  temporal: TemporalBuilder;
+  temporal: MinutaBuilder;
   targetPeriod: Period;
 }) {
   return (
@@ -147,10 +147,10 @@ function NavigationControls({
 }
 
 function PeriodDisplay({ month, now }: { month: Period; now: Period }) {
-  const label = monthFormatter.format(month.date);
+  const label = monthFormatter.format(month.start);
   const isCurrentMonth =
-    month.date.getFullYear() === now.date.getFullYear() &&
-    month.date.getMonth() === now.date.getMonth();
+    month.start.getFullYear() === now.start.getFullYear() &&
+    month.start.getMonth() === now.start.getMonth();
 
   return (
     <div className="period-display">

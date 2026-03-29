@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { contains } from "./contains";
-import { testDates } from "../test/testDates";
 import type { Period } from "../types";
 
 describe("contains", () => {

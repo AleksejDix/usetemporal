@@ -1,13 +1,15 @@
 import type { Adapter } from "../../types";
 import { createAdapter } from "../createAdapter";
-import { yearHandler } from "./units/year";
-import { quarterHandler } from "./units/quarter";
-import { monthHandler } from "./units/month";
+import {
+  yearHandler,
+  quarterHandler,
+  monthHandler,
+  dayHandler,
+  hourHandler,
+  minuteHandler,
+  secondHandler,
+} from "./handlers";
 import { createWeekHandler } from "./units/week";
-import { dayHandler } from "./units/day";
-import { hourHandler } from "./units/hour";
-import { minuteHandler } from "./units/minute";
-import { secondHandler } from "./units/second";
 
 export function createDateFnsAdapter({
   weekStartsOn = 1,

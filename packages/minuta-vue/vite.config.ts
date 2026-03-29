@@ -14,8 +14,8 @@ export default defineConfig(({ command, mode }) => {
       plugins: [vue()],
       resolve: {
         alias: {
-          "@allystudio/usetemporal-vue": resolve(__dirname, "src"),
-          "@allystudio/usetemporal-vue/components": resolve(
+          "minuta-vue": resolve(__dirname, "src"),
+          "minuta-vue/components": resolve(
             __dirname,
             "src/components/index.ts"
           ),
@@ -39,7 +39,7 @@ export default defineConfig(({ command, mode }) => {
           entryName === "index" ? "index.js" : `${entryName}/index.js`,
       },
       rollupOptions: {
-        external: [/^@allystudio\/usetemporal/, "vue"],
+        external: [/^minuta/, "vue"],
       },
     },
     plugins: [

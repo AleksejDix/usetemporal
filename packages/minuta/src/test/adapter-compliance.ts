@@ -14,8 +14,20 @@ export function testAdapterCompliance(
   describe(`${adapterName} Adapter Compliance`, () => {
     // When testing a UTC-based adapter, construct dates as UTC so local TZ doesn't skew results
     const isUTC = options?.timezone === "UTC";
-    const createDate = (...args: Parameters<typeof Date.UTC>) =>
-      isUTC ? new Date(Date.UTC(...args)) : new Date(...args);
+    const createDate = (
+      year: number,
+      monthIndex: number,
+      date?: number,
+      hours?: number,
+      minutes?: number,
+      seconds?: number,
+      ms?: number
+    ): Date =>
+      isUTC
+        ? new Date(
+            Date.UTC(year, monthIndex, date, hours, minutes, seconds, ms)
+          )
+        : new Date(year, monthIndex, date, hours, minutes, seconds, ms);
 
     const testDate = createDate(2024, 5, 15, 14, 30, 45, 123); // June 15, 2024 14:30:45.123
     const resolvedTimeZone =

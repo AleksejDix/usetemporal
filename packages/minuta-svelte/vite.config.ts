@@ -18,8 +18,8 @@ export default defineConfig(({ command, mode }) => {
       ],
       resolve: {
         alias: {
-          "@allystudio/usetemporal-svelte": resolve(__dirname, "src"),
-          "@allystudio/usetemporal-svelte/components": resolve(
+          "minuta-svelte": resolve(__dirname, "src"),
+          "minuta-svelte/components": resolve(
             __dirname,
             "src/components/index.ts"
           ),
@@ -43,7 +43,7 @@ export default defineConfig(({ command, mode }) => {
           entryName === "index" ? "index.js" : `${entryName}/index.js`,
       },
       rollupOptions: {
-        external: [/^@allystudio\/usetemporal/, "svelte"],
+        external: [/^minuta/, "svelte"],
       },
     },
     plugins: [

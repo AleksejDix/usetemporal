@@ -1,4 +1,4 @@
-import type { Adapter, AdapterUnit, UnitHandler } from "../../types";
+import type { Adapter, AdapterUnit, UnitHandler } from "../types";
 
 /**
  * Create an Adapter from a handlers map.

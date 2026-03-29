@@ -14,7 +14,7 @@ export default defineConfig(({ command, mode }) => {
       plugins: [react()],
       resolve: {
         alias: {
-          "@allystudio/usetemporal-react": resolve(__dirname, "src"),
+          "minuta-react": resolve(__dirname, "src"),
         },
       },
       build: {
@@ -35,7 +35,7 @@ export default defineConfig(({ command, mode }) => {
           entryName === "index" ? "index.js" : `${entryName}/index.js`,
       },
       rollupOptions: {
-        external: [/^@allystudio\/usetemporal/, "react"],
+        external: [/^minuta/, "react"],
       },
     },
     plugins: [

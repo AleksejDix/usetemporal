@@ -1,4 +1,5 @@
 import { describe } from "vitest";
+import type { Adapter } from "../types";
 import { createNativeAdapter } from "../adapters/native";
 import { createDateFnsAdapter } from "../adapters/date-fns";
 import { createLuxonAdapter } from "../adapters/luxon";

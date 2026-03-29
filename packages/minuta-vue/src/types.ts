@@ -1,4 +1,4 @@
-import type { Adapter, AdapterUnit, Period, Unit } from "minuta";
+import type { Adapter, AdapterUnit, Period } from "minuta";
 import type { ComputedRef, Ref } from "vue";
 
 /**
