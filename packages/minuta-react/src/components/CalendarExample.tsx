@@ -56,7 +56,7 @@ export function CalendarExample() {
     <section className="calendar-shell" data-testid="calendar-example">
       <header className="calendar-header">
         <div>
-          <h1>useTemporal React Demo</h1>
+          <h1>Minuta React Demo</h1>
           <p className="subheading">
             Derived periods, divide() pattern, and adapter reactivity in one
             hook.

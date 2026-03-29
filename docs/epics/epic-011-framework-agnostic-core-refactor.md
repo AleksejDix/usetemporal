@@ -9,7 +9,7 @@
 
 ## Epic Description
 
-Refactor the library architecture to make the core package (`@allystudio/usetemporal`) completely framework-agnostic by removing all reactivity dependencies. Extract the current "builder" API (`createTemporal`) and composables into separate framework-specific packages, enabling future framework integrations while reducing bundle size and maintaining clear separation of concerns.
+Refactor the library architecture to make the core package (`minuta`) completely framework-agnostic by removing all reactivity dependencies. Extract the current "builder" API (`createTemporal`) and composables into separate framework-specific packages, enabling future framework integrations while reducing bundle size and maintaining clear separation of concerns.
 
 **Critical Insight**: The so-called "builder pattern" (`createTemporal`) is NOT a builder - it's actually a **framework-specific reactive state container**. The `browsing`, `now`, and configuration options like `weekStartsOn` are all reactive values that should trigger recalculation when changed. This is fundamentally a framework concern (Vue composable, React hook, etc.), not a core library concern.
 
@@ -28,7 +28,7 @@ Refactor the library architecture to make the core package (`@allystudio/usetemp
 
 ### Current Architecture Problems
 
-**1. Vue Reactivity in Core** (`packages/usetemporal/package.json:74`)
+**1. Vue Reactivity in Core** (`packages/minuta/package.json:74`)
 ```json
 "dependencies": {
   "@vue/reactivity": "^3.5.18"
@@ -46,7 +46,7 @@ Refactor the library architecture to make the core package (`@allystudio/usetemp
 Current export structure forces all users through the same package:
 
 ```typescript
-// packages/usetemporal/src/index.ts
+// packages/minuta/src/index.ts
 export * from './operations'        // Level 1: Pure functions ✅
 export { createTemporal }           // Level 2: "Builder" ❌ Actually Vue composable!
 export { usePeriod }               // Level 3: Vue composable ❌
@@ -69,7 +69,7 @@ The `createTemporal` function is NOT a simple builder pattern - it's a **reactiv
 
 ```
 packages/
-├── usetemporal/           # Core + Vue reactivity (mixed concerns)
+├── minuta/           # Core + Vue reactivity (mixed concerns)
 │   ├── operations         # Pure functions ✅
 │   ├── composables/       # Vue-specific ❌
 │   └── createTemporal.ts  # Uses @vue/reactivity ❌
@@ -81,7 +81,7 @@ packages/
 
 ```
 packages/
-├── usetemporal/                    # Framework-agnostic core (PURE FUNCTIONS ONLY)
+├── minuta/                    # Framework-agnostic core (PURE FUNCTIONS ONLY)
 │   ├── operations/                 # Pure functions only
 │   │   ├── period.ts
 │   │   ├── divide.ts
@@ -95,17 +95,17 @@ packages/
 │       ├── luxon.ts
 │       └── temporal.ts
 │
-├── usetemporal-vue/                # Vue.js integration (COMPLETE REACTIVE SOLUTION)
+├── minuta-vue/                # Vue.js integration (COMPLETE REACTIVE SOLUTION)
 │   ├── useTemporal.ts             # Main Vue composable (replaces createTemporal)
 │   ├── usePeriod.ts               # Reactive period composable
 │   └── index.ts                   # Re-exports core operations for convenience
 │
-├── usetemporal-react/              # React integration (new)
+├── minuta-react/              # React integration (new)
 │   ├── useTemporal.ts             # Main React hook
 │   ├── usePeriod.ts               # Reactive period hook
 │   └── index.ts                   # Re-exports core operations
 │
-└── usetemporal-svelte/             # Future: Svelte integration
+└── minuta-svelte/             # Future: Svelte integration
     ├── temporal.ts                # Svelte store
     └── period.ts                  # Period store
 ```
@@ -118,8 +118,8 @@ There are really only **TWO API approaches**, not three:
 
 **Approach 1: Pure Functions** (Core Package - No Reactivity)
 ```typescript
-import { period, divide, next } from '@allystudio/usetemporal/operations'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { period, divide, next } from 'minuta/operations'
+import { createNativeAdapter } from 'minuta/native'
 
 // weekStartsOn is an ADAPTER setting
 const adapter = createNativeAdapter({ weekStartsOn: 1 })
@@ -135,8 +135,8 @@ const week = period(sundayAdapter, new Date(), 'week')
 
 **Vue:**
 ```typescript
-import { useTemporal, usePeriod } from '@allystudio/usetemporal-vue'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { useTemporal, usePeriod } from 'minuta-vue'
+import { createNativeAdapter } from 'minuta/native'
 
 // useTemporal is the main composable (replaces createTemporal)
 const weekStartsOn = ref(1)  // ← Reactive adapter setting
@@ -156,8 +156,8 @@ const month = usePeriod(temporal, 'month')
 
 **React:**
 ```typescript
-import { useTemporal, usePeriod } from '@allystudio/usetemporal-react'
-import { createNativeAdapter } from '@allystudio/usetemporal/native'
+import { useTemporal, usePeriod } from 'minuta-react'
+import { createNativeAdapter } from 'minuta/native'
 
 function MyComponent() {
   const [weekStartsOn, setWeekStartsOn] = useState(1)
@@ -192,7 +192,7 @@ This validates that adapter configuration management belongs in framework packag
 
 ### Package Responsibilities
 
-**@allystudio/usetemporal (Core)**
+**minuta (Core)**
 - ✅ Pure functional operations (period, divide, next, etc.)
 - ✅ Period type (plain object, no reactivity)
 - ✅ Adapter interface and implementations (native, date-fns, luxon, temporal)
@@ -204,7 +204,7 @@ This validates that adapter configuration management belongs in framework packag
 - ❌ NO composables/hooks
 - ❌ NO reactive state management
 
-**@allystudio/usetemporal-vue**
+**minuta-vue**
 - ✅ `useTemporal()` - Main Vue composable for reactive state
   - Manages reactive `browsing` and `now` periods
   - Accepts reactive adapter (allows reactive adapter recreation)
@@ -212,9 +212,9 @@ This validates that adapter configuration management belongs in framework packag
 - ✅ `usePeriod()` - Reactive period composable
 - ✅ Re-exports core operations for convenience
 - ✅ Full Vue reactivity integration
-- ✅ Depends on: @vue/reactivity, @allystudio/usetemporal
+- ✅ Depends on: @vue/reactivity, minuta
 
-**@allystudio/usetemporal-react**
+**minuta-react**
 - ✅ `useTemporal()` - Main React hook for state management
   - Manages state for `browsing` and `now` periods
   - Accepts memoized adapter (allows adapter recreation on state change)
@@ -222,13 +222,13 @@ This validates that adapter configuration management belongs in framework packag
 - ✅ `usePeriod()` - Reactive period hook
 - ✅ Re-exports core operations for convenience
 - ✅ Full React hooks integration
-- ✅ Depends on: react, @allystudio/usetemporal
+- ✅ Depends on: react, minuta
 
-**@allystudio/usetemporal-svelte** (Future)
+**minuta-svelte** (Future)
 - ✅ Temporal store with reactive settings
 - ✅ Period store
 - ✅ Re-exports core operations
-- ✅ Depends on: svelte, @allystudio/usetemporal
+- ✅ Depends on: svelte, minuta
 
 ## Success Criteria
 
@@ -273,7 +273,7 @@ This validates that adapter configuration management belongs in framework packag
   - Status: Proposed
 
 ### Phase 2: Vue Package Creation
-- **Story 011.03**: Create @allystudio/usetemporal-vue Package
+- **Story 011.03**: Create minuta-vue Package
   - Initialize new package structure
   - Move Vue-specific code from core
   - Implement reactive Temporal factory
@@ -288,7 +288,7 @@ This validates that adapter configuration management belongs in framework packag
   - Status: Proposed
 
 ### Phase 3: React Integration
-- **Story 011.05**: Create @allystudio/usetemporal-react Package
+- **Story 011.05**: Create minuta-react Package
   - Initialize React package structure
   - Implement React state-based Temporal
   - Create usePeriod hook
@@ -311,7 +311,7 @@ This validates that adapter configuration management belongs in framework packag
   - Status: Proposed
 
 - **Story 011.08**: Update Examples and Documentation
-  - Update Vue example to use @allystudio/usetemporal-vue
+  - Update Vue example to use minuta-vue
   - Add React example
   - Add vanilla JS example
   - Update VitePress documentation
@@ -346,15 +346,15 @@ This validates that adapter configuration management belongs in framework packag
 2. **Import Path Changes**
    ```typescript
    // Before (alpha.1) - Everything from core
-   import { createTemporal, usePeriod } from '@allystudio/usetemporal'
+   import { createTemporal, usePeriod } from 'minuta'
 
    // After (stable) - Framework packages
-   import { useTemporal, usePeriod } from '@allystudio/usetemporal-vue'
+   import { useTemporal, usePeriod } from 'minuta-vue'
    // or
-   import { useTemporal, usePeriod } from '@allystudio/usetemporal-react'
+   import { useTemporal, usePeriod } from 'minuta-react'
 
    // Pure functions still from core
-   import { period, divide } from '@allystudio/usetemporal/operations'
+   import { period, divide } from 'minuta/operations'
    ```
 
 3. **No "Temporal Interface" in Core**
@@ -370,7 +370,7 @@ This validates that adapter configuration management belongs in framework packag
    // After (stable) - NO Temporal interface in core!
    // Each framework defines its own reactive Temporal:
 
-   // Vue version (in @allystudio/usetemporal-vue)
+   // Vue version (in minuta-vue)
    interface VueTemporal {
      adapter: Ref<Adapter>         // Reactive adapter (recreates on config change)
      browsing: Ref<Period>         // Reactive state
@@ -380,7 +380,7 @@ This validates that adapter configuration management belongs in framework packag
      // Note: weekStartsOn lives in the adapter, not here
    }
 
-   // React version (in @allystudio/usetemporal-react)
+   // React version (in minuta-react)
    interface ReactTemporal {
      adapter: Adapter              // Current adapter (recreates via useMemo)
      browsing: Period              // Current state
@@ -482,13 +482,13 @@ This validates that adapter configuration management belongs in framework packag
 ### Validation Method
 ```bash
 # Bundle size validation
-npm run build --workspace=@allystudio/usetemporal
+npm run build --workspace=minuta
 npx bundlesize # Core should be ≤8KB
 
-npm run build --workspace=@allystudio/usetemporal-vue
+npm run build --workspace=minuta-vue
 npx bundlesize # Vue should be ≤22KB
 
-npm run build --workspace=@allystudio/usetemporal-react
+npm run build --workspace=minuta-react
 npx bundlesize # React should be ≤20KB
 
 # Functional validation
@@ -496,8 +496,8 @@ TZ=UTC npm test  # All tests must pass
 npm run type-check  # No TypeScript errors
 
 # Framework integration tests
-npm run demo:build --workspace=@allystudio/usetemporal-vue
-npm run demo:build --workspace=@allystudio/usetemporal-react
+npm run demo:build --workspace=minuta-vue
+npm run demo:build --workspace=minuta-react
 ```
 
 ## Alignment with Project Philosophy
@@ -544,19 +544,19 @@ This epic directly supports the "Calculus for Time" philosophy:
 - **Support**: Migration guide, upgrade assistance
 
 ### Future Users
-- **Vue users**: Use @allystudio/usetemporal-vue
-- **React users**: Use @allystudio/usetemporal-react
-- **Vanilla JS**: Use @allystudio/usetemporal (pure functions)
+- **Vue users**: Use minuta-vue
+- **React users**: Use minuta-react
+- **Vanilla JS**: Use minuta (pure functions)
 - **Other frameworks**: Easy to add new integrations
 
 ## Future Framework Integrations
 
 This architecture enables easy addition of:
 
-- **@allystudio/usetemporal-svelte** - Svelte stores
-- **@allystudio/usetemporal-angular** - Angular services/signals
-- **@allystudio/usetemporal-solid** - Solid.js signals
-- **@allystudio/usetemporal-preact** - Preact hooks
+- **minuta-svelte** - Svelte stores
+- **minuta-angular** - Angular services/signals
+- **minuta-solid** - Solid.js signals
+- **minuta-preact** - Preact hooks
 
 Each framework package follows the same pattern:
 1. Depend on core package

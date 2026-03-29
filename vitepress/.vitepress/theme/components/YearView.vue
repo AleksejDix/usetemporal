@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Period } from "@allystudio/usetemporal";
+import type { Period } from "minuta";
 import { computed } from "vue";
-import { useTemporal } from "@allystudio/usetemporal-vue";
+import { useTemporal } from "minuta-vue";
 import MonthName from "./MonthName.vue";
 import MonthGrid from "./MonthGrid.vue";
 

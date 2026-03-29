@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Unit } from "@allystudio/usetemporal";
+import type { Unit } from "minuta";
 import type { Ref } from "vue";
 import { computed, unref } from "vue";
 

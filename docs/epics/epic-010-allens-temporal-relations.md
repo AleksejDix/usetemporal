@@ -2,7 +2,7 @@
 
 ## Epic Goal
 
-Implement Allen's 13 fundamental temporal relations to provide a mathematically complete and mutually exclusive set of operations for determining relationships between any two time periods, enhancing useTemporal's capability as a comprehensive time manipulation library.
+Implement Allen's 13 fundamental temporal relations to provide a mathematically complete and mutually exclusive set of operations for determining relationships between any two time periods, enhancing Minuta's capability as a comprehensive time manipulation library.
 
 ## Epic Description
 

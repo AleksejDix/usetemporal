@@ -34,21 +34,21 @@ Transform the useTemporal developer experience by consolidating all adapters int
 
 ### Before (Current Pain):
 ```bash
-npm install @usetemporal/core @usetemporal/adapter-native @usetemporal/adapter-temporal
+npm install minuta minuta/native /adapter-temporal
 ```
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createTemporal } from 'minuta'
+import { createNativeAdapter } from 'minuta/native'
 // Coverage shows 0% for adapters 😢
 ```
 
 ### After (New Joy):
 ```bash
-npm install @usetemporal/core  # That's it!
+npm install minuta  # That's it!
 ```
 ```typescript
-import { createTemporal } from '@usetemporal/core'
-import { createNativeAdapter } from '@usetemporal/core/native'
+import { createTemporal } from 'minuta'
+import { createNativeAdapter } from 'minuta/native'
 // Coverage shows real 85%+ 🎉
 ```
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Period } from "@allystudio/usetemporal";
+import type { Period } from "minuta";
 import type { Ref } from "vue";
 import { computed, unref } from "vue";
-import { useTemporal } from "@allystudio/usetemporal-vue";
+import { useTemporal } from "minuta-vue";
 import { createStableMonth } from "../../../../packages/usetemporal/src/calendar";
 import WeekNamesView from "./WeekNamesView.vue";
 

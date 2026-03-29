@@ -60,8 +60,8 @@ export function period(temporal: Temporal, date: Date, unit: Unit): Period {
 **Level 1: Purist (Maximum Tree-Shaking)**
 ```typescript
 // 5-7KB bundle - only what you use
-import { divide, period } from '@allystudio/usetemporal/operations';
-import { createNativeAdapter } from '@allystudio/usetemporal/native';
+import { divide, period } from 'minuta/operations';
+import { createNativeAdapter } from 'minuta/native';
 
 const adapter = createNativeAdapter({ weekStartsOn: 1 });
 const year = period(adapter, new Date(), 'year');
@@ -71,8 +71,8 @@ const months = divide(adapter, year, 'month');
 **Level 2: Builder (Balanced)**
 ```typescript
 // 8-12KB bundle - convenience without bloat
-import { createTemporal } from '@allystudio/usetemporal';
-import { nativeAdapter } from '@allystudio/usetemporal/native';
+import { createTemporal } from 'minuta';
+import { nativeAdapter } from 'minuta/native';
 
 const temporal = createTemporal({
   adapter: nativeAdapter,
@@ -86,8 +86,8 @@ const months = temporal.divide(year, 'month');
 **Level 3: Full DX (Current API, Tree-Shakable)**
 ```typescript
 // 15-20KB bundle - all convenience features
-import { createTemporal, usePeriod } from '@allystudio/usetemporal';
-import { nativeAdapter } from '@allystudio/usetemporal/native';
+import { createTemporal, usePeriod } from 'minuta';
+import { nativeAdapter } from 'minuta/native';
 
 const temporal = createTemporal({
   adapter: nativeAdapter,
@@ -129,7 +129,7 @@ export function period(adapter: Adapter, date: Date, unit: Unit): Period
 **4. Calendar as Extension**
 ```typescript
 // Separate entry point (opt-in)
-import { stableMonth } from '@allystudio/usetemporal/calendar';
+import { stableMonth } from 'minuta/calendar';
 
 const stable = stableMonth(adapter, date);
 ```
@@ -170,7 +170,7 @@ const stable = stableMonth(adapter, date);
 ### Phase 2: Modularization
 - **Story 007.02**: Extract Calendar Units to Separate Entry Point
   - Move stableMonth, stableYear to separate package entry
-  - Create @allystudio/usetemporal/calendar export
+  - Create minuta/calendar export
   - Update calendar-specific tests
   - Status: Proposed
 
@@ -208,7 +208,7 @@ const stable = stableMonth(adapter, date);
 ### Breaking Changes Required
 1. **Operation signatures**: Add adapter parameter
 2. **Unit definitions**: Move from global registry to adapter-managed
-3. **Import paths**: New subpath exports (@allystudio/usetemporal/operations)
+3. **Import paths**: New subpath exports (minuta/operations)
 4. **Calendar separation**: No longer auto-imported
 
 ### Migration Strategy
@@ -294,7 +294,7 @@ npm run build
 npx rollup-plugin-visualizer dist/stats.html
 
 # Tree-shaking test
-echo "import { period } from '@allystudio/usetemporal/operations'" > test.js
+echo "import { period } from 'minuta/operations'" > test.js
 npx rollup test.js --format esm | wc -c  # Should be ~5-7KB
 
 # Functional validation
@@ -325,8 +325,8 @@ This epic directly supports the "Calculus for Time" philosophy:
 
 ### Current Calendar Pattern (30KB bundle)
 ```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal';
-import { nativeAdapter } from '@allystudio/usetemporal/native';
+import { createTemporal, usePeriod } from 'minuta';
+import { nativeAdapter } from 'minuta/native';
 
 const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
 const month = usePeriod(temporal, 'month');
@@ -336,8 +336,8 @@ const weeks = divide(temporal, month.value, 'week');
 
 ### New Calendar Pattern - Option 1: Minimal (7KB bundle)
 ```typescript
-import { period, divide } from '@allystudio/usetemporal/operations';
-import { createNativeAdapter } from '@allystudio/usetemporal/native';
+import { period, divide } from 'minuta/operations';
+import { createNativeAdapter } from 'minuta/native';
 
 const adapter = createNativeAdapter({ weekStartsOn: 1 });
 const month = period(adapter, new Date(), 'month');
@@ -347,8 +347,8 @@ const weeks = divide(adapter, month, 'week');
 
 ### New Calendar Pattern - Option 2: Builder (12KB bundle)
 ```typescript
-import { createTemporal } from '@allystudio/usetemporal';
-import { nativeAdapter } from '@allystudio/usetemporal/native';
+import { createTemporal } from 'minuta';
+import { nativeAdapter } from 'minuta/native';
 
 const temporal = createTemporal({ adapter: nativeAdapter, weekStartsOn: 1 });
 const month = temporal.period(new Date(), 'month');
@@ -358,8 +358,8 @@ const weeks = temporal.divide(month, 'week');
 
 ### New Calendar Pattern - Option 3: Full DX (15KB bundle)
 ```typescript
-import { createTemporal, usePeriod } from '@allystudio/usetemporal';
-import { nativeAdapter } from '@allystudio/usetemporal/native';
+import { createTemporal, usePeriod } from 'minuta';
+import { nativeAdapter } from 'minuta/native';
 
 const temporal = createTemporal({ adapter: nativeAdapter, date: new Date() });
 const month = usePeriod(temporal, 'month');

@@ -34,7 +34,7 @@ tree-shaking, reducing bundle sizes by 60-76% depending on usage patterns.
 
 **Before:**
 ```typescript
-import { defineUnit } from '@allystudio/usetemporal';
+import { defineUnit } from 'minuta';
 defineUnit('custom', { /* ... */ });
 ```
 
@@ -62,17 +62,17 @@ const month = temporal.period(new Date(), 'month');
 
 **Before:**
 ```typescript
-import { createStableMonth } from '@allystudio/usetemporal';
+import { createStableMonth } from 'minuta';
 ```
 
 **After:**
 ```typescript
-import { createStableMonth } from '@allystudio/usetemporal/calendar';
+import { createStableMonth } from 'minuta/calendar';
 ```
 
 ### Added
 
-- ✨ Level 1 API: Pure functions (`@allystudio/usetemporal/operations`)
+- ✨ Level 1 API: Pure functions (`minuta/operations`)
 - ✨ Level 2 API: Builder pattern with tree-shakable methods
 - ✨ Level 3 API: Composables for reactive applications
 - ✨ Subpath exports for better tree-shaking

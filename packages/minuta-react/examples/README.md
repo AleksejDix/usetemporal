@@ -1,6 +1,6 @@
 # React calendar demo
 
-Interactive React demo showcasing how to pair `@allystudio/usetemporal-react`
+Interactive React demo showcasing how to pair `minuta-react`
 with the core divide() operations. The calendar highlights:
 
 - `useTemporal` + `usePeriod` coordination
@@ -11,7 +11,7 @@ with the core divide() operations. The calendar highlights:
 ## Getting started
 
 ```bash
-npm run dev --workspace=@allystudio/usetemporal-react
+npm run dev --workspace=minuta-react
 ```
 
 - `npm run dev --workspace=…` – Launches the demo using the package's Vite config
@@ -21,7 +21,7 @@ npm run dev --workspace=@allystudio/usetemporal-react
 ## Project structure
 
 ```
-packages/usetemporal-react/examples/
+packages/minuta-react/examples/
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx
@@ -43,4 +43,4 @@ packages/usetemporal-react/examples/
 - **Educational comments** – Components call out the patterns most teams should
   follow when wiring useTemporal into React apps
 
-For more details visit [usetemporal.vercel.app](https://usetemporal.vercel.app).
+For more details visit [minuta.vercel.app](https://minuta.vercel.app).

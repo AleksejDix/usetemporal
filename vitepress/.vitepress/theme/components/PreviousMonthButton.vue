@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Unit } from "@allystudio/usetemporal";
+import type { Unit } from "minuta";
 import { computed } from "vue";
-import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { useTemporal, usePeriod } from "minuta-vue";
 
 const props = defineProps<{
     unit: Unit;

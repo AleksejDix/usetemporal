@@ -73,7 +73,7 @@
 - Reduced overall package overhead
 
 ### Developer Experience
-- Cleaner import paths: `@usetemporal/core/native`
+- Cleaner import paths: `minuta/native`
 - Single package to install
 - Better TypeScript support
 - Accurate test coverage visibility
@@ -82,21 +82,21 @@
 
 Old imports:
 ```typescript
-import { createNativeAdapter } from '@usetemporal/adapter-native'
+import { createNativeAdapter } from 'minuta/native'
 ```
 
 New imports:
 ```typescript
-import { createNativeAdapter } from '@usetemporal/core/native'
+import { createNativeAdapter } from 'minuta/native'
 ```
 
 ## Backward Compatibility
 
 All old adapter packages still work as re-export facades with deprecation warnings:
-- @usetemporal/adapter-native
-- @usetemporal/adapter-temporal
-- @usetemporal/adapter-luxon
-- @usetemporal/adapter-date-fns
+- minuta/native
+- /adapter-temporal
+- /adapter-luxon
+- minuta/date-fns
 
 These will be removed in v3.0.0 (planned for 2025 Q3).
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Period } from "@allystudio/usetemporal";
+import type { Period } from "minuta";
 import { ref } from "vue";
-import { createTemporal, usePeriod } from "@allystudio/usetemporal-vue";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
+import { createTemporal, usePeriod } from "minuta-vue";
+import { createNativeAdapter } from "minuta/native";
 import YearView from "./YearView.vue";
 import MonthGrid from "./MonthGrid.vue";
 import WeekView from "./WeekView.vue";

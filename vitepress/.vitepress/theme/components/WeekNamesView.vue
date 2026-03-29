@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useTemporal, usePeriod } from "@allystudio/usetemporal-vue";
+import { useTemporal, usePeriod } from "minuta-vue";
 
 const temporal = useTemporal();
 const weekPeriod = usePeriod(temporal, "week");

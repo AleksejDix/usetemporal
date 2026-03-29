@@ -2,7 +2,7 @@
 
 ## Overview
 
-Starting with useTemporal v2.0.0, all adapter packages have been consolidated into the core package for better maintainability and smaller bundle sizes. The individual adapter packages are now deprecated and will be removed in v3.0.0.
+Starting with Minuta v2.0.0, all adapter packages have been consolidated into the core package for better maintainability and smaller bundle sizes. The individual adapter packages are now deprecated and will be removed in v3.0.0.
 
 ## Migration Timeline
 
@@ -15,19 +15,19 @@ Starting with useTemporal v2.0.0, all adapter packages have been consolidated in
 ### Before (Deprecated)
 ```typescript
 // ❌ Old imports - will stop working in v3.0.0
-import { createNativeAdapter } from '@usetemporal/adapter-native';
-import { createDateFnsAdapter } from '@usetemporal/adapter-date-fns';
-import { createLuxonAdapter } from '@usetemporal/adapter-luxon';
-import { createTemporalAdapter } from '@usetemporal/adapter-temporal';
+import { createNativeAdapter } from 'minuta/native';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createLuxonAdapter } from 'minuta/luxon';
+import { createTemporalAdapter } from 'minuta/temporal';
 ```
 
 ### After (Recommended)
 ```typescript
 // ✅ New imports - use these instead
-import { createNativeAdapter } from '@usetemporal/core/native';
-import { createDateFnsAdapter } from '@usetemporal/core/date-fns';
-import { createLuxonAdapter } from '@usetemporal/core/luxon';
-import { createTemporalAdapter } from '@usetemporal/core/temporal';
+import { createNativeAdapter } from 'minuta/native';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createLuxonAdapter } from 'minuta/luxon';
+import { createTemporalAdapter } from 'minuta/temporal';
 ```
 
 ## Required Changes
@@ -35,19 +35,19 @@ import { createTemporalAdapter } from '@usetemporal/core/temporal';
 ### Before (Deprecated)
 ```typescript
 // ❌ Old imports - will stop working in v3.0.0
-import { createNativeAdapter } from '@usetemporal/adapter-native';
-import { createDateFnsAdapter } from '@usetemporal/adapter-date-fns';
-import { createLuxonAdapter } from '@usetemporal/adapter-luxon';
-import { createTemporalAdapter } from '@usetemporal/adapter-temporal';
+import { createNativeAdapter } from 'minuta/native';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createLuxonAdapter } from 'minuta/luxon';
+import { createTemporalAdapter } from 'minuta/temporal';
 ```
 
 ### After (Recommended)
 ```typescript
 // ✅ New imports - use these instead
-import { createNativeAdapter } from '@usetemporal/core/native';
-import { createDateFnsAdapter } from '@usetemporal/core/date-fns';
-import { createLuxonAdapter } from '@usetemporal/core/luxon';
-import { createTemporalAdapter } from '@usetemporal/core/temporal';
+import { createNativeAdapter } from 'minuta/native';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createLuxonAdapter } from 'minuta/luxon';
+import { createTemporalAdapter } from 'minuta/temporal';
 ```
 
 ## Migration to Pure Operations (v2.0.0-alpha.1)
@@ -100,8 +100,8 @@ This release introduces significant breaking changes to the core API by removing
 
 #### Before
 ```typescript
-import { createTemporal, period, defineUnit } from '@usetemporal/core';
-import { createNativeAdapter } from '@usetemporal/core/native';
+import { createTemporal, period, defineUnit } from 'minuta';
+import { createNativeAdapter } from 'minuta/native';
 
 // Old custom unit registration
 defineUnit('fiscalYear', {
@@ -118,8 +118,8 @@ const fiscalYearPeriod = period(temporal, new Date(), 'fiscalYear');
 
 #### After
 ```typescript
-import { createTemporal, period } from '@usetemporal/core';
-import { createNativeAdapter } from '@usetemporal/core/native';
+import { createTemporal, period } from 'minuta';
+import { createNativeAdapter } from 'minuta/native';
 
 // New approach: Custom helper function for fiscalYear
 function createFiscalYear(adapter: Adapter, date: Date): Period {
@@ -140,10 +140,10 @@ const fiscalYearPeriod = createFiscalYear(adapter, new Date()); // Use custom he
 
 | Old Package | New Import Path |
 |------------|-----------------|
-| `@usetemporal/adapter-native` | `@usetemporal/core/native` |
-| `@usetemporal/adapter-date-fns` | `@usetemporal/core/date-fns` |
-| `@usetemporal/adapter-luxon` | `@usetemporal/core/luxon` |
-| `@usetemporal/adapter-temporal` | `@usetemporal/core/temporal` |
+| `minuta/native` | `minuta/native` |
+| `minuta/date-fns` | `minuta/date-fns` |
+| `minuta/luxon` | `minuta/luxon` |
+| `minuta/temporal` | `minuta/temporal` |
 
 ## Benefits of Migration
 
@@ -161,8 +161,8 @@ Find and replace all adapter imports in your codebase:
 
 ```bash
 # Example using VS Code search/replace or similar tools
-# Search: from '@usetemporal/adapter-native'
-# Replace: from '@usetemporal/core/native'
+# Search: from 'minuta/native'
+# Replace: from 'minuta/native'
 ```
 
 ### 2. Update package.json
@@ -173,11 +173,11 @@ Remove the individual adapter packages and ensure you have the core package:
 {
   "dependencies": {
     // Remove these
-    - "@usetemporal/adapter-native": "^1.x.x",
-    - "@usetemporal/adapter-date-fns": "^1.x.x",
+    - "minuta/native": "^1.x.x",
+    - "minuta/date-fns": "^1.x.x",
     
     // Keep only this
-    "@usetemporal/core": "^2.0.0"
+    "minuta": "^2.0.0"
   }
 }
 ```
@@ -194,7 +194,7 @@ If you need more time to migrate, you can temporarily suppress console warnings:
 // Temporary workaround - remove after migration
 const originalWarn = console.warn;
 console.warn = (...args) => {
-  if (args[0]?.includes('@usetemporal/adapter')) return;
+  if (args[0]?.includes('@minuta/adapter')) return;
   originalWarn(...args);
 };
 ```
@@ -219,9 +219,9 @@ Some older build tools might have issues with subpath exports. Solutions:
 
 ## Need Help?
 
-- Check our [GitHub Discussions](https://github.com/usetemporal/usetemporal/discussions)
-- Report issues at [GitHub Issues](https://github.com/usetemporal/usetemporal/issues)
-- See full documentation at [useTemporal Docs](https://usetemporal.dev)
+- Check our [GitHub Discussions](https://github.com/minuta/minuta/discussions)
+- Report issues at [GitHub Issues](https://github.com/minuta/minuta/issues)
+- See full documentation at [Minuta Docs](https://minuta.dev)
 
 ## Example Migration
 
@@ -230,8 +230,8 @@ Here's a complete before/after example:
 ### Before
 ```typescript
 // old-code.ts
-import { createDateFnsAdapter } from '@usetemporal/adapter-date-fns';
-import { createTemporal } from '@usetemporal/core';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createTemporal } from 'minuta';
 
 const adapter = createDateFnsAdapter();
 const temporal = createTemporal({ adapter });
@@ -240,8 +240,8 @@ const temporal = createTemporal({ adapter });
 ### After
 ```typescript
 // new-code.ts
-import { createDateFnsAdapter } from '@usetemporal/core/date-fns';
-import { createTemporal } from '@usetemporal/core';
+import { createDateFnsAdapter } from 'minuta/date-fns';
+import { createTemporal } from 'minuta';
 
 const adapter = createDateFnsAdapter();
 const temporal = createTemporal({ adapter });

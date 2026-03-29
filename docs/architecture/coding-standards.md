@@ -1,6 +1,6 @@
 # Coding Standards
 
-This document defines the coding standards and conventions for the useTemporal project. All code contributions must adhere to these standards to maintain consistency and quality across the codebase.
+This document defines the coding standards and conventions for the Minuta project. All code contributions must adhere to these standards to maintain consistency and quality across the codebase.
 
 ## Language and Framework Standards
 
@@ -40,7 +40,7 @@ This document defines the coding standards and conventions for the useTemporal p
 #### Import Organization
 
 1. External dependencies
-2. Internal packages (`@usetemporal/*`)
+2. Internal packages (`@minuta/*`)
 3. Relative imports (furthest to nearest)
 4. Type imports last
 
@@ -49,7 +49,7 @@ This document defines the coding standards and conventions for the useTemporal p
 import { ref, computed } from "@vue/reactivity";
 
 // Internal packages
-import type { Adapter } from "@usetemporal/adapter-native";
+import type { Adapter } from "@minuta/adapter-native";
 
 // Relative imports
 import { createPeriod } from "./operations/createPeriod";

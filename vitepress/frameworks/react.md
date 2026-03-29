@@ -1,6 +1,6 @@
 # React Integration
 
-`@allystudio/usetemporal-react` exposes idiomatic hooks so React apps get the
+`minuta-react` exposes idiomatic hooks so React apps get the
 same reactive builder API as Vue without any globals.
 
 - Hooks follow standard patterns (`useTemporal`, `usePeriod`).
@@ -10,16 +10,16 @@ same reactive builder API as Vue without any globals.
 ## Installation
 
 ```bash
-npm install @allystudio/usetemporal \
-  @allystudio/usetemporal-react \
-  @allystudio/usetemporal/native
+npm install minuta \
+  minuta-react \
+  minuta/native
 ```
 
 ## Hooks example
 
 ```tsx
-import { useTemporal, usePeriod } from "@allystudio/usetemporal-react";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
+import { useTemporal, usePeriod } from "minuta-react";
+import { createNativeAdapter } from "minuta/native";
 
 export function MonthCalendar() {
   const temporal = useTemporal({
@@ -58,8 +58,8 @@ export function MonthCalendar() {
 
 ```tsx
 import { useMemo, useState } from "react";
-import { useTemporal } from "@allystudio/usetemporal-react";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
+import { useTemporal } from "minuta-react";
+import { createNativeAdapter } from "minuta/native";
 
 export function App() {
   const [weekStartsOn, setWeekStartsOn] = useState(1);

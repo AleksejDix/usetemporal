@@ -1,19 +1,19 @@
-# @allystudio/usetemporal-svelte
+# minuta-svelte
 
-Svelte integration package for `@allystudio/usetemporal`. It wraps the core
+Svelte integration package for `minuta`. It wraps the core
 library with idiomatic store helpers so `browsing`, `now`, and derived periods
 stay reactive inside Svelte components without additional glue code.
 
 ## Installation
 
 ```bash
-npm install @allystudio/usetemporal @allystudio/usetemporal-svelte
+npm install minuta minuta-svelte
 ```
 
 Install whichever adapter you need (the core ships the native adapter entry):
 
 ```bash
-npm install @allystudio/usetemporal/native
+npm install minuta/native
 ```
 
 ## Quick Start
@@ -25,8 +25,8 @@ npm install @allystudio/usetemporal/native
     createTemporal,
     useTemporal,
     usePeriod
-  } from "@allystudio/usetemporal-svelte";
-  import { createNativeAdapter } from "@allystudio/usetemporal/native";
+  } from "minuta-svelte";
+  import { createNativeAdapter } from "minuta/native";
 
   const date = writable(new Date());
   const now = writable(new Date());
@@ -53,8 +53,8 @@ npm install @allystudio/usetemporal/native
 
 ```ts
 import { derived, writable } from "svelte/store";
-import { createTemporal } from "@allystudio/usetemporal-svelte";
-import { createNativeAdapter } from "@allystudio/usetemporal/native";
+import { createTemporal } from "minuta-svelte";
+import { createNativeAdapter } from "minuta/native";
 
 const weekStartsOn = writable(1);
 const date = writable(new Date());
@@ -90,7 +90,7 @@ Need a working calendar fast? Import the packaged component:
 
 ```svelte
 <script lang="ts">
-  import { CalendarExample } from "@allystudio/usetemporal-svelte/components";
+  import { CalendarExample } from "minuta-svelte/components";
 </script>
 
 <CalendarExample />
@@ -98,13 +98,13 @@ Need a working calendar fast? Import the packaged component:
 
 ## Scripts
 
-- `npm run build --workspace=@allystudio/usetemporal-svelte`
-- `TZ=UTC npm test --workspace=@allystudio/usetemporal-svelte`
-- `npm run type-check --workspace=@allystudio/usetemporal-svelte`
+- `npm run build --workspace=minuta-svelte`
+- `TZ=UTC npm test --workspace=minuta-svelte`
+- `npm run type-check --workspace=minuta-svelte`
 
 ## Documentation
 
-Complete docs live at https://usetemporal.vercel.app.
+Complete docs live at https://minuta.vercel.app.
 
 ## License
 
