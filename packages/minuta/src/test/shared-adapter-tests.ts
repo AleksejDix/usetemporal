@@ -2,6 +2,7 @@ import { describe } from "vitest";
 import type { Adapter } from "../types";
 import { createNativeAdapter } from "../adapters/native";
 import { createDateFnsAdapter } from "../adapters/date-fns";
+import { createDayjsAdapter } from "../adapters/dayjs";
 import { createLuxonAdapter } from "../adapters/luxon";
 import { createMinutaAdapter } from "../adapters/temporal";
 
@@ -21,6 +22,10 @@ export const testAdapters: AdapterConfig[] = [
   {
     name: "date-fns",
     createAdapter: () => createDateFnsAdapter({ weekStartsOn: 1 }),
+  },
+  {
+    name: "Day.js",
+    createAdapter: () => createDayjsAdapter({ weekStartsOn: 1 }),
   },
   {
     name: "Luxon",
