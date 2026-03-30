@@ -16,8 +16,6 @@ export function merge(
     throw new Error("merge() requires at least one period");
   }
 
-  for (const p of periods) {
-  }
   if (periods.length === 1) {
     if (targetUnit && targetUnit !== periods[0].type) {
       return derivePeriod(adapter, periods[0].start, targetUnit);
