@@ -17,6 +17,7 @@ export default defineConfig({
         calendar: resolve(__dirname, "src/calendar.ts"),
         helpers: resolve(__dirname, "src/helpers.ts"),
         native: resolve(__dirname, "src/native.ts"),
+        dayjs: resolve(__dirname, "src/dayjs.ts"),
         "date-fns": resolve(__dirname, "src/date-fns.ts"),
         "date-fns-tz": resolve(__dirname, "src/date-fns-tz.ts"),
         luxon: resolve(__dirname, "src/luxon.ts"),
@@ -25,7 +26,14 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["date-fns", "date-fns-tz", "luxon", "@js-temporal/polyfill"],
+      external: [
+        "dayjs",
+        "dayjs/plugin/quarterOfYear",
+        "date-fns",
+        "date-fns-tz",
+        "luxon",
+        "@js-temporal/polyfill",
+      ],
       output: {
         preserveModules: false,
       },

@@ -47,6 +47,10 @@
       "types": "./dist/luxon.d.ts",
       "import": "./dist/luxon.js"
     },
+    "./dayjs": {
+      "types": "./dist/dayjs.d.ts",
+      "import": "./dist/dayjs.js"
+    },
     "./date-fns": {
       "types": "./dist/date-fns.d.ts",
       "import": "./dist/date-fns.js"
@@ -98,6 +102,11 @@
       "gzip": true
     },
     {
+      "path": "dist/dayjs.js",
+      "limit": "2 kB",
+      "gzip": true
+    },
+    {
       "path": "dist/date-fns.js",
       "limit": "2 kB",
       "gzip": true
@@ -125,6 +134,7 @@
     "@types/luxon": "^3.7.1",
     "@types/node": "^22.12.1",
     "@vitest/coverage-v8": "^4.0.13",
+    "dayjs": "^1.11.20",
     "jsdom": "^26.0.0",
     "size-limit": "^12.0.1",
     "typescript": "^5.7.3",
