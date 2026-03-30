@@ -43,4 +43,4 @@ export interface MinutaBuilder extends VueMinuta {
   ): boolean;
 }
 
-export type { Adapter, AdapterUnit, Period, Unit, Duration } from "minuta";
+export type { Adapter, AdapterUnit, Period } from "minuta";

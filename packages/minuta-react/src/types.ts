@@ -42,4 +42,4 @@ export interface UseMinutaOptions {
   weekStartsOn?: number;
 }
 
-export type { Adapter, AdapterUnit, Period, Unit, Duration } from "minuta";
+export type { Adapter, AdapterUnit, Period } from "minuta";
